@@ -24,7 +24,7 @@ class AddTblSubMenus extends Migration
             $table->string('title', 20)->nullable(false);
             $table->string('url', 50)->nullable(false);
             $table->string('icon', 30)->nullable(false);
-            $table->string('active')->default(true);
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
