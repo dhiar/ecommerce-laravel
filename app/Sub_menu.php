@@ -8,5 +8,5 @@ class Sub_menu extends Model
 {
     public $timestamps = true;
     protected $guarded = ['id'];
-    protected $fillable = ['title', 'url', 'icon', 'active'];
+    protected $fillable = ['id_menu','title', 'url', 'icon', 'active'];
 }
