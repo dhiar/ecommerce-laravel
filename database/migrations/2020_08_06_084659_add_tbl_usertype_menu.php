@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTblUserAccess extends Migration
+class AddTblUsertypeMenu extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddTblUserAccess extends Migration
      */
     public function up()
     {
-        Schema::create('user_access', function (Blueprint $table) {
+        Schema::create('usertype_menu', function (Blueprint $table) {
             $table->bigIncrements('id');
             
             $table->unsignedBigInteger('id_user_type')->nullable();
@@ -38,7 +38,7 @@ class AddTblUserAccess extends Migration
      */
     public function down()
     {
-        Schema::table('user_access', function (Blueprint $table) {
+        Schema::table('usertype_menu', function (Blueprint $table) {
             $table->dropForeign(['id_user_type']);
             $table->dropColumn('id_user_type');
 
