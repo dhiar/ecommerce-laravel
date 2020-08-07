@@ -33,6 +33,13 @@ class AddTblProducts extends Migration
             $table->integer('stock')->default(0);
             $table->tinyInteger('discount')->default(0);
             $table->text('description');
+
+            $table->string('photo1', 30);
+            $table->string('photo2', 30);
+            $table->string('photo3', 30);
+            $table->string('photo4', 30);
+
+            $table->string('slug', 150)->nullable(false);
             $table->timestamps();
             $table->softDeletes();
         });
