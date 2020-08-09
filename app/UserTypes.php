@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class UserTypes extends Model
 {
@@ -10,4 +11,8 @@ class UserTypes extends Model
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public function users(){
+        return $this->hasMany(User::class);
+    }
 }
