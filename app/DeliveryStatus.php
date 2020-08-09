@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Transaction;
 
 class DeliveryStatus extends Model
 {
@@ -10,4 +11,9 @@ class DeliveryStatus extends Model
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public function transactions()
+    {
+        return $this->belongsToMany(Transaction::class)->withTimestamps()->withPivot(['invoice']);
+    }
 }
