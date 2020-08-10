@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\DeliveryStatus;
+use App\{DeliveryStatus, TransactionDetail};
 
 class Transaction extends Model
 {
@@ -26,5 +26,10 @@ class Transaction extends Model
 
     public function delivery_status(){
         return $this->belongsTo(DeliveryStatus::class);
+    }
+
+    public function transaction_details()
+    {
+        return $this->belongsToMany(TransactionDetail::class)->withTimestamps()->withPivot(['subtotal_price']);
     }
 }
