@@ -1,6 +1,5 @@
 <?php
 
-use App\DeliveryStatus;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,5 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SubMenuSeeder::class);
         $this->call(UserAdminSeeder::class);
         $this->call(DeliveryStatusSeeder::class);
+        $this->call(AddressSeeder::class);
     }
 }

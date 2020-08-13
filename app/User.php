@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\UserTypes;
+use App\{Address, UserTypes};
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
@@ -44,5 +44,9 @@ class User extends Authenticatable
 
     public function usertype(){
         return $this->belongsTo(UserTypes::class);
+    }
+
+    public function address(){
+        return $this->hasOne(Address::class);
     }
 }
