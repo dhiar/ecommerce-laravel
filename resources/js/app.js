@@ -8,6 +8,14 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+// import dependecies tambahan
+import VueRouter from 'vue-router';
+import VueAxios from 'vue-axios';
+import Axios from 'axios';
+
+Vue.use(VueRouter,VueAxios,Axios);
+
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -19,7 +27,7 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -27,6 +35,40 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = new Vue({
-    el: '#app',
-});
+// const app = new Vue({
+//     el: '#app',
+// });
+
+
+// import file yang dibuat tadi
+import App from './components/App.vue';
+import Create from './components/Create.vue';
+import Read from './components/Read.vue';
+import Update from './components/Update.vue';
+import AdminLogin from './components/AdminLogin.vue';
+
+// Layout
+import Default from './layouts/Default.vue';
+Vue.component('default-layout', Default);
+
+// membuat router
+const routes = [
+    {
+        name: 'read',
+        path: '/',
+        component: Read
+    },
+    {
+        name: 'create',
+        path: '/create',
+        component: Create
+    },
+    {
+        name: 'update',
+        path: '/detail/:id',
+        component: Update
+    }
+]
+
+const router = new VueRouter({ mode: 'history', routes: routes });
+new Vue(Vue.util.extend({ router }, App)).$mount("#app");
