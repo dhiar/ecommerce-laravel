@@ -17,3 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('admin')->group(function () {
+    // menambahkan route untuk person
+    Route::get('/user','UserController@all');
+    Route::get('/user/{id}','UserController@show');
+    Route::post('/user','UserController@store');
+    Route::put('/user/{id}','UserController@update');
+    Route::delete('/user/{id}','UserController@delete');
+});
+
