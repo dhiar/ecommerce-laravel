@@ -17,8 +17,7 @@ class AlterFieldIdAddressOnUsersTable extends Migration
             $table->unsignedBigInteger('id_address')->nullable()->change();
             $table->foreign('id_address')
                 ->references('id')
-                ->on('address')
-                ->onDelete('set null');
+                ->on('address');
         });
     }
 

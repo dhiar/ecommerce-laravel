@@ -27,11 +27,10 @@ class AddTblTransactions extends Migration
             $table->string('propinsi', 25);
             $table->string('kodepos', 8)->default('-');
 
-            $table->unsignedBigInteger('id_delivery_status')->nullable();
+            $table->unsignedBigInteger('id_delivery_status');
             $table->foreign('id_delivery_status')
                 ->references('id')
-                ->on('delivery_status')
-                ->onDelete('set null');
+                ->on('delivery_status');
             
             $table->text('token');
             $table->dateTime('token_created_at');

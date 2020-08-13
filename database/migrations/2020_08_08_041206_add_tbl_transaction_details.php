@@ -15,17 +15,15 @@ class AddTblTransactionDetails extends Migration
     {
         Schema::create('transaction_details', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_transaction')->nullable();
+            $table->unsignedBigInteger('id_transaction');
             $table->foreign('id_transaction')
                 ->references('id')
-                ->on('transactions')
-                ->onDelete('set null');
+                ->on('transactions');
 
-            $table->unsignedBigInteger('id_product')->nullable();
+            $table->unsignedBigInteger('id_product');
             $table->foreign('id_product')
                 ->references('id')
-                ->on('products')
-                ->onDelete('set null');
+                ->on('products');
 
             $table->integer('count');
             $table->double('subtotal_weight');

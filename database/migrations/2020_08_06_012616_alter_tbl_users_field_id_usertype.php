@@ -14,11 +14,10 @@ class AlterTblUsersFieldIdUsertype extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_user_type')->nullable(); // unsigned for foreign key.
+            $table->unsignedBigInteger('id_user_type'); // unsigned for foreign key.
             $table->foreign('id_user_type') // foreign key column name.
                 ->references('id') // parent table primary key.
-                ->on('user_types') // parent table name.
-                ->onDelete('set null');
+                ->on('user_types');
 
             $table->enum('gender', ['L', 'P'])->default('L');
             $table->string('address',200);

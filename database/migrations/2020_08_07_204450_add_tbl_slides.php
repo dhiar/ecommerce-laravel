@@ -16,11 +16,10 @@ class AddTblSlides extends Migration
         Schema::create('slides', function (Blueprint $table) {
             $table->bigIncrements('id');
             
-            $table->unsignedBigInteger('id_menu')->nullable();
+            $table->unsignedBigInteger('id_menu');
             $table->foreign('id_menu')
                 ->references('id')
-                ->on('menus')
-                ->onDelete('set null');
+                ->on('menus');
 
             $table->string('title', 30);
             $table->string('url', 40);

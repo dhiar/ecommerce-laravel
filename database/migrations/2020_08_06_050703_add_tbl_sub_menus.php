@@ -15,11 +15,10 @@ class AddTblSubMenus extends Migration
     {
         Schema::create('sub_menus', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_menu')->nullable();
+            $table->unsignedBigInteger('id_menu');
             $table->foreign('id_menu')
                 ->references('id')
-                ->on('menus')
-                ->onDelete('set null');
+                ->on('menus');
 
             $table->string('title', 20)->nullable(false);
             $table->string('url', 50)->nullable(false);

@@ -16,17 +16,15 @@ class AddTblProducts extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedBigInteger('id_product_type')->nullable();
+            $table->unsignedBigInteger('id_product_type');
             $table->foreign('id_product_type')
                 ->references('id')
-                ->on('product_types')
-                ->onDelete('set null');
+                ->on('product_types');
 
-            $table->unsignedBigInteger('id_product_brand')->nullable();
+            $table->unsignedBigInteger('id_product_brand');
             $table->foreign('id_product_brand')
                 ->references('id')
-                ->on('product_brands')
-                ->onDelete('set null');
+                ->on('product_brands');
 
             $table->string('name', 15)->nullable(false);
             $table->integer('price')->default(0);

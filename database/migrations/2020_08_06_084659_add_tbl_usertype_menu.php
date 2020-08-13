@@ -16,17 +16,15 @@ class AddTblUsertypeMenu extends Migration
         Schema::create('usertype_menu', function (Blueprint $table) {
             $table->bigIncrements('id');
             
-            $table->unsignedBigInteger('id_user_type')->nullable();
+            $table->unsignedBigInteger('id_user_type');
             $table->foreign('id_user_type')
                 ->references('id')
-                ->on('user_types')
-                ->onDelete('set null');
+                ->on('user_types');
 
-            $table->unsignedBigInteger('id_menu')->nullable();
+            $table->unsignedBigInteger('id_menu');
             $table->foreign('id_menu')
                 ->references('id')
-                ->on('menus')
-                ->onDelete('set null');
+                ->on('menus');
             $table->timestamps();
         });
     }
