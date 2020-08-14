@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{DeliveryStatus, TransactionDetail};
+use App\{Address, DeliveryStatus, TransactionDetail, User};
 
 class Transaction extends Model
 {
@@ -11,18 +11,23 @@ class Transaction extends Model
     protected $guarded = ['id'];
     protected $fillable = [
         'invoice',
-        'email',
-        'weight',
         'shipping_charges',
-        'total',
-        'alamat',
-        'kabupaten',
-        'propinsi',
-        'kodepos',
+        'total_weight',
+        'total_price',
+        'id_address',
+        'id_user',
         'id_delivery_status',
         'token',
         'token_created_at'
     ];
+
+    public function address(){
+        return $this->belongsTo(Address::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 
     public function delivery_status(){
         return $this->belongsTo(DeliveryStatus::class);

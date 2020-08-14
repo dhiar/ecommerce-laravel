@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\{Address, UserTypes};
+use App\{Address, UserTypes, Transaction};
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
@@ -48,5 +48,10 @@ class User extends Authenticatable
 
     public function address(){
         return $this->hasOne(Address::class);
+    }
+
+    public function transactions()
+    {
+        return $this->belongsToMany(Transaction::class)->withTimestamps()->withPivot(['invoice']);
     }
 }

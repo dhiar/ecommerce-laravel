@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-use App\User;
+use App\{Transaction, User};
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,5 +14,10 @@ class Address extends Model
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    public function transactions()
+    {
+        return $this->belongsToMany(Transaction::class)->withTimestamps()->withPivot(['invoice']);
     }
 }

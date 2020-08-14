@@ -16,16 +16,19 @@ class AddTblTransactions extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('invoice', 50);
-            $table->string('email')->nullable();
-            $table->integer('weight');
-
             $table->double('shipping_charges');
-            $table->double('total');
+            $table->integer('total_weight');
+            $table->double('total_price');
 
-            $table->text('alamat');
-            $table->string('kabupaten', 25);
-            $table->string('propinsi', 25);
-            $table->string('kodepos', 8)->default('-');
+            $table->unsignedBigInteger('id_address');
+            $table->foreign('id_address')
+                ->references('id')
+                ->on('address');
+
+            $table->unsignedBigInteger('id_user');
+            $table->foreign('id_user')
+                ->references('id')
+                ->on('users');
 
             $table->unsignedBigInteger('id_delivery_status');
             $table->foreign('id_delivery_status')
@@ -46,6 +49,12 @@ class AddTblTransactions extends Migration
     public function down()
     {
         Schema::table('transactions', function (Blueprint $table) {
+            $table->dropForeign(['id_address']);
+            $table->dropColumn('id_address');
+
+            $table->dropForeign(['id_user']);
+            $table->dropColumn('id_user');
+
             $table->dropForeign(['id_delivery_status']);
             $table->dropColumn('id_delivery_status');
         });
