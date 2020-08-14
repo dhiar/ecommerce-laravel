@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Address;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -53,6 +55,8 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'numeric', 'regex:/^\S*$/u'],
+            'address' => ['required', 'string', 'max:255'],
         ]);
     }
 
@@ -64,10 +68,33 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        DB::beginTransaction();
+        try {
+            $address = new Address();
+            $address->name = $data['address'];
+            $address->save();
+
+            if ($address->id) {
+                $user = new User();
+                $user->name = $data['name'];
+                $user->email = $data['email'];
+                $user->password = bcrypt($data['password']);
+                $user->id_user_type = 3;
+                $user->id_address = $address->id;
+                $user->phone = $data['phone'];
+                $user->save();
+            }
+
+            DB::commit();
+            return $user;
+        }
+        catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Failed create user',
+            ]);
+            DB::rollback();
+        }
     }
 }
