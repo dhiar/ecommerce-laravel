@@ -58,7 +58,18 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						...
+						<div class="form-group">
+							<label>Username</label>
+							<input v-model="form.name" type="text" name="name"
+								class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
+							<has-error :form="form" field="name"></has-error>
+						</div>
+						<div class="form-group">
+							<label>Email</label>
+							<input v-model="form.email" type="email" name="email"
+								class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
+							<has-error :form="form" field="email"></has-error>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -72,6 +83,21 @@
 
 <script>
 	export default {
+		data() {
+			return {
+				form: new Form({
+					name: '',
+					email: '',
+					password: '',
+					retype_password: '',
+					gender: 'L',
+					address: '',
+					user_type: '',
+					phone: '',
+					photo: ''  
+				})
+			}
+		},
 		mounted() {
 			console.log('Component mounted.')
 		}
