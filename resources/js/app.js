@@ -18,14 +18,14 @@ Vue.component(AlertError.name, AlertError)
 Vue.use(VueRouter)
 
 let routes = [
-    { path : '/dashboard', component : require('./components/Dashboard').default },
-    { path : '/users', component : require('./components/Users').default },
-    { path : '/profile', component : require('./components/Profile').default }
+	{ path : '/dashboard', component : require('./components/Dashboard').default },
+	{ path : '/users', component : require('./components/Users').default },
+	{ path : '/profile', component : require('./components/Profile').default }
 ]
 
 const router = new VueRouter({
-    mode: 'history',
-    routes
+	mode: 'history',
+	routes
 })
 
 /**
@@ -48,8 +48,8 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 const app = new Vue({
-    el: '#app',
-    router
+	el: '#app',
+	router
 });
 
 
