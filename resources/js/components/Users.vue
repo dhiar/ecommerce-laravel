@@ -163,7 +163,10 @@
 				))
 			},
 			createUser() {
-				this.form.post('api/user')
+				//  start the progress bar
+      	this.$Progress.start();
+				this.form.post('api/user');
+				this.$Progress.finish();
 			}
 		},
 		mounted() {

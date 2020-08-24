@@ -10,12 +10,19 @@ window.Vue = require('vue');
 
 import VueRouter from 'vue-router'
 import { Form, HasError, AlertError } from 'vform'
+import VueProgressBar from 'vue-progressbar'
 
 window.Form = Form
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 
 Vue.use(VueRouter)
+
+Vue.use(VueProgressBar, {
+  color: 'rgba(143, 255, 199)',
+  failedColor: 'red',
+  height: '3px'
+})
 
 let routes = [
 	{ path : '/dashboard', component : require('./components/Dashboard').default },
