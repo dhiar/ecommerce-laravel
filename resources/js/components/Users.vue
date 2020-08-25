@@ -7,7 +7,7 @@
 						<h3 class="card-title">Users</h3>
 
 						<div class="card-tools">
-							<button class="btn btn-success" data-toggle="modal" data-target="#addNew">
+							<button class="btn btn-success" data-toggle="modal" data-target="#addNewUser">
 								Add New <i class="fas fa-user-plus fa-fw"></i>
 							</button>
 						</div>
@@ -50,7 +50,7 @@
 		</div>
 
 		<!-- Modal -->
-		<div class="modal fade" id="addNew" tabindex="-1" aria-labelledby="addNewLabel" aria-hidden="true">
+		<div class="modal fade" id="addNewUser" tabindex="-1" aria-labelledby="addNewLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -164,13 +164,22 @@
 			},
 			createUser() {
 				//  start the progress bar
-      	this.$Progress.start();
-				this.form.post('api/user');
+      	this.$Progress.start()
+				this.form.post('api/user')
+
+				$("#addNewUser").modal("hide")
+
+				Toast.fire({
+					icon: 'success',
+					title: 'Signed in successfully'
+				})
+
+				this.loadUsers();
 				this.$Progress.finish();
 			}
 		},
-		mounted() {
-			this.loadUsers()
+		created() {
+			setInterval(() => this.loadUsers(), 2000)
 		}
 	}
 </script>
