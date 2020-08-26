@@ -22,16 +22,18 @@
 									<th>Phone</th>
 									<th>Email</th>
 									<th>Address</th>
+									<th>Date</th>
 									<th>Modify</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr v-for="user in users" :key="user.id">
-									<td>{{ user.name }}</td>
+									<td>{{ user.name | upText }}</td>
 									<td>{{ user.id_user_type }}</td>
 									<td>{{ user.phone }}</td>
 									<td>{{ user.email }}</td>
 									<td>{{ user.id_address }}</td>
+									<td>{{ user.created_at | myDate }}</td>
 									<td>
 										<a href="#">
 											<i class="fa fa-edit blue"></i>
@@ -179,7 +181,8 @@
 			}
 		},
 		created() {
-			setInterval(() => this.loadUsers(), 2000)
+			this.loadUsers()
+			// setInterval(() => this.loadUsers(), 3000)
 		}
 	}
 </script>
