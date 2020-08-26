@@ -73,6 +73,8 @@ Vue.filter('myDate', function (created) {
 	return moment(created, "YYYYMMDD").fromNow();
 })
 
+window.Fire = new Vue();
+
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**

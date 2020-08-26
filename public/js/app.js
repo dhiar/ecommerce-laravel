@@ -2196,6 +2196,7 @@ __webpack_require__.r(__webpack_exports__);
       //  start the progress bar
       this.$Progress.start();
       this.form.post('api/user');
+      Fire.$emit('AfterCreate');
       $("#addNewUser").modal("hide");
       Toast.fire({
         icon: 'success',
@@ -2206,7 +2207,12 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.loadUsers(); // setInterval(() => this.loadUsers(), 3000)
+    var _this2 = this;
+
+    this.loadUsers();
+    Fire.$on('AfterCreate', function () {
+      _this2.loadUsers();
+    }); // setInterval(() => this.loadUsers(), 3000)
   }
 });
 
@@ -79221,6 +79227,7 @@ Vue.filter('upText', function (text) {
 Vue.filter('myDate', function (created) {
   return moment__WEBPACK_IMPORTED_MODULE_2___default()(created, "YYYYMMDD").fromNow();
 });
+window.Fire = new Vue();
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
