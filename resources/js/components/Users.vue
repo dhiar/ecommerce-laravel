@@ -164,21 +164,32 @@
 					this.users = data.data
 				))
 			},
-			createUser() {
+			async createUser() {
 				//  start the progress bar
-      	this.$Progress.start()
-				this.form.post('api/user')
+				this.$Progress.start()
 
-				Fire.$emit('AfterCreate')
-				$("#addNewUser").modal("hide")
+				await this.form.post('api/user')
+				.then(() => {
+					Fire.$emit('AfterCreate')
+					$("#addNewUser").modal("hide")
 
-				Toast.fire({
-					icon: 'success',
-					title: 'Signed in successfully'
+					Toast.fire({
+						icon: 'success',
+						title: 'Signed in successfully'
+					})
+
+					this.loadUsers();
+					this.$Progress.finish();
+				})
+				.catch(() => {
+					this.$Progress.fail();
+					Toast.fire({
+       			icon: 'error',
+       			title: 'User not Created'
+ 					});
 				})
 
-				this.loadUsers();
-				this.$Progress.finish();
+				
 			}
 		},
 		created() {
