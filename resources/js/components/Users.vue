@@ -217,7 +217,7 @@
 						Swal.fire(
 							'Failed!',
 							'There was something wrongs.',
-							'success'
+							'warning'
 						)
 					})
 

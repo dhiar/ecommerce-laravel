@@ -2275,7 +2275,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
                     Fire.$emit('AfterCreate');
                   })["catch"](function () {
-                    Swal.fire('Failed!', 'There was something wrongs.', 'success');
+                    Swal.fire('Failed!', 'There was something wrongs.', 'warning');
                   });
 
                   if (result.value) {}
