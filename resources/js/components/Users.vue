@@ -7,7 +7,7 @@
 						<h3 class="card-title">Users</h3>
 
 						<div class="card-tools">
-							<button class="btn btn-success" data-toggle="modal" data-target="#addNewUser">
+							<button class="btn btn-success" @click="newModal">
 								Add New <i class="fas fa-user-plus fa-fw"></i>
 							</button>
 						</div>
@@ -35,7 +35,7 @@
 									<td>{{ user.id_address }}</td>
 									<td>{{ user.created_at | myDate }}</td>
 									<td>
-										<a href="#">
+										<a href="#" @click="editModal(user)">
 											<i class="fa fa-edit blue"></i>
 										</a>
 										/
@@ -161,13 +161,23 @@
 			}
 		},
 		methods : {
+			editModal(user) {
+				this.form.reset()
+				$("#addNewUser").modal("show")
+				console.log('user = ' + JSON.stringify(user))
+				this.form.fill(user)
+			},
+			newModal() {
+				this.form.reset()
+				$("#addNewUser").modal("show")
+			},
 			loadUsers() {
 				axios.get('api/user').then( ({data}) => (
 					this.users = data.data
 				))
 			},
 			async createUser() {
-				//  start the progress bar
+				// start the progress bar
 				this.$Progress.start()
 
 				await this.form.post('api/user')
@@ -190,8 +200,6 @@
        			title: 'User not Created'
  					});
 				})
-
-				
 			},
 			async deleteUser(id) {
 				Swal.fire({
