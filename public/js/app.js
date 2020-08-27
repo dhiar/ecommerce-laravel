@@ -2187,6 +2187,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2251,14 +2253,49 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee);
       }))();
+    },
+    deleteUser: function deleteUser(id) {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                Swal.fire({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, delete it!'
+                }).then(function (result) {
+                  _this3.form["delete"]('api/user/' + id).then(function () {
+                    Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
+                    Fire.$emit('AfterCreate');
+                  })["catch"](function () {
+                    Swal.fire('Failed!', 'There was something wrongs.', 'success');
+                  });
+
+                  if (result.value) {}
+                });
+
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
     this.loadUsers();
     Fire.$on('AfterCreate', function () {
-      _this3.loadUsers();
+      _this4.loadUsers();
     }); // setInterval(() => this.loadUsers(), 3000)
   }
 });
@@ -64179,7 +64216,22 @@ var render = function() {
                       _vm._v(_vm._s(_vm._f("myDate")(user.created_at)))
                     ]),
                     _vm._v(" "),
-                    _vm._m(2, true)
+                    _c("td", [
+                      _vm._m(2, true),
+                      _vm._v("\n\t\t\t\t\t\t\t\t\t/\n\t\t\t\t\t\t\t\t\t"),
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteUser(user.id)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fa fa-trash red" })]
+                      )
+                    ])
                   ])
                 }),
                 0
@@ -64672,12 +64724,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fa fa-edit blue" }),
-        _vm._v("\n\t\t\t\t\t\t\t\t\t\t/\n\t\t\t\t\t\t\t\t\t\t"),
-        _c("i", { staticClass: "fa fa-trash red" })
-      ])
+    return _c("a", { attrs: { href: "#" } }, [
+      _c("i", { staticClass: "fa fa-edit blue" })
     ])
   },
   function() {

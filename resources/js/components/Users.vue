@@ -37,7 +37,9 @@
 									<td>
 										<a href="#">
 											<i class="fa fa-edit blue"></i>
-											/
+										</a>
+										/
+										<a href="#" @click="deleteUser(user.id)">
 											<i class="fa fa-trash red"></i>
 										</a>
 									</td>
@@ -190,6 +192,39 @@
 				})
 
 				
+			},
+			async deleteUser(id) {
+				Swal.fire({
+					title: 'Are you sure?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Yes, delete it!'
+				}).then((result) => {
+
+					this.form.delete('api/user/' + id)
+					.then(() => {
+						Swal.fire(
+							'Deleted!',
+							'Your data has been deleted.',
+							'success'
+						)
+						Fire.$emit('AfterCreate')
+					})
+					.catch(() => {
+						Swal.fire(
+							'Failed!',
+							'There was something wrongs.',
+							'success'
+						)
+					})
+
+					if (result.value) {
+						
+					}
+				})
 			}
 		},
 		created() {
