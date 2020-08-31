@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\{Address, User};
 use Illuminate\Support\Facades\DB;
+use App\Transformers\UserTransformer;
 
 class UserController extends Controller
 {
@@ -16,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-      return User::latest()->paginate(10);
+      return fractal(User::latest()->paginate(10), UserTransformer::class)->toArray()['data'];
     }
 
     /**

@@ -2188,7 +2188,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2221,7 +2220,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       axios.get('api/user').then(function (_ref) {
         var data = _ref.data;
-        return _this.users = data.data;
+        return _this.users = data;
       });
     },
     createUser: function createUser() {
@@ -64227,13 +64226,13 @@ var render = function() {
                   return _c("tr", { key: user.id }, [
                     _c("td", [_vm._v(_vm._s(_vm._f("upText")(user.name)))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(user.id_user_type))]),
+                    _c("td", [_vm._v(_vm._s(user.user_type))]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(user.phone))]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(user.email))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(user.id_address))]),
+                    _c("td", [_vm._v(_vm._s(user.address))]),
                     _vm._v(" "),
                     _c("td", [
                       _vm._v(_vm._s(_vm._f("myDate")(user.created_at)))

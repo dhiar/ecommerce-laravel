@@ -5,7 +5,6 @@
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Users</h3>
-
 						<div class="card-tools">
 							<button class="btn btn-success" @click="newModal">
 								Add New <i class="fas fa-user-plus fa-fw"></i>
@@ -29,10 +28,10 @@
 							<tbody>
 								<tr v-for="user in users" :key="user.id">
 									<td>{{ user.name | upText }}</td>
-									<td>{{ user.id_user_type }}</td>
+									<td>{{ user.user_type }}</td>
 									<td>{{ user.phone }}</td>
 									<td>{{ user.email }}</td>
-									<td>{{ user.id_address }}</td>
+									<td>{{ user.address }}</td>
 									<td>{{ user.created_at | myDate }}</td>
 									<td>
 										<a href="#" @click="editModal(user)">
@@ -173,7 +172,7 @@
 			},
 			loadUsers() {
 				axios.get('api/user').then( ({data}) => (
-					this.users = data.data
+					this.users = data
 				))
 			},
 			async createUser() {
