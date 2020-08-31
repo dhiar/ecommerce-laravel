@@ -6,7 +6,7 @@
 					<div class="card-header">
 						<h3 class="card-title">Users</h3>
 						<div class="card-tools">
-							<button class="btn btn-success" @click="newModal">
+							<button class="btn btn-success" @click="createModal">
 								Add New <i class="fas fa-user-plus fa-fw"></i>
 							</button>
 						</div>
@@ -28,13 +28,13 @@
 							<tbody>
 								<tr v-for="user in users" :key="user.id">
 									<td>{{ user.name | upText }}</td>
-									<td>{{ user.user_type }}</td>
+									<td>{{ user.user_type_name | upText }}</td>
 									<td>{{ user.phone }}</td>
 									<td>{{ user.email }}</td>
 									<td>{{ user.address }}</td>
 									<td>{{ user.created_at | myDate }}</td>
 									<td>
-										<a href="#" @click="editModal(user)">
+										<a href="#" @click="updateModal(user)">
 											<i class="fa fa-edit blue"></i>
 										</a>
 										/
@@ -57,13 +57,14 @@
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="addNewLabel">Add New (Admin / Owner)</h5>
+						<h5 class="modal-title" id="addNewLabel" v-show="!createMode">Update (Admin / Owner)</h5>
+						<h5 class="modal-title" id="addNewLabel" v-show="createMode">Add New (Admin / Owner)</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 
-					<form @submit.prevent="createUser">
+					<form @submit.prevent="createMode ? createUser() : updateUser()">
 						<div class="modal-body">
 							<div class="form-group">
 								<label>Username</label>
@@ -98,7 +99,9 @@
 										class="form-control" :class="{ 'is-invalid': form.errors.has('address') }"></textarea>
 								<has-error :form="form" field="address"></has-error>
 							</div>
-							<div class="form-group">
+
+							
+							<div v-if="createMode" class="form-group">
 								<label>Password</label>
 								<input v-model="form.password"
 									type="password"
@@ -109,7 +112,7 @@
 								>
 								<has-error :form="form" field="password"></has-error>
 							</div>
-							<div class="form-group">
+							<div v-if="createMode" class="form-group">
 								<label>Password Confirmation</label>
 								<input v-model="form.password_confirmation"
 									type="password"
@@ -123,17 +126,18 @@
 							</div>
 							<div class="form-group">
 								<label>User Type</label>
-								<select name="user_type" v-model="form.user_type" id="user_type"
-									class="form-control" :class="{ 'is-invalid': form.errors.has('user_type') }">
+								<select name="id_user_type" v-model="form.id_user_type" id="id_user_type"
+									class="form-control" :class="{ 'is-invalid': form.errors.has('id_user_type') }">
 									<option value="1">Admin</option>
 									<option value="2" selected>Pemilik</option>
 								</select>
-								<has-error :form="form" field="user_type"></has-error>
+								<has-error :form="form" field="id_user_type"></has-error>
 							</div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-							<button type="submit" :disabled="form.busy" class="btn btn-primary">Save changes</button>
+							<button v-show="createMode" type="submit" :disabled="form.busy" class="btn btn-primary">Create</button>
+							<button v-show="!createMode" type="submit" :disabled="form.busy" class="btn btn-success">Update</button>
 						</div>
 					</form>
 				</div>
@@ -146,8 +150,10 @@
 	export default {
 		data() {
 			return {
+				createMode: false,
 				users: [],
 				form: new Form({
+					id: '',
 					name: '',
 					gender: 'L',
 					phone: '',
@@ -155,18 +161,42 @@
 					address: '',
 					password: '',
 					password_confirmation: '',
-					user_type: 2
+					id_user_type: 2
 				})
 			}
 		},
 		methods : {
-			editModal(user) {
+			async updateUser() {
+				this.$Progress.start()
+
+				await this.form.put('api/user/' + this.form.id)
+				.then(() => {
+					Fire.$emit('AfterCreate')
+					$("#addNewUser").modal("hide")
+					Swal.fire(
+						'Updated!',
+						'Your data has been updated.',
+						'success'
+					)
+					this.$Progress.finish();
+					this.loadUsers();
+				})
+				.catch(() => {
+					this.$Progress.fail();
+					Toast.fire({
+       			icon: 'error',
+       			title: 'User not Updated.'
+ 					});
+				})
+			},
+			updateModal(user) {
+				this.createMode = false
 				this.form.reset()
 				$("#addNewUser").modal("show")
-				console.log('user = ' + JSON.stringify(user))
 				this.form.fill(user)
 			},
-			newModal() {
+			createModal() {
+				this.createMode = true
 				this.form.reset()
 				$("#addNewUser").modal("show")
 			},
@@ -189,8 +219,8 @@
 						title: 'Signed in successfully'
 					})
 
-					this.loadUsers();
 					this.$Progress.finish();
+					this.loadUsers();
 				})
 				.catch(() => {
 					this.$Progress.fail();
@@ -210,26 +240,23 @@
 					cancelButtonColor: '#d33',
 					confirmButtonText: 'Yes, delete it!'
 				}).then((result) => {
-
-					this.form.delete('api/user/' + id)
-					.then(() => {
-						Swal.fire(
-							'Deleted!',
-							'Your data has been deleted.',
-							'success'
-						)
-						Fire.$emit('AfterCreate')
-					})
-					.catch(() => {
-						Swal.fire(
-							'Failed!',
-							'There was something wrongs.',
-							'warning'
-						)
-					})
-
 					if (result.value) {
-						
+						this.form.delete('api/user/' + id)
+						.then(() => {
+							Swal.fire(
+								'Deleted!',
+								'Your data has been deleted.',
+								'success'
+							)
+							Fire.$emit('AfterCreate')
+						})
+						.catch(() => {
+							Swal.fire(
+								'Failed!',
+								'There was something wrongs.',
+								'warning'
+							)
+						})
 					}
 				})
 			}

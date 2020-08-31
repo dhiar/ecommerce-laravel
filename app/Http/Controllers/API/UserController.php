@@ -31,11 +31,11 @@ class UserController extends Controller
         $this->validate($request, [
 					'name' => 'required|string|max:255',
 					'address' => 'required|string|max:255',
-					'email' => 'required|string|email|max:255|unique:users',
+					'email' => 'required|string|email|max:191|unique:users',
 					'password' => 'required|string|min:8|confirmed',
 					'gender' => 'required|string|min:1',
 					'phone' => 'required|numeric|regex:/^\S*$/u',
-					'user_type' => 'required|numeric'					
+					'id_user_type' => 'required|numeric'					
         ]);
 				
 				DB::beginTransaction();
@@ -51,7 +51,7 @@ class UserController extends Controller
 							$user->email = $request->email;
 							$user->phone = $request->phone;
 							$user->password = bcrypt($request->password);
-							$user->id_user_type = $request->user_type;
+							$user->id_user_type = $request->id_user_type;
 							$user->id_address = $address->id;
 							$user->save();
 					}
@@ -89,7 +89,37 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+			$user = User::findOrFail($id);
+			$id_address = $user->id_address;
+
+			$this->validate($request, [
+				'name' => 'required|string|max:255',
+				'address' => 'required|string|max:255',
+				'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
+				'gender' => 'required|string|min:1',
+				'phone' => 'required|numeric|regex:/^\S*$/u',
+				'id_user_type' => 'required|numeric'					
+			]);
+
+			DB::beginTransaction();
+			try {
+				Address::find($id_address)->update(['name' => $request->address]);
+
+				unset($request['address']);
+				$user->update($request->all());
+
+				DB::commit();
+
+				return ['message' => 'Updated the user info.'];
+			}
+				catch (\Exception $e) {
+					return response()->json([
+						'success' => false,
+						'data' => [],
+						'message' => 'Failed update user',
+					]);
+					DB::rollback();
+			}
     }
 
     /**

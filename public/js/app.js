@@ -2188,11 +2188,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      createMode: false,
       users: [],
       form: new Form({
+        id: '',
         name: '',
         gender: 'L',
         phone: '',
@@ -2200,58 +2206,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         address: '',
         password: '',
         password_confirmation: '',
-        user_type: 2
+        id_user_type: 2
       })
     };
   },
   methods: {
-    editModal: function editModal(user) {
-      this.form.reset();
-      $("#addNewUser").modal("show");
-      console.log('user = ' + JSON.stringify(user));
-      this.form.fill(user);
-    },
-    newModal: function newModal() {
-      this.form.reset();
-      $("#addNewUser").modal("show");
-    },
-    loadUsers: function loadUsers() {
+    updateUser: function updateUser() {
       var _this = this;
-
-      axios.get('api/user').then(function (_ref) {
-        var data = _ref.data;
-        return _this.users = data;
-      });
-    },
-    createUser: function createUser() {
-      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                // start the progress bar
-                _this2.$Progress.start();
+                _this.$Progress.start();
 
                 _context.next = 3;
-                return _this2.form.post('api/user').then(function () {
+                return _this.form.put('api/user/' + _this.form.id).then(function () {
                   Fire.$emit('AfterCreate');
                   $("#addNewUser").modal("hide");
-                  Toast.fire({
-                    icon: 'success',
-                    title: 'Signed in successfully'
-                  });
+                  Swal.fire('Updated!', 'Your data has been updated.', 'success');
 
-                  _this2.loadUsers();
+                  _this.$Progress.finish();
 
-                  _this2.$Progress.finish();
+                  _this.loadUsers();
                 })["catch"](function () {
-                  _this2.$Progress.fail();
+                  _this.$Progress.fail();
 
                   Toast.fire({
                     icon: 'error',
-                    title: 'User not Created'
+                    title: 'User not Updated.'
                   });
                 });
 
@@ -2263,13 +2247,72 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     },
-    deleteUser: function deleteUser(id) {
+    updateModal: function updateModal(user) {
+      this.createMode = false;
+      this.form.reset();
+      $("#addNewUser").modal("show");
+      this.form.fill(user);
+    },
+    createModal: function createModal() {
+      this.createMode = true;
+      this.form.reset();
+      $("#addNewUser").modal("show");
+    },
+    loadUsers: function loadUsers() {
+      var _this2 = this;
+
+      axios.get('api/user').then(function (_ref) {
+        var data = _ref.data;
+        return _this2.users = data;
+      });
+    },
+    createUser: function createUser() {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
+              case 0:
+                // start the progress bar
+                _this3.$Progress.start();
+
+                _context2.next = 3;
+                return _this3.form.post('api/user').then(function () {
+                  Fire.$emit('AfterCreate');
+                  $("#addNewUser").modal("hide");
+                  Toast.fire({
+                    icon: 'success',
+                    title: 'Signed in successfully'
+                  });
+
+                  _this3.$Progress.finish();
+
+                  _this3.loadUsers();
+                })["catch"](function () {
+                  _this3.$Progress.fail();
+
+                  Toast.fire({
+                    icon: 'error',
+                    title: 'User not Created'
+                  });
+                });
+
+              case 3:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    deleteUser: function deleteUser(id) {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 Swal.fire({
                   title: 'Are you sure?',
@@ -2280,31 +2323,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   cancelButtonColor: '#d33',
                   confirmButtonText: 'Yes, delete it!'
                 }).then(function (result) {
-                  _this3.form["delete"]('api/user/' + id).then(function () {
-                    Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
-                    Fire.$emit('AfterCreate');
-                  })["catch"](function () {
-                    Swal.fire('Failed!', 'There was something wrongs.', 'warning');
-                  });
-
-                  if (result.value) {}
+                  if (result.value) {
+                    _this4.form["delete"]('api/user/' + id).then(function () {
+                      Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
+                      Fire.$emit('AfterCreate');
+                    })["catch"](function () {
+                      Swal.fire('Failed!', 'There was something wrongs.', 'warning');
+                    });
+                  }
                 });
 
               case 1:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2);
+        }, _callee3);
       }))();
     }
   },
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
     this.loadUsers();
     Fire.$on('AfterCreate', function () {
-      _this4.loadUsers();
+      _this5.loadUsers();
     }); // setInterval(() => this.loadUsers(), 3000)
   }
 });
@@ -64207,7 +64250,10 @@ var render = function() {
             _c("div", { staticClass: "card-tools" }, [
               _c(
                 "button",
-                { staticClass: "btn btn-success", on: { click: _vm.newModal } },
+                {
+                  staticClass: "btn btn-success",
+                  on: { click: _vm.createModal }
+                },
                 [
                   _vm._v("\n\t\t\t\t\t\t\tAdd New "),
                   _c("i", { staticClass: "fas fa-user-plus fa-fw" })
@@ -64226,7 +64272,9 @@ var render = function() {
                   return _c("tr", { key: user.id }, [
                     _c("td", [_vm._v(_vm._s(_vm._f("upText")(user.name)))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(user.user_type))]),
+                    _c("td", [
+                      _vm._v(_vm._s(_vm._f("upText")(user.user_type_name)))
+                    ]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(user.phone))]),
                     _vm._v(" "),
@@ -64245,7 +64293,7 @@ var render = function() {
                           attrs: { href: "#" },
                           on: {
                             click: function($event) {
-                              return _vm.editModal(user)
+                              return _vm.updateModal(user)
                             }
                           }
                         },
@@ -64289,7 +64337,43 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog modal-dialog-centered" }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(1),
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "h5",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.createMode,
+                      expression: "!createMode"
+                    }
+                  ],
+                  staticClass: "modal-title",
+                  attrs: { id: "addNewLabel" }
+                },
+                [_vm._v("Update (Admin / Owner)")]
+              ),
+              _vm._v(" "),
+              _c(
+                "h5",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.createMode,
+                      expression: "createMode"
+                    }
+                  ],
+                  staticClass: "modal-title",
+                  attrs: { id: "addNewLabel" }
+                },
+                [_vm._v("Add New (Admin / Owner)")]
+              ),
+              _vm._v(" "),
+              _vm._m(1)
+            ]),
             _vm._v(" "),
             _c(
               "form",
@@ -64297,7 +64381,7 @@ var render = function() {
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
-                    return _vm.createUser($event)
+                    _vm.createMode ? _vm.createUser() : _vm.updateUser()
                   }
                 }
               },
@@ -64521,102 +64605,110 @@ var render = function() {
                     1
                   ),
                   _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "form-group" },
-                    [
-                      _c("label", [_vm._v("Password")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.password,
-                            expression: "form.password"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        class: {
-                          "is-invalid": _vm.form.errors.has("password")
-                        },
-                        attrs: {
-                          type: "password",
-                          name: "password",
-                          id: "password",
-                          required: "",
-                          autocomplete: "new-password"
-                        },
-                        domProps: { value: _vm.form.password },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                  _vm.createMode
+                    ? _c(
+                        "div",
+                        { staticClass: "form-group" },
+                        [
+                          _c("label", [_vm._v("Password")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.password,
+                                expression: "form.password"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.form.errors.has("password")
+                            },
+                            attrs: {
+                              type: "password",
+                              name: "password",
+                              id: "password",
+                              required: "",
+                              autocomplete: "new-password"
+                            },
+                            domProps: { value: _vm.form.password },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.form,
+                                  "password",
+                                  $event.target.value
+                                )
+                              }
                             }
-                            _vm.$set(_vm.form, "password", $event.target.value)
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("has-error", {
-                        attrs: { form: _vm.form, field: "password" }
-                      })
-                    ],
-                    1
-                  ),
+                          }),
+                          _vm._v(" "),
+                          _c("has-error", {
+                            attrs: { form: _vm.form, field: "password" }
+                          })
+                        ],
+                        1
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "form-group" },
-                    [
-                      _c("label", [_vm._v("Password Confirmation")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.password_confirmation,
-                            expression: "form.password_confirmation"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        class: {
-                          "is-invalid": _vm.form.errors.has(
-                            "password_confirmation"
-                          )
-                        },
-                        attrs: {
-                          type: "password",
-                          name: "password_confirmation",
-                          id: "password-confirm",
-                          required: "",
-                          autocomplete: "new-password"
-                        },
-                        domProps: { value: _vm.form.password_confirmation },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                  _vm.createMode
+                    ? _c(
+                        "div",
+                        { staticClass: "form-group" },
+                        [
+                          _c("label", [_vm._v("Password Confirmation")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.password_confirmation,
+                                expression: "form.password_confirmation"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.form.errors.has(
+                                "password_confirmation"
+                              )
+                            },
+                            attrs: {
+                              type: "password",
+                              name: "password_confirmation",
+                              id: "password-confirm",
+                              required: "",
+                              autocomplete: "new-password"
+                            },
+                            domProps: { value: _vm.form.password_confirmation },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.form,
+                                  "password_confirmation",
+                                  $event.target.value
+                                )
+                              }
                             }
-                            _vm.$set(
-                              _vm.form,
-                              "password_confirmation",
-                              $event.target.value
-                            )
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("has-error", {
-                        attrs: {
-                          form: _vm.form,
-                          field: "password_confirmation"
-                        }
-                      })
-                    ],
-                    1
-                  ),
+                          }),
+                          _vm._v(" "),
+                          _c("has-error", {
+                            attrs: {
+                              form: _vm.form,
+                              field: "password_confirmation"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
                   _c(
                     "div",
@@ -64631,15 +64723,15 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.form.user_type,
-                              expression: "form.user_type"
+                              value: _vm.form.id_user_type,
+                              expression: "form.id_user_type"
                             }
                           ],
                           staticClass: "form-control",
                           class: {
-                            "is-invalid": _vm.form.errors.has("user_type")
+                            "is-invalid": _vm.form.errors.has("id_user_type")
                           },
-                          attrs: { name: "user_type", id: "user_type" },
+                          attrs: { name: "id_user_type", id: "id_user_type" },
                           on: {
                             change: function($event) {
                               var $$selectedVal = Array.prototype.filter
@@ -64652,7 +64744,7 @@ var render = function() {
                                 })
                               _vm.$set(
                                 _vm.form,
-                                "user_type",
+                                "id_user_type",
                                 $event.target.multiple
                                   ? $$selectedVal
                                   : $$selectedVal[0]
@@ -64674,7 +64766,7 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c("has-error", {
-                        attrs: { form: _vm.form, field: "user_type" }
+                        attrs: { form: _vm.form, field: "id_user_type" }
                       })
                     ],
                     1
@@ -64694,10 +64786,35 @@ var render = function() {
                   _c(
                     "button",
                     {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.createMode,
+                          expression: "createMode"
+                        }
+                      ],
                       staticClass: "btn btn-primary",
                       attrs: { type: "submit", disabled: _vm.form.busy }
                     },
-                    [_vm._v("Save changes")]
+                    [_vm._v("Create")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: !_vm.createMode,
+                          expression: "!createMode"
+                        }
+                      ],
+                      staticClass: "btn btn-success",
+                      attrs: { type: "submit", disabled: _vm.form.busy }
+                    },
+                    [_vm._v("Update")]
                   )
                 ])
               ]
@@ -64735,24 +64852,18 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c("h5", { staticClass: "modal-title", attrs: { id: "addNewLabel" } }, [
-        _vm._v("Add New (Admin / Owner)")
-      ]),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   }
 ]
 render._withStripped = true

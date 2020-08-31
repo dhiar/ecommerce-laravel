@@ -4,7 +4,7 @@ namespace App\Hashers;
 
 use Vinkla\Hashids\Facades\Hashids;
 
-class UserHasher
+class MainHasher
 {
     /**
      * Encode

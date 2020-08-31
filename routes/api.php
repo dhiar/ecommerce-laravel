@@ -3,6 +3,8 @@
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\User;
+use App\Hashers\MainHasher;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +24,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::resource('user', 'API\UserController')->names([
     'store' => 'user.store'
 ]);
+
+
+/**
+ * Router Binding
+ */
+Route::bind('user', function (string $id) {
+	return  MainHasher::decode($id);
+});
