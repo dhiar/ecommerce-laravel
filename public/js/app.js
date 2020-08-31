@@ -2223,11 +2223,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 _context.next = 3;
                 return _this.form.put('api/user/' + _this.form.id).then(function () {
-                  Fire.$emit('AfterCreate');
                   $("#addNewUser").modal("hide");
                   Swal.fire('Updated!', 'Your data has been updated.', 'success');
 
                   _this.$Progress.finish();
+
+                  Fire.$emit('AfterCreate');
 
                   _this.loadUsers();
                 })["catch"](function () {
