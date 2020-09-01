@@ -44,6 +44,7 @@ Vue.use(VueProgressBar, {
 
 let routes = [
 	{ path : '/dashboard', component : require('./components/Dashboard').default },
+	{ path : '/developer', component : require('./components/Developer').default },
 	{ path : '/users', component : require('./components/Users').default },
 	{ path : '/profile', component : require('./components/Profile').default }
 ]
@@ -74,6 +75,21 @@ Vue.filter('myDate', function (created) {
 })
 
 window.Fire = new Vue();
+
+Vue.component(
+    'passport-clients',
+    require('./components/passport/Clients.vue').default
+);
+
+Vue.component(
+    'passport-authorized-clients',
+    require('./components/passport/AuthorizedClients.vue').default
+);
+
+Vue.component(
+    'passport-personal-access-tokens',
+    require('./components/passport/PersonalAccessTokens.vue').default
+);
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
