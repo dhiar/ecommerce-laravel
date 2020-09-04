@@ -21,10 +21,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('user', 'API\UserController')->names([
+Route::apiResource('user', 'API\UserController')->names([
     'store' => 'user.store'
 ]);
 
+Route::get('profile', 'API\UserController@profile');
 
 /**
  * Router Binding

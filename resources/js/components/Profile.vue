@@ -179,42 +179,72 @@
                       <div class="form-group row">
                         <label for="inputName" class="col-sm-2 col-form-label">Name</label>
                         <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputName" placeholder="Name">
+                          <input v-model="form.name" type="text" name="name" placeholder="Input your name here."
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
+                          <has-error :form="form" field="name"></has-error>
                         </div>
                       </div>
+                      
+                      <div class="form-group row">
+                        <label for="inputGender" class="col-sm-2 col-form-label">Gender</label>
+                        <div class="col-sm-10">
+                          <select name="gender" v-model="form.gender" id="gender"
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('gender') }">
+                            <option value="L" selected>Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                          </select>
+                          <has-error :form="form" field="gender"></has-error>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label for="inputPhone" class="col-sm-2 col-form-label">Phone</label>
+                        <div class="col-sm-10">
+                          <input v-model="form.phone" type="tel" name="phone" placeholder="08123456789"
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('phone') }">
+                          <has-error :form="form" field="phone"></has-error>
+                        </div>
+                      </div>
+
                       <div class="form-group row">
                         <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                          <input v-model="form.email" type="email" name="email" placeholder="ex: email@abc.co"
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
+                          <has-error :form="form" field="email"></has-error>
                         </div>
                       </div>
+
                       <div class="form-group row">
-                        <label for="inputName2" class="col-sm-2 col-form-label">Name</label>
+                        <label for="inputAddress" class="col-sm-2 col-form-label">Address</label>
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputName2" placeholder="Name">
+                          <textarea v-model="form.address" id="address" name="address"
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('address') }"></textarea>
+                          <has-error :form="form" field="address"></has-error>
                         </div>
                       </div>
+
                       <div class="form-group row">
-                        <label for="inputExperience" class="col-sm-2 col-form-label">Experience</label>
+                        <label for="inputPhoto" class="col-sm-2 col-form-label">Photo</label>
                         <div class="col-sm-10">
-                          <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
+                          <input type="file" name="photo"
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('photo') }">
+                          <has-error :form="form" field="photo"></has-error>
                         </div>
                       </div>
+
                       <div class="form-group row">
-                        <label for="inputSkills" class="col-sm-2 col-form-label">Skills</label>
+                        <label for="inputUserType" class="col-sm-2 col-form-label">User Type</label>
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
+                          <select name="id_user_type" v-model="form.id_user_type" id="id_user_type"
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('id_user_type') }">
+                            <option value="1">Admin</option>
+                            <option value="2" selected>Pemilik</option>
+                          </select>
+                          <has-error :form="form" field="id_user_type"></has-error>
                         </div>
                       </div>
-                      <div class="form-group row">
-                        <div class="offset-sm-2 col-sm-10">
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
+            
                       <div class="form-group row">
                         <div class="offset-sm-2 col-sm-10">
                           <button type="submit" class="btn btn-danger">Submit</button>
@@ -233,9 +263,32 @@
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
+  export default {
+    data() {
+			return {
+				form: new Form({
+					id: '',
+					name: '',
+					gender: 'L',
+					phone: '',
+					email: '',
+          address: '',
+          photo: '',
+					id_user_type: 2
+				})
+			}
+		}
+    ,mounted() {
+        console.log('Component mounted.')
     }
+    ,created() {
+      alert('created')
+      axios.get('api/profile').then( ({data}) => (
+        // this.users = data
+        // alert('data = ' + JSON.stringify(data));
+        this.form.fill(data)
+        // {"id":1,"name":"admin","email":"darrenzie@gmail.com","email_verified_at":null,"created_at":"2020-08-14T04:13:45.000000Z","updated_at":"2020-08-14T04:13:45.000000Z","id_user_type":1,"gender":"L","id_address":1,"phone":"081289482090","photo":"https://www.travelcontinuously.com
+      ))
+    }
+  }
 </script>

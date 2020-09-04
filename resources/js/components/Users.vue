@@ -95,8 +95,8 @@
 							</div>
 							<div class="form-group">
 								<label>Address</label>
-									<textarea v-model="form.address" id="address" name="address"
-										class="form-control" :class="{ 'is-invalid': form.errors.has('address') }"></textarea>
+								<textarea v-model="form.address" id="address" name="address"
+									class="form-control" :class="{ 'is-invalid': form.errors.has('address') }"></textarea>
 								<has-error :form="form" field="address"></has-error>
 							</div>
 

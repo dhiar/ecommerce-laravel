@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\{Address, User};
 use Illuminate\Support\Facades\DB;
 use App\Transformers\UserTransformer;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -85,9 +86,20 @@ class UserController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
+	public function profile()
+	{
+		return  fractal(auth('api')->user(), UserTransformer::class)->toArray()['data'];
+	}
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
 	public function show($id)
 	{
-			//
+		
 	}
 
 	/**
