@@ -93,17 +93,41 @@ class UserController extends Controller
 	public function updateProfile(Request $request)
 	{
 		$userId = auth('api')->id();
+
+		$this->validate($request, [
+			'name' => 'required|string|max:255',
+			'address' => 'required|string|max:255',
+			'email' => 'required|string|email|max:191|unique:users,email,'.$userId,
+			'gender' => 'required|string|min:1',
+			'phone' => 'required|numeric|regex:/^\S*$/u',
+			'id_user_type' => 'required|numeric'					
+		]);
+
 		$user = User::findOrFail($userId);
 		$currentPhoto = $user->photo;
+		$id_address = $user->id_address;
 
 		if ($request->photo != $currentPhoto) {			
 			$name = time().'.'.explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
 			Image::make($request->photo)->save(public_path('img/profile/').$name);
 			$request->merge(['photo' => $name]);
 		}
-		$user->update($request->all());
 
-		return ['message' => 'Success'];
+		DB::beginTransaction();
+		try {
+			Address::find($id_address)->update(['name' => $request->address]);
+
+			unset($request['address']);
+			$user->update($request->all());
+
+			DB::commit();
+
+			return ['message' => 'Success update user profile.'];
+		}
+		catch (\Exception $e) {
+			return ['message' => 'Failed update user profile.'];
+			DB::rollback();
+		}
 	}
 
 	/**
@@ -160,13 +184,13 @@ class UserController extends Controller
 
 			return ['message' => 'Updated the user info.'];
 		}
-			catch (\Exception $e) {
-				return response()->json([
-					'success' => false,
-					'data' => [],
-					'message' => 'Failed update user',
-				]);
-				DB::rollback();
+		catch (\Exception $e) {
+			return response()->json([
+				'success' => false,
+				'data' => [],
+				'message' => 'Failed update user',
+			]);
+			DB::rollback();
 		}
 	}
 
