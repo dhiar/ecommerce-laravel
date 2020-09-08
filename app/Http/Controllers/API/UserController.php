@@ -8,6 +8,7 @@ use App\{Address, User};
 use Illuminate\Support\Facades\DB;
 use App\Transformers\UserTransformer;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -80,6 +81,31 @@ class UserController extends Controller
 		}
 	}
 
+
+	
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function updateProfile(Request $request)
+	{
+		$userId = auth('api')->id();
+		$user = User::findOrFail($userId);
+		$currentPhoto = $user->photo;
+
+		if ($request->photo != $currentPhoto) {			
+			$name = time().'.'.explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
+			Image::make($request->photo)->save(public_path('img/profile/').$name);
+			$request->merge(['photo' => $name]);
+		}
+		$user->update($request->all());
+
+		return ['message' => 'Success'];
+	}
+
 	/**
 	 * Display the specified resource.
 	 *
@@ -88,7 +114,7 @@ class UserController extends Controller
 	 */
 	public function profile()
 	{
-		return  fractal(auth('api')->user(), UserTransformer::class)->toArray()['data'];
+		return fractal(auth('api')->user(), UserTransformer::class)->toArray()['data'];
 	}
 
 	/**

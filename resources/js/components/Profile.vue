@@ -227,7 +227,7 @@
                       <div class="form-group row">
                         <label for="inputPhoto" class="col-sm-2 col-form-label">Photo</label>
                         <div class="col-sm-10">
-                          <input type="file" name="photo"
+                          <input type="file" name="photo" @change="updateProfile"
                             class="form-control" :class="{ 'is-invalid': form.errors.has('photo') }">
                           <has-error :form="form" field="photo"></has-error>
                         </div>
@@ -247,7 +247,7 @@
             
                       <div class="form-group row">
                         <div class="offset-sm-2 col-sm-10">
-                          <button type="submit" class="btn btn-danger">Submit</button>
+                          <button type="submit" @click.prevent="updateInfo" class="btn btn-danger">Update</button>
                         </div>
                       </div>
                     </form>
@@ -282,13 +282,50 @@
         console.log('Component mounted.')
     }
     ,created() {
-      alert('created')
       axios.get('api/profile').then( ({data}) => (
         // this.users = data
         // alert('data = ' + JSON.stringify(data));
         this.form.fill(data)
         // {"id":1,"name":"admin","email":"darrenzie@gmail.com","email_verified_at":null,"created_at":"2020-08-14T04:13:45.000000Z","updated_at":"2020-08-14T04:13:45.000000Z","id_user_type":1,"gender":"L","id_address":1,"phone":"081289482090","photo":"https://www.travelcontinuously.com
       ))
+    }
+    ,methods : {
+      async updateInfo() {
+        this.$Progress.start()
+				await this.form.put('api/profile')
+				.then(() => {
+          Toast.fire({
+						icon: 'success',
+						title: 'Success update profile'
+					})
+          this.$Progress.finish()
+				})
+				.catch(() => {
+          Toast.fire({
+						icon: 'error',
+						title: 'Failed update profile'
+					})
+          this.$Progress.fail();
+        })
+      },
+      updateProfile(e) {
+        let file = e.target.files[0]
+        let reader = new FileReader()
+
+        if(file['size'] < 2111775 ) {
+          reader.onloadend = (file) => {
+            this.form.photo = reader.result
+          }
+
+          reader.readAsDataURL(file)
+        } else {
+          Swal.fire(
+            'Oops...!',
+            'You are uploading a large file.',
+            'error'
+          )
+        }
+      }
     }
   }
 </script>

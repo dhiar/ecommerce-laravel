@@ -2032,6 +2032,14 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 //
 //
 //
@@ -2317,7 +2325,6 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    alert('created');
     axios.get('api/profile').then(function (_ref) {
       var data = _ref.data;
       return (// this.users = data
@@ -2326,6 +2333,59 @@ __webpack_require__.r(__webpack_exports__);
 
       );
     });
+  },
+  methods: {
+    updateInfo: function updateInfo() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this2.$Progress.start();
+
+                _context.next = 3;
+                return _this2.form.put('api/profile').then(function () {
+                  Toast.fire({
+                    icon: 'success',
+                    title: 'Success update profile'
+                  });
+
+                  _this2.$Progress.finish();
+                })["catch"](function () {
+                  Toast.fire({
+                    icon: 'error',
+                    title: 'Failed update profile'
+                  });
+
+                  _this2.$Progress.fail();
+                });
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    updateProfile: function updateProfile(e) {
+      var _this3 = this;
+
+      var file = e.target.files[0];
+      var reader = new FileReader();
+
+      if (file['size'] < 2111775) {
+        reader.onloadend = function (file) {
+          _this3.form.photo = reader.result;
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        Swal.fire('Oops...!', 'You are uploading a large file.', 'error');
+      }
+    }
   }
 });
 
@@ -66476,7 +66536,8 @@ var render = function() {
                             class: {
                               "is-invalid": _vm.form.errors.has("photo")
                             },
-                            attrs: { type: "file", name: "photo" }
+                            attrs: { type: "file", name: "photo" },
+                            on: { change: _vm.updateProfile }
                           }),
                           _vm._v(" "),
                           _c("has-error", {
@@ -66564,7 +66625,24 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _vm._m(3)
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c("div", { staticClass: "offset-sm-2 col-sm-10" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            attrs: { type: "submit" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.updateInfo($event)
+                              }
+                            }
+                          },
+                          [_vm._v("Update")]
+                        )
+                      ])
+                    ])
                   ])
                 ]
               )
@@ -66868,20 +66946,6 @@ var staticRenderFns = [
           staticClass: "form-control form-control-sm",
           attrs: { type: "text", placeholder: "Type a comment" }
         })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row" }, [
-      _c("div", { staticClass: "offset-sm-2 col-sm-10" }, [
-        _c(
-          "button",
-          { staticClass: "btn btn-danger", attrs: { type: "submit" } },
-          [_vm._v("Submit")]
-        )
       ])
     ])
   }

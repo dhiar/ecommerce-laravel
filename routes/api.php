@@ -26,6 +26,7 @@ Route::apiResource('user', 'API\UserController')->names([
 ]);
 
 Route::get('profile', 'API\UserController@profile');
+Route::put('profile', 'API\UserController@updateProfile');
 
 /**
  * Router Binding
