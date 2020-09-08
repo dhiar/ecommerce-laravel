@@ -42,9 +42,9 @@ class UserController extends Controller
 	{
 		$this->validate($request, [
 			'name' => 'required|string|max:255',
+			'password' => 'required|string|min:8|confirmed',
 			'address' => 'required|string|max:255',
 			'email' => 'required|string|email|max:191|unique:users',
-			'password' => 'required|string|min:8|confirmed',
 			'gender' => 'required|string|min:1',
 			'phone' => 'required|numeric|regex:/^\S*$/u',
 			'id_user_type' => 'required|numeric'					
@@ -94,8 +94,11 @@ class UserController extends Controller
 	{
 		$userId = auth('api')->id();
 
+		
+
 		$this->validate($request, [
 			'name' => 'required|string|max:255',
+			'password' => 'sometimes|string|min:8|confirmed',
 			'address' => 'required|string|max:255',
 			'email' => 'required|string|email|max:191|unique:users,email,'.$userId,
 			'gender' => 'required|string|min:1',
@@ -116,8 +119,12 @@ class UserController extends Controller
 		DB::beginTransaction();
 		try {
 			Address::find($id_address)->update(['name' => $request->address]);
-
 			unset($request['address']);
+
+			if(!empty($request->password)) {
+				$request->merge(['password' => bcrypt($request->password)]);
+			}
+
 			$user->update($request->all());
 
 			DB::commit();
