@@ -2350,11 +2350,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
     axios.get('api/profile').then(function (_ref) {
       var data = _ref.data;
-      return (// this.users = data
-        // alert('data = ' + JSON.stringify(data));
-        _this.form.fill(data) // {"id":1,"name":"admin","email":"darrenzie@gmail.com","email_verified_at":null,"created_at":"2020-08-14T04:13:45.000000Z","updated_at":"2020-08-14T04:13:45.000000Z","id_user_type":1,"gender":"L","id_address":1,"phone":"081289482090","photo":"https://www.travelcontinuously.com
-
-      );
+      return _this.form.fill(data);
     });
   },
   methods: {
@@ -2378,7 +2374,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     icon: 'success',
                     title: 'Success update profile'
                   });
-                  Fire.$emit('AfterCreate');
 
                   _this2.$Progress.finish();
                 })["catch"](function () {
@@ -2415,7 +2410,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     getProfilePhoto: function getProfilePhoto() {
-      var photo = this.form.photo.length > 200 ? this.form.photo : 'img/profile/' + this.form.photo;
+      var photo = '';
+
+      if (this.form.photo) {
+        photo = this.form.photo.length > 200 ? this.form.photo : 'img/profile/' + this.form.photo;
+      }
+
       return photo;
     }
   }

@@ -306,10 +306,7 @@
     }
     ,created() {
       axios.get('api/profile').then( ({data}) => (
-        // this.users = data
-        // alert('data = ' + JSON.stringify(data));
         this.form.fill(data)
-        // {"id":1,"name":"admin","email":"darrenzie@gmail.com","email_verified_at":null,"created_at":"2020-08-14T04:13:45.000000Z","updated_at":"2020-08-14T04:13:45.000000Z","id_user_type":1,"gender":"L","id_address":1,"phone":"081289482090","photo":"https://www.travelcontinuously.com
       ))
     }
     ,methods : {
@@ -326,7 +323,6 @@
 						icon: 'success',
 						title: 'Success update profile'
           })
-          Fire.$emit('AfterCreate')
           this.$Progress.finish()
 				})
 				.catch(() => {
@@ -356,7 +352,10 @@
         }
       },
       getProfilePhoto() {
-        let photo = (this.form.photo.length > 200) ? this.form.photo : 'img/profile/' + this.form.photo
+        let photo = ''
+        if (this.form.photo) {
+          photo = (this.form.photo.length > 200) ? this.form.photo : 'img/profile/' + this.form.photo
+        } 
         return photo
       }
     }

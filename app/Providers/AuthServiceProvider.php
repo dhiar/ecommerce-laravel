@@ -26,6 +26,18 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::define('isAdmin', function($user) {
+					return strtolower($user->usertype->name) == 'admin';
+				});
+
+				Gate::define('isOwner', function($user) {
+					return strtolower($user->usertype->name) == 'owner';
+				});
+
+				Gate::define('isCustomer', function($user) {
+					return strtolower($user->usertype->name) == 'customer';
+				});
+
         Passport::routes();
     }
 }

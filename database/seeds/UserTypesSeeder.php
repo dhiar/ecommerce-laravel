@@ -16,10 +16,10 @@ class UserTypesSeeder extends Seeder
             'name'  => 'Admin'
         ]);
         UserTypes::create([
-            'name'  => 'Pemilik'
+            'name'  => 'Owner'
         ]);
         UserTypes::create([
-            'name'  => 'Pelanggan'
+            'name'  => 'Customer'
         ]);
     }
 }
