@@ -44,11 +44,11 @@ class User extends Authenticatable
     ];
 
     public function usertype(){
-        return $this->belongsTo(UserTypes::class);
+        return $this->belongsTo(UserTypes::class,'id_user_type');
     }
 
     public function address(){
-        return $this->hasOne(Address::class);
+        return $this->hasOne(Address::class, 'id_address');
     }
 
     public function transactions()

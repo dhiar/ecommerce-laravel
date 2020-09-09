@@ -41,8 +41,8 @@ class UserTransformer extends TransformerAbstract
 				'email' => $user->email,
 				'address' => Address::find($user->id_address)->name,
 				'id_user_type' => $user->id_user_type,
-                'user_type_name' => UserTypes::find($user->id_user_type)->name,
-                'photo' => $user->photo,
+				'user_type_name' => $user->usertype->name,
+				'photo' => $user->photo,
 				'created_at' => $user->created_at,
 			];
     }

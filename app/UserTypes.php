@@ -17,7 +17,7 @@ class UserTypes extends Model
     protected $dates = ['deleted_at'];
     
     public function users(){
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'id_user_type', 'id');
     }
 
     public function menus()
