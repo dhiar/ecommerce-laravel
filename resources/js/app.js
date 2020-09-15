@@ -43,10 +43,10 @@ Vue.use(VueProgressBar, {
 })
 
 let routes = [
-	{ path : '/dashboard', component : require('./components/Dashboard').default },
-	{ path : '/developer', component : require('./components/Developer').default },
-	{ path : '/users', component : require('./components/Users').default },
-	{ path : '/profile', component : require('./components/Profile').default }
+	{ path : '/admin/dashboard', component : require('./components/Dashboard').default },
+	{ path : '/admin/developer', component : require('./components/Developer').default },
+	{ path : '/admin/users', component : require('./components/Users').default },
+	{ path : '/admin/profile', component : require('./components/Profile').default }
 ]
 
 const router = new VueRouter({

@@ -84297,16 +84297,16 @@ Vue.use(vue_progressbar__WEBPACK_IMPORTED_MODULE_4___default.a, {
   height: '3px'
 });
 var routes = [{
-  path: '/dashboard',
+  path: '/admin/dashboard',
   component: __webpack_require__(/*! ./components/Dashboard */ "./resources/js/components/Dashboard.vue")["default"]
 }, {
-  path: '/developer',
+  path: '/admin/developer',
   component: __webpack_require__(/*! ./components/Developer */ "./resources/js/components/Developer.vue")["default"]
 }, {
-  path: '/users',
+  path: '/admin/users',
   component: __webpack_require__(/*! ./components/Users */ "./resources/js/components/Users.vue")["default"]
 }, {
-  path: '/profile',
+  path: '/admin/profile',
   component: __webpack_require__(/*! ./components/Profile */ "./resources/js/components/Profile.vue")["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
