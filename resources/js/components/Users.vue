@@ -201,15 +201,15 @@
 				$("#addNewUser").modal("show")
 			},
 			loadUsers() {
-				axios.get('api/user').then( ({data}) => (
+				axios.get(process.env.MIX_APP_URL + '/api/user').then( ({data}) => (
 					this.users = data
-				))
+				));
 			},
 			async createUser() {
 				// start the progress bar
 				this.$Progress.start()
 
-				await this.form.post('api/user')
+				await this.form.post(process.env.MIX_APP_URL + '/api/user')
 				.then(() => {
 					Fire.$emit('AfterCreate')
 					$("#addNewUser").modal("hide")
@@ -241,7 +241,7 @@
 					confirmButtonText: 'Yes, delete it!'
 				}).then((result) => {
 					if (result.value) {
-						this.form.delete('api/user/' + id)
+						this.form.delete(process.env.MIX_APP_URL + '/api/user/' + id)
 						.then(() => {
 							Swal.fire(
 								'Deleted!',

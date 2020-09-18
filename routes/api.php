@@ -17,9 +17,9 @@ use App\Hashers\MainHasher;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:admin-api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::apiResource('user', 'API\UserController')->names([
     'store' => 'user.store'

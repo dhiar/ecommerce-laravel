@@ -25,7 +25,11 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.14.0",
+        "@websanova/vue-dot": "^0.1.2",
+        "@websanova/vue-env": "^0.6.2",
         "admin-lte": "^3.0.0-alpha.2",
+        "dotenv": "^8.2.0",
+        "fs": "0.0.1-security",
         "moment": "^2.27.0",
         "sweetalert2": "^9.17.1",
         "vform": "^1.0.1",

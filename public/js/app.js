@@ -2658,7 +2658,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     loadUsers: function loadUsers() {
       var _this2 = this;
 
-      axios.get('api/user').then(function (_ref) {
+      axios.get("http://ecommerce-laravel.test" + '/api/user').then(function (_ref) {
         var data = _ref.data;
         return _this2.users = data;
       });
@@ -2675,7 +2675,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this3.$Progress.start();
 
                 _context2.next = 3;
-                return _this3.form.post('api/user').then(function () {
+                return _this3.form.post("http://ecommerce-laravel.test" + '/api/user').then(function () {
                   Fire.$emit('AfterCreate');
                   $("#addNewUser").modal("hide");
                   Toast.fire({
@@ -2721,7 +2721,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   confirmButtonText: 'Yes, delete it!'
                 }).then(function (result) {
                   if (result.value) {
-                    _this4.form["delete"]('api/user/' + id).then(function () {
+                    _this4.form["delete"]("http://ecommerce-laravel.test" + '/api/user/' + id).then(function () {
                       Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
                       Fire.$emit('AfterCreate');
                     })["catch"](function () {
