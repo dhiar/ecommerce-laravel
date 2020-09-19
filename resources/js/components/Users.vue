@@ -169,7 +169,7 @@
 			async updateUser() {
 				this.$Progress.start()
 
-				await this.form.put('api/user/' + this.form.id)
+				await this.form.put( process.env.MIX_APP_URL + '/api/user/' + this.form.id)
 				.then(() => {
 					$("#addNewUser").modal("hide")
 					Swal.fire(

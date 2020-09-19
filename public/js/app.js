@@ -2302,30 +2302,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2335,12 +2311,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         password: '',
         password_confirmation: '',
         name: '',
-        gender: 'L',
-        phone: '',
         email: '',
-        address: '',
-        photo: '',
-        id_user_type: 2
+        phone: '',
+        job_title: '',
+        photo: '' // id_user_type: 2
+
       })
     };
   },
@@ -2372,7 +2347,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }
 
                 _context.next = 4;
-                return _this2.form.put('api/profile').then(function () {
+                return _this2.form.put("http://ecommerce-laravel.test" + '/api/profile').then(function () {
                   Toast.fire({
                     icon: 'success',
                     title: 'Success update profile'
@@ -2621,7 +2596,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this.$Progress.start();
 
                 _context.next = 3;
-                return _this.form.put('api/user/' + _this.form.id).then(function () {
+                return _this.form.put("http://ecommerce-laravel.test" + '/api/user/' + _this.form.id).then(function () {
                   $("#addNewUser").modal("hide");
                   Swal.fire('Updated!', 'Your data has been updated.', 'success');
 
@@ -66271,11 +66246,11 @@ var render = function() {
             },
             [
               _c("h3", { staticClass: "widget-user-username text-right" }, [
-                _vm._v("Elizabeth Pierce")
+                _vm._v(_vm._s(_vm.form.name))
               ]),
               _vm._v(" "),
               _c("h5", { staticClass: "widget-user-desc text-right" }, [
-                _vm._v("Web Designer")
+                _vm._v(_vm._s(_vm.form.job_title))
               ])
             ]
           ),
@@ -66358,67 +66333,50 @@ var render = function() {
                         "label",
                         {
                           staticClass: "col-sm-2 col-form-label",
-                          attrs: { for: "inputGender" }
+                          attrs: { for: "inputName" }
                         },
-                        [_vm._v("Gender")]
+                        [_vm._v("Job Title")]
                       ),
                       _vm._v(" "),
                       _c(
                         "div",
                         { staticClass: "col-sm-10" },
                         [
-                          _c(
-                            "select",
-                            {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.form.gender,
-                                  expression: "form.gender"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              class: {
-                                "is-invalid": _vm.form.errors.has("gender")
-                              },
-                              attrs: { name: "gender", id: "gender" },
-                              on: {
-                                change: function($event) {
-                                  var $$selectedVal = Array.prototype.filter
-                                    .call($event.target.options, function(o) {
-                                      return o.selected
-                                    })
-                                    .map(function(o) {
-                                      var val =
-                                        "_value" in o ? o._value : o.value
-                                      return val
-                                    })
-                                  _vm.$set(
-                                    _vm.form,
-                                    "gender",
-                                    $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  )
-                                }
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.job_title,
+                                expression: "form.job_title"
                               }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.form.errors.has("job_title")
                             },
-                            [
-                              _c(
-                                "option",
-                                { attrs: { value: "L", selected: "" } },
-                                [_vm._v("Laki-laki")]
-                              ),
-                              _vm._v(" "),
-                              _c("option", { attrs: { value: "P" } }, [
-                                _vm._v("Perempuan")
-                              ])
-                            ]
-                          ),
+                            attrs: {
+                              type: "text",
+                              name: "job_title",
+                              placeholder: "Input your job title here."
+                            },
+                            domProps: { value: _vm.form.job_title },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.form,
+                                  "job_title",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          }),
                           _vm._v(" "),
                           _c("has-error", {
-                            attrs: { form: _vm.form, field: "gender" }
+                            attrs: { form: _vm.form, field: "job_title" }
                           })
                         ],
                         1
@@ -66532,57 +66490,6 @@ var render = function() {
                         "label",
                         {
                           staticClass: "col-sm-2 col-form-label",
-                          attrs: { for: "inputAddress" }
-                        },
-                        [_vm._v("Address")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-sm-10" },
-                        [
-                          _c("textarea", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.form.address,
-                                expression: "form.address"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            class: {
-                              "is-invalid": _vm.form.errors.has("address")
-                            },
-                            attrs: { id: "address", name: "address" },
-                            domProps: { value: _vm.form.address },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.form,
-                                  "address",
-                                  $event.target.value
-                                )
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("has-error", {
-                            attrs: { form: _vm.form, field: "address" }
-                          })
-                        ],
-                        1
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-sm-2 col-form-label",
                           attrs: { for: "inputPhoto" }
                         },
                         [_vm._v("Photo")]
@@ -66603,83 +66510,6 @@ var render = function() {
                           _vm._v(" "),
                           _c("has-error", {
                             attrs: { form: _vm.form, field: "photo" }
-                          })
-                        ],
-                        1
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-sm-2 col-form-label",
-                          attrs: { for: "inputUserType" }
-                        },
-                        [_vm._v("User Type")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-sm-10" },
-                        [
-                          _c(
-                            "select",
-                            {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.form.id_user_type,
-                                  expression: "form.id_user_type"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              class: {
-                                "is-invalid": _vm.form.errors.has(
-                                  "id_user_type"
-                                )
-                              },
-                              attrs: {
-                                name: "id_user_type",
-                                id: "id_user_type"
-                              },
-                              on: {
-                                change: function($event) {
-                                  var $$selectedVal = Array.prototype.filter
-                                    .call($event.target.options, function(o) {
-                                      return o.selected
-                                    })
-                                    .map(function(o) {
-                                      var val =
-                                        "_value" in o ? o._value : o.value
-                                      return val
-                                    })
-                                  _vm.$set(
-                                    _vm.form,
-                                    "id_user_type",
-                                    $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  )
-                                }
-                              }
-                            },
-                            [
-                              _c("option", { attrs: { value: "1" } }, [
-                                _vm._v("Admin")
-                              ]),
-                              _vm._v(" "),
-                              _c(
-                                "option",
-                                { attrs: { value: "2", selected: "" } },
-                                [_vm._v("Pemilik")]
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c("has-error", {
-                            attrs: { form: _vm.form, field: "id_user_type" }
                           })
                         ],
                         1

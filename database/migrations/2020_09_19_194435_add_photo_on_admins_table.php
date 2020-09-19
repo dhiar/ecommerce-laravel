@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterNullablePhotoOnUsersTable extends Migration
+class AddPhotoOnAdminsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AlterNullablePhotoOnUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->string('photo', 100)->nullable()->change();
+        Schema::table('admins', function (Blueprint $table) {
+            $table->string('phone',15);
+            $table->string('photo', 100)->nullable();
         });
     }
 
@@ -25,8 +26,9 @@ class AlterNullablePhotoOnUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->string('photo', 100)->nullable(false)->change();
+        Schema::table('admins', function (Blueprint $table) {
+            $table->removeColumn('phone');
+            $table->removeColumn('photo');
         });
     }
 }

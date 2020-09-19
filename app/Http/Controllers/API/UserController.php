@@ -4,9 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\{Address, User};
+use App\{Address, Admin, User};
 use Illuminate\Support\Facades\DB;
-use App\Transformers\UserTransformer;
+use App\Transformers\{AdminTransformer, UserTransformer};
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 
@@ -92,23 +92,18 @@ class UserController extends Controller
 	 */
 	public function updateProfile(Request $request)
 	{
-		$userId = auth('api')->id();
-
-		
+		$adminId = auth('admin-api')->id();
 
 		$this->validate($request, [
 			'name' => 'required|string|max:255',
 			'password' => 'sometimes|string|min:8|confirmed',
-			'address' => 'required|string|max:255',
-			'email' => 'required|string|email|max:191|unique:users,email,'.$userId,
-			'gender' => 'required|string|min:1',
-			'phone' => 'required|numeric|regex:/^\S*$/u',
-			'id_user_type' => 'required|numeric'					
+			'job_title' => 'required|string|max:255',
+			'email' => 'required|string|email|max:191|unique:users,email,'.$adminId,
+			'phone' => 'required|numeric|regex:/^\S*$/u'
 		]);
 
-		$user = User::findOrFail($userId);
+		$user = Admin::findOrFail($adminId);
 		$currentPhoto = $user->photo;
-		$id_address = $user->id_address;
 
 		if ($request->photo != $currentPhoto) {			
 			$name = time().'.'.explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
@@ -124,9 +119,6 @@ class UserController extends Controller
 
 		DB::beginTransaction();
 		try {
-			Address::find($id_address)->update(['name' => $request->address]);
-			unset($request['address']);
-
 			if(!empty($request->password)) {
 				$request->merge(['password' => bcrypt($request->password)]);
 			}
@@ -151,7 +143,9 @@ class UserController extends Controller
 	 */
 	public function profile()
 	{
-		return fractal(auth('api')->user(), UserTransformer::class)->toArray()['data'];
+		// dd('dhiar');
+		// dd(auth('admin-api')->user());
+		return fractal(auth('admin-api')->user(), AdminTransformer::class)->toArray()['data'];
 	}
 
 	/**

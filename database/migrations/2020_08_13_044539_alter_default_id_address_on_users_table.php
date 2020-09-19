@@ -25,6 +25,8 @@ class AlterDefaultIdAddressOnUsersTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('users', function(Blueprint $table) {
+            $table->unsignedBigInteger('id_address')->nullable()->change();
+        });
     }
 }

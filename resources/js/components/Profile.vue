@@ -14,8 +14,8 @@
 					<!-- Add the bg color to the header using any of the bg-* classes -->
           <div class="widget-user-header text-white" 
             :style="{ 'background-image': `url(${backgroundUrl})` }">
-						<h3 class="widget-user-username text-right">Elizabeth Pierce</h3>
-						<h5 class="widget-user-desc text-right">Web Designer</h5>
+						<h3 class="widget-user-username text-right">{{form.name}}</h3>
+						<h5 class="widget-user-desc text-right">{{form.job_title}}</h5>
 					</div>
 					<div class="widget-user-image">
 						<img class="img-circle" :src="getProfilePhoto()" alt="User Avatar">
@@ -188,14 +188,11 @@
                       </div>
                       
                       <div class="form-group row">
-                        <label for="inputGender" class="col-sm-2 col-form-label">Gender</label>
+                        <label for="inputName" class="col-sm-2 col-form-label">Job Title</label>
                         <div class="col-sm-10">
-                          <select name="gender" v-model="form.gender" id="gender"
-                            class="form-control" :class="{ 'is-invalid': form.errors.has('gender') }">
-                            <option value="L" selected>Laki-laki</option>
-                            <option value="P">Perempuan</option>
-                          </select>
-                          <has-error :form="form" field="gender"></has-error>
+                          <input v-model="form.job_title" type="text" name="job_title" placeholder="Input your job title here."
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('job_title') }">
+                          <has-error :form="form" field="job_title"></has-error>
                         </div>
                       </div>
 
@@ -218,32 +215,11 @@
                       </div>
 
                       <div class="form-group row">
-                        <label for="inputAddress" class="col-sm-2 col-form-label">Address</label>
-                        <div class="col-sm-10">
-                          <textarea v-model="form.address" id="address" name="address"
-                            class="form-control" :class="{ 'is-invalid': form.errors.has('address') }"></textarea>
-                          <has-error :form="form" field="address"></has-error>
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
                         <label for="inputPhoto" class="col-sm-2 col-form-label">Photo</label>
                         <div class="col-sm-10">
                           <input type="file" name="photo" @change="updateProfile"
                             class="form-control" :class="{ 'is-invalid': form.errors.has('photo') }">
                           <has-error :form="form" field="photo"></has-error>
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="inputUserType" class="col-sm-2 col-form-label">User Type</label>
-                        <div class="col-sm-10">
-                          <select name="id_user_type" v-model="form.id_user_type" id="id_user_type"
-                            class="form-control" :class="{ 'is-invalid': form.errors.has('id_user_type') }">
-                            <option value="1">Admin</option>
-                            <option value="2" selected>Pemilik</option>
-                          </select>
-                          <has-error :form="form" field="id_user_type"></has-error>
                         </div>
                       </div>
 
@@ -294,12 +270,11 @@
           password: '',
           password_confirmation: '',
           name: '',
-					gender: 'L',
+          email: '',
 					phone: '',
-					email: '',
-          address: '',
+          job_title: '',
           photo: '',
-					id_user_type: 2
+					// id_user_type: 2
 				})
 			}
 		}
@@ -320,7 +295,7 @@
           this.form.password == undefined
         }
 
-				await this.form.put('api/profile')
+				await this.form.put(process.env.MIX_APP_URL + '/api/profile')
 				.then(() => {
           Toast.fire({
 						icon: 'success',

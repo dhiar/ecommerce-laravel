@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\User;
 
-class UserAdminSeeder extends Seeder
+class UserOwnerExampleSeeder extends Seeder
 {
     /**
      * Seed the application's database.
@@ -13,7 +13,7 @@ class UserAdminSeeder extends Seeder
     public function run()
     {
         User::create([
-            'name'  => 'admin',
+            'name'  => 'owner-user',
             'email' => 'darrenzie@gmail.com',
             'password' => bcrypt('manager247'),
             'id_address' => 1,
