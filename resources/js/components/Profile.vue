@@ -12,7 +12,8 @@
 			<div class="col-md-12">
 				<div class="card card-widget widget-user">
 					<!-- Add the bg color to the header using any of the bg-* classes -->
-					<div class="widget-user-header text-white" style="background-image:url('./img/user-cover.png');">
+          <div class="widget-user-header text-white" 
+            :style="{ 'background-image': `url(${backgroundUrl})` }">
 						<h3 class="widget-user-username text-right">Elizabeth Pierce</h3>
 						<h5 class="widget-user-desc text-right">Web Designer</h5>
 					</div>
@@ -287,6 +288,7 @@
   export default {
     data() {
 			return {
+        backgroundUrl: "",
 				form: new Form({
           id: '',
           password: '',
@@ -305,6 +307,7 @@
         console.log('Component mounted.')
     }
     ,created() {
+      this.backgroundUrl = process.env.MIX_APP_URL + "/img/user-cover.png"
       axios.get('/api/profile').then( ({data}) => (
         this.form.fill(data)
       ))
@@ -352,9 +355,10 @@
         }
       },
       getProfilePhoto() {
+        
         let photo = ''
         if (this.form.photo) {
-          photo = (this.form.photo.length > 200) ? this.form.photo : 'img/profile/' + this.form.photo
+          photo = (this.form.photo.length >= 50) ? this.form.photo : process.env.MIX_APP_URL + '/img/profile/' + this.form.photo
         } 
         return photo
       }

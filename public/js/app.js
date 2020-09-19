@@ -2325,9 +2325,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      backgroundUrl: "",
       form: new Form({
         id: '',
         password: '',
@@ -2348,6 +2350,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   created: function created() {
     var _this = this;
 
+    this.backgroundUrl = "http://ecommerce-laravel.test" + "/img/user-cover.png";
     axios.get('/api/profile').then(function (_ref) {
       var data = _ref.data;
       return _this.form.fill(data);
@@ -2413,7 +2416,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var photo = '';
 
       if (this.form.photo) {
-        photo = this.form.photo.length > 200 ? this.form.photo : 'img/profile/' + this.form.photo;
+        photo = this.form.photo.length >= 50 ? this.form.photo : "http://ecommerce-laravel.test" + '/img/profile/' + this.form.photo;
       }
 
       return photo;
@@ -66260,7 +66263,22 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card card-widget widget-user" }, [
-          _vm._m(0),
+          _c(
+            "div",
+            {
+              staticClass: "widget-user-header text-white",
+              style: { "background-image": "url(" + _vm.backgroundUrl + ")" }
+            },
+            [
+              _c("h3", { staticClass: "widget-user-username text-right" }, [
+                _vm._v("Elizabeth Pierce")
+              ]),
+              _vm._v(" "),
+              _c("h5", { staticClass: "widget-user-desc text-right" }, [
+                _vm._v("Web Designer")
+              ])
+            ]
+          ),
           _vm._v(" "),
           _c("div", { staticClass: "widget-user-image" }, [
             _c("img", {
@@ -66269,15 +66287,15 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _vm._m(1)
+          _vm._m(0)
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "card" }, [
-          _vm._m(2),
+          _vm._m(1),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "tab-content" }, [
-              _vm._m(3),
+              _vm._m(2),
               _vm._v(" "),
               _c(
                 "div",
@@ -66812,27 +66830,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "widget-user-header text-white",
-        staticStyle: { "background-image": "url('./img/user-cover.png')" }
-      },
-      [
-        _c("h3", { staticClass: "widget-user-username text-right" }, [
-          _vm._v("Elizabeth Pierce")
-        ]),
-        _vm._v(" "),
-        _c("h5", { staticClass: "widget-user-desc text-right" }, [
-          _vm._v("Web Designer")
-        ])
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
