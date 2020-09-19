@@ -12,6 +12,12 @@ import VueRouter from 'vue-router'
 import { Form, HasError, AlertError } from 'vform'
 import moment from 'moment'
 import Swal from 'sweetalert2'
+import axios from 'axios'
+
+export default axios.create({
+	baseURL: process.env.MIX_APP_URL
+})
+
 window.Swal = Swal
 
 const Toast = Swal.mixin({
@@ -43,6 +49,7 @@ Vue.use(VueProgressBar, {
 })
 
 let routes = [
+	{ path : '/admin', component : require('./components/Dashboard').default },
 	{ path : '/admin/dashboard', component : require('./components/Dashboard').default },
 	{ path : '/admin/developer', component : require('./components/Developer').default },
 	{ path : '/admin/users', component : require('./components/Users').default },

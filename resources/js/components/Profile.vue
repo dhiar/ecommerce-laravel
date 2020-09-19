@@ -305,7 +305,7 @@
         console.log('Component mounted.')
     }
     ,created() {
-      axios.get('api/profile').then( ({data}) => (
+      axios.get('/api/profile').then( ({data}) => (
         this.form.fill(data)
       ))
     }

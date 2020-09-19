@@ -201,7 +201,7 @@
 				$("#addNewUser").modal("show")
 			},
 			loadUsers() {
-				axios.get(process.env.MIX_APP_URL + '/api/user').then( ({data}) => (
+				axios.get('/api/user').then( ({data}) => (
 					this.users = data
 				));
 			},
