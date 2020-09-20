@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\UserTypes;
 
 class Admin extends Authenticatable
 {
@@ -42,4 +43,8 @@ class Admin extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function usertype(){
+        return $this->belongsTo(UserTypes::class,'id_user_type');
+    }
 }
