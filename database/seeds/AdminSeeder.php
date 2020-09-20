@@ -14,6 +14,7 @@ class AdminSeeder extends Seeder
     {
         Admin::create([
             'name'  => 'admin-user',
+            'id_user_type' => 1,
             'email' => 'dhiar.praditya@yahoo.co.id',
             'password' => bcrypt('manager247'),
             'job_title' => 'Manage & monitor app.',
