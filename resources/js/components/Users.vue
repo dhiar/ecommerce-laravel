@@ -26,7 +26,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="user in users" :key="user.id">
+								<tr v-for="user in users.data" :key="user.id">
 									<td>{{ user.name | upText }}</td>
 									<td>{{ user.user_type_name | upText }}</td>
 									<td>{{ user.phone }}</td>
@@ -47,6 +47,14 @@
 						</table>
 					</div>
 					<!-- /.card-body -->
+					<div class="card-footer">
+
+<pagination :data="users" @pagination-change-page="loadUsers">
+	<span slot="prev-nav">&lt; Previous</span>
+	<span slot="next-nav">Next &gt;</span>
+
+</pagination>
+					</div>
 				</div>
 				<!-- /.card -->
 			</div>
@@ -99,8 +107,6 @@
 									class="form-control" :class="{ 'is-invalid': form.errors.has('address') }"></textarea>
 								<has-error :form="form" field="address"></has-error>
 							</div>
-
-							
 							<div v-if="createMode" class="form-group">
 								<label>Password</label>
 								<input v-model="form.password"
@@ -151,7 +157,7 @@
 		data() {
 			return {
 				createMode: false,
-				users: [],
+				users: {},
 				form: new Form({
 					id: '',
 					name: '',
@@ -200,8 +206,8 @@
 				this.form.reset()
 				$("#addNewUser").modal("show")
 			},
-			loadUsers() {
-				axios.get('/api/user').then( ({data}) => (
+			loadUsers(page = 1) {
+				axios.get('/api/user?page=' + page).then( ({data}) => (
 					this.users = data
 				));
 			},

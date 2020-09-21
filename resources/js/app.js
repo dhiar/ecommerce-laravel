@@ -13,12 +13,11 @@ import { Form, HasError, AlertError } from 'vform'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import axios from 'axios'
+import VueProgressBar from 'vue-progressbar'
 
 export default axios.create({
 	baseURL: process.env.MIX_APP_URL
 })
-
-window.Swal = Swal
 
 const Toast = Swal.mixin({
 	toast: true,
@@ -30,18 +29,17 @@ const Toast = Swal.mixin({
 	  toast.addEventListener('mouseenter', Swal.stopTimer)
 	  toast.addEventListener('mouseleave', Swal.resumeTimer)
 	}
-	})
-	
-	window.Toast = Toast
+})
 
-
+window.Swal = Swal
+window.Toast = Toast
 window.Form = Form
+
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
+Vue.component('pagination', require('laravel-vue-pagination')); 
 
 Vue.use(VueRouter)
-
-import VueProgressBar from 'vue-progressbar'
 Vue.use(VueProgressBar, {
   color: 'rgba(143, 255, 199)',
   failedColor: 'red',

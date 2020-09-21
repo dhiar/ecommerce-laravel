@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Transformers\{AdminTransformer, UserTransformer};
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
+use App\Http\Transformers\IlluminatePaginatorAdapter;
 
 class UserController extends Controller
 {
@@ -29,7 +30,17 @@ class UserController extends Controller
 	 */
 	public function index()
 	{
-		return fractal(User::latest()->paginate(10), UserTransformer::class)->toArray()['data'];
+		$paginator = User::latest()->paginate(10);
+		$user = $paginator->getCollection();
+
+		$response = fractal()
+								->collection($user, new UserTransformer())
+								->paginateWith(new IlluminatePaginatorAdapter($paginator))
+								->toArray();
+		$arrPaginator =	$paginator->toArray();
+		unset($arrPaginator["data"],$response['meta']);
+		$response = array_merge($response , $arrPaginator);
+		return response()->json($response);
 	}
 
 	/**
