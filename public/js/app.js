@@ -2571,7 +2571,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2643,7 +2642,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this2 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/api/user?page=' + page).then(function (_ref) {
+      var query = this.$parent.search;
+      axios.get('/api/user?query=' + query + '&page=' + page).then(function (_ref) {
         var data = _ref.data;
         return _this2.users = data;
       });
@@ -2727,6 +2727,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   created: function created() {
     var _this5 = this;
 
+    var self = this;
+    Fire.$on('searching', function () {
+      var query = _this5.$parent.search;
+      axios.get('/api/findUser?q=' + query).then(function (_ref2) {
+        var data = _ref2.data;
+        return self.users = data;
+      })["catch"](function () {
+        _this5.$Progress.fail();
+
+        Toast.fire({
+          icon: 'error',
+          title: 'User not found.'
+        });
+      });
+    });
     this.loadUsers();
     Fire.$on('AfterCreate', function () {
       _this5.loadUsers();
@@ -67562,7 +67577,7 @@ var render = function() {
                   on: { click: _vm.createModal }
                 },
                 [
-                  _vm._v("\n\t\t\t\t\t\t\t\tAdd New "),
+                  _vm._v("\n\t\t\t\t\t\t\tAdd New "),
                   _c("i", { staticClass: "fas fa-user-plus fa-fw" })
                 ]
               )
@@ -67606,7 +67621,7 @@ var render = function() {
                         },
                         [_c("i", { staticClass: "fa fa-edit blue" })]
                       ),
-                      _vm._v("\n\t\t\t\t\t\t\t\t\t\t/\n\t\t\t\t\t\t\t\t\t\t"),
+                      _vm._v("\n\t\t\t\t\t\t\t\t\t/\n\t\t\t\t\t\t\t\t\t"),
                       _c(
                         "a",
                         {
@@ -84789,10 +84804,14 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.filter('upText', function (text) {
-  return text.charAt(0).toUpperCase() + text.slice(1);
+  if (text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
 });
 Vue.filter('myDate', function (created) {
-  return moment__WEBPACK_IMPORTED_MODULE_2___default()(created, "YYYYMMDD").fromNow();
+  if (created) {
+    return moment__WEBPACK_IMPORTED_MODULE_2___default()(created, "YYYYMMDD").fromNow();
+  }
 });
 window.Fire = new Vue();
 Vue.component('passport-clients', __webpack_require__(/*! ./components/passport/Clients.vue */ "./resources/js/components/passport/Clients.vue")["default"]);
@@ -84807,7 +84826,15 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 
 var app = new Vue({
   el: '#app',
-  router: router
+  router: router,
+  data: {
+    search: ''
+  },
+  methods: {
+    searchit: function searchit() {
+      Fire.$emit('searching');
+    }
+  }
 }); // const app = new Vue({
 //     router
 //   }).$mount('#app')

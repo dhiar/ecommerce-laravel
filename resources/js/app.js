@@ -72,11 +72,15 @@ const router = new VueRouter({
 
 
 Vue.filter('upText', function (text) {
-	return text.charAt(0).toUpperCase() + text.slice(1)
+	if (text) {
+		return text.charAt(0).toUpperCase() + text.slice(1)
+	}
 })
 
 Vue.filter('myDate', function (created) {
-	return moment(created, "YYYYMMDD").fromNow();
+	if (created) {
+		return moment(created, "YYYYMMDD").fromNow();
+	}
 })
 
 window.Fire = new Vue();
@@ -106,7 +110,16 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
 	el: '#app',
-	router
+	router,
+	data: {
+		search: ''
+	},
+	methods:
+	{
+		searchit() {
+			Fire.$emit('searching')
+		}
+	}
 });
 
 

@@ -25,6 +25,7 @@ Route::apiResource('user', 'API\UserController')->names([
     'store' => 'user.store'
 ]);
 
+Route::get('findUser', 'API\UserController@search');
 Route::get('profile', 'API\UserController@profile');
 Route::put('profile', 'API\UserController@updateProfile');
 

@@ -10,6 +10,7 @@ use App\Transformers\{AdminTransformer, UserTransformer};
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use App\Http\Transformers\IlluminatePaginatorAdapter;
+use App\Helpers\PaginationFormat;
 
 class UserController extends Controller
 {
@@ -30,17 +31,27 @@ class UserController extends Controller
 	 */
 	public function index()
 	{
-		$paginator = User::latest()->paginate(10);
+		$request = Request('q');
+		
+		if ($request) {
+			$paginator = User::where(function($query) use ($request) {
+				$query
+				->where('name', 'LIKE', "%$request%")
+				->orWhere('phone', 'LIKE', "%$request%")
+				->orWhere('email', 'LIKE', "%$request%");
+			})->paginate(10);
+		} else {
+			$paginator = User::latest()->paginate(10);
+		}
+
 		$user = $paginator->getCollection();
 
 		$response = fractal()
 								->collection($user, new UserTransformer())
 								->paginateWith(new IlluminatePaginatorAdapter($paginator))
 								->toArray();
-		$arrPaginator =	$paginator->toArray();
-		unset($arrPaginator["data"],$response['meta']);
-		$response = array_merge($response , $arrPaginator);
-		return response()->json($response);
+		
+		return PaginationFormat::commit($paginator, $response);
 	}
 
 	/**
@@ -154,8 +165,6 @@ class UserController extends Controller
 	 */
 	public function profile()
 	{
-		// dd('dhiar');
-		// dd(auth('admin-api')->user());
 		return fractal(auth('admin-api')->user(), AdminTransformer::class)->toArray()['data'];
 	}
 
@@ -228,5 +237,28 @@ class UserController extends Controller
 		$user->update();
 
 		return ['message' => 'User Deleted.'];
+	}
+
+	public function search()
+	{
+		$request = Request('q');
+		
+		if ($request) {
+			$paginator = User::where(function($query) use ($request) {
+				$query
+				->where('name', 'LIKE', "%$request%")
+				->orWhere('phone', 'LIKE', "%$request%")
+				->orWhere('email', 'LIKE', "%$request%");
+			})->paginate(10);
+		} else {
+			$paginator = User::latest()->paginate(10);
+		}
+
+		$user = $paginator->getCollection();
+		$response = fractal()
+								->collection($user, new UserTransformer())
+								->paginateWith(new IlluminatePaginatorAdapter($paginator))
+								->toArray();
+		return PaginationFormat::commit($paginator, $response);
 	}
 }

@@ -49,11 +49,10 @@
 					<!-- /.card-body -->
 					<div class="card-footer">
 
-<pagination :data="users" @pagination-change-page="loadUsers">
-	<span slot="prev-nav">&lt; Previous</span>
-	<span slot="next-nav">Next &gt;</span>
-
-</pagination>
+						<pagination :data="users" @pagination-change-page="loadUsers">
+							<span slot="prev-nav">&lt; Previous</span>
+							<span slot="next-nav">Next &gt;</span>
+						</pagination>
 					</div>
 				</div>
 				<!-- /.card -->
@@ -207,7 +206,8 @@
 				$("#addNewUser").modal("show")
 			},
 			loadUsers(page = 1) {
-				axios.get('/api/user?page=' + page).then( ({data}) => (
+				let query = this.$parent.search;
+				axios.get('/api/user?query='+query+'&page=' + page).then( ({data}) => (
 					this.users = data
 				));
 			},
@@ -268,6 +268,21 @@
 			}
 		},
 		created() {
+			const self = this
+			Fire.$on('searching', () => {
+				let query = this.$parent.search;
+				axios.get('/api/findUser?q=' + query).then( ({data}) => (
+					self.users = data
+				))
+				.catch(() => {
+					this.$Progress.fail();
+					Toast.fire({
+						icon: 'error',
+						title: 'User not found.'
+					});
+				});
+			})
+
 			this.loadUsers()
 			Fire.$on('AfterCreate', () => {
 				this.loadUsers()
