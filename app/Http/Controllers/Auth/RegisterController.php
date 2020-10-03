@@ -137,4 +137,17 @@ class RegisterController extends Controller
         }
             
     }
+
+    public function verifyUser(Request $request)
+    {  
+        $verifitation_code = $request->code;
+        $user = User::whereVerificationCode($verifitation_code)->first();
+
+        if ($user) {
+            $user->is_verified = 1;
+            $user->update();
+            return redirect()->route('login')->with(session()->flash('alert-success', 'Your account is verified. Please login!'));
+        }
+        return redirect()->route('login')->with(session()->flash('alert-danger', 'Invalid verification code. Please check your email!'));
+    }
 }

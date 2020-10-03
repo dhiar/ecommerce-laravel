@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -44,5 +45,10 @@ class LoginController extends Controller
         Auth::guard('web')->logout();
             
         return redirect('/');
-	}
+    }
+    
+    public function credentials(Request $request)
+    {
+        return array_merge($request->only($this->username(), 'password'), ['is_verified' => 1]);
+    }
 }

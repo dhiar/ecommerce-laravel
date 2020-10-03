@@ -20,6 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/verify', 'Auth\RegisterController@verifyUser')->name('verify.user');
 Route::get('/user/logout', 'Auth\LoginController@userLogout')->name('user.logout');
 
 // middlwware guest:admin
