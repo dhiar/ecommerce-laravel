@@ -51,6 +51,7 @@ let routes = [
 	{ path : '/admin/dashboard', component : require('./components/Dashboard').default },
 	{ path : '/admin/developer', component : require('./components/Developer').default },
 	{ path : '/admin/users', component : require('./components/Users').default },
+	{ path : '/admin/setting', component : require('./components/Setting').default },
 	{ path : '/admin/profile', component : require('./components/Profile').default }
 ]
 

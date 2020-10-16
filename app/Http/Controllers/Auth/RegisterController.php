@@ -131,9 +131,10 @@ class RegisterController extends Controller
             MailController::sendSignupEmail($user->name, $user->email, $user->verification_code);
 
             // Show Message
-            return redirect()->back()->with(session()->flash('alert-success', 'Your account has been created. Please check email for verification link!'));
+            return redirect()->back()->with(session()->flash('alert-success', 'Akun anda sudah ter-create. Silakan check email link verifikasi! Pendaftaran berhasil.
+                Harap periksa juga folder spam, promotions, all inbox atau semisalnya di email Anda.'));
         } else {
-            return redirect()->back()->with(session()->flash('alert-danger', 'Something went wrong. Please contact admin!'));
+            return redirect()->back()->with(session()->flash('alert-danger', 'Terjadi kesalahan. Silakan hubungi admin!'));
         }
             
     }
@@ -146,7 +147,7 @@ class RegisterController extends Controller
         if ($user) {
             $user->is_verified = 1;
             $user->update();
-            return redirect()->route('login')->with(session()->flash('alert-success', 'Your account is verified. Please login!'));
+            return redirect()->route('login')->with(session()->flash('alert-success', 'Akun anda sudah ter-verifikasi. Silakan login!'));
         }
         return redirect()->route('login')->with(session()->flash('alert-danger', 'Invalid verification code. Please check your email!'));
     }
