@@ -46,13 +46,14 @@ Vue.use(VueProgressBar, {
   height: '3px'
 })
 
+let cmpAdmin = './components/admin/'
 let routes = [
-	{ path : '/admin', component : require('./components/Dashboard').default },
-	{ path : '/admin/dashboard', component : require('./components/Dashboard').default },
-	{ path : '/admin/developer', component : require('./components/Developer').default },
-	{ path : '/admin/users', component : require('./components/Users').default },
-	{ path : '/admin/setting', component : require('./components/Setting').default },
-	{ path : '/admin/profile', component : require('./components/Profile').default }
+	{ path : '/admin', component : require(cmpAdmin + 'Dashboard').default },
+	{ path : '/admin/dashboard', component : require(cmpAdmin + 'Dashboard').default },
+	{ path : '/admin/developer', component : require(cmpAdmin + 'Developer').default },
+	{ path : '/admin/users', component : require(cmpAdmin + 'Users').default },
+	{ path : '/admin/setting', component : require(cmpAdmin + 'Setting').default },
+	{ path : '/admin/profile', component : require(cmpAdmin + 'Profile').default }
 ]
 
 const router = new VueRouter({
@@ -101,7 +102,7 @@ Vue.component(
     require('./components/passport/PersonalAccessTokens.vue').default
 );
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('setting-menu', require('./components/admin/SettingMenu.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -113,7 +114,8 @@ const app = new Vue({
 	el: '#app',
 	router,
 	data: {
-		search: ''
+		search: '',
+		baseURL: process.env.MIX_APP_URL
 	},
 	methods:
 	{

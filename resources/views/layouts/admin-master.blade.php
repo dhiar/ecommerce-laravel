@@ -88,13 +88,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <router-link to="/admin/setting" class="nav-link">
-                  <i class="fas fa-cog nav-icon orange"></i>
+                  <i class="fas fa-cog nav-icon"></i>
                   <p>Setting</p>
                 </router-link>
               </li>
               <li class="nav-item">
                 <router-link to="/admin/profile" class="nav-link">
-                  <i class="nav-icon fas fa-user orange"></i>
+                  <i class="nav-icon fas fa-user"></i>
                   <p>
                     Profile
                   </p>
