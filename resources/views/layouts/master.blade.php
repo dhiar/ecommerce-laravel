@@ -9,146 +9,72 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>E-commerce Laravel</title>
+  <title>Travelmart</title>
 
-	<link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/simple-sidebar.css">
 </head>
 <body class="hold-transition sidebar-mini">
-<div class="wrapper" id="app">
-
-  <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
-      </li>
-    </ul>
-
-    <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
-      <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-      </div>
-    </form>
-  </nav>
-  <!-- /.navbar -->
-
-  <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src="./img/logo.png" alt="E-commerce Logo" class="brand-image img-circle elevation-3"
-           style="opacity: .8">
-      <span class="brand-text font-weight-light">E-commerce Admin</span>
-    </a>
+<div id="app">
+  <div class="d-flex" id="wrapper">
 
     <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="./img/profile.png" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">
-            {{ Auth::user()->name }}
-          </a>
-        </div>
+    <div class="bg-light border-right" id="sidebar-wrapper" style="">
+      <div class="sidebar-heading">OTHER MENU </div>
+      <div class="list-group list-group-flush">
+        <a href="#" class="list-group-item list-group-item-action bg-light">OUR EVENTS</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">BLOG UPDATES</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">CONTACT US</a>
       </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
 
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <li class="nav-item">
-            <router-link to="/dashboard" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt blue"></i>
-              <p>
-                Dashboard
-              </p>
-            </router-link>
-          </li>
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-cog green"></i>
-              <p>
-                Management
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <router-link to="/users" class="nav-link">
-                  <i class="fas fa-users nav-icon"></i>
-                  <p>Users</p>
-                </router-link>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <router-link to="/profile" class="nav-link">
-              <i class="nav-icon fas fa-user orange"></i>
-              <p>
-                Profile
-              </p>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('logout') }}"
-              onclick="event.preventDefault();
-                document.getElementById('logout-form').submit();">
-              <i class="nav-icon fa fa-power-off red"></i>
-              <p>
-              {{ __('Logout') }}
-              </p>
-            </a>
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
 
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-          </li>
-        </ul>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        {{-- <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button> --}}
+        <button class="btn btn-light" id="menu-toggle">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">TRAVELMART</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">PARTICIPANTS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">REGISTRATION</a>
+            </li>
+          </ul>
+        </div>
       </nav>
-      <!-- /.sidebar-menu -->
-    </div>
-    <!-- /.sidebar -->
-  </aside>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <div class="content">
-      <div class="container-fluid">
+      <div class="container-fluid">    
         <router-view></router-view>
-      </div><!-- /.container-fluid -->
+      </div>
     </div>
-    <!-- /.content -->
+    <!-- /#page-content-wrapper -->
   </div>
-  <!-- /.content-wrapper -->
-
-  <!-- Main Footer -->
-  <footer class="main-footer">
-    <!-- To the right -->
-    <div class="float-right d-none d-sm-inline">
-      Anything you want
-    </div>
-    <!-- Default to the left -->
-    <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
-  </footer>
+  <!-- /#wrapper -->
 </div>
-<!-- ./wrapper -->
+
 
 <!-- REQUIRED SCRIPTS -->
 <script src="/js/app.js"></script>
+<!-- Menu Toggle Script -->
+<script>
+  $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+  });
+</script>
 </body>
 </html>
