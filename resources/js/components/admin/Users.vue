@@ -158,15 +158,12 @@
 				createMode: false,
 				users: {},
 				form: new Form({
-					id: '',
-					name: '',
-					gender: 'L',
 					phone: '',
 					email: '',
 					address: '',
 					password: '',
 					password_confirmation: '',
-					id_user_type: 2
+					role: '',
 				})
 			}
 		},

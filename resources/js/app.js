@@ -26,8 +26,8 @@ const Toast = Swal.mixin({
 	timer: 3000,
 	timerProgressBar: true,
 	onOpen: (toast) => {
-	  toast.addEventListener('mouseenter', Swal.stopTimer)
-	  toast.addEventListener('mouseleave', Swal.resumeTimer)
+		toast.addEventListener('mouseenter', Swal.stopTimer)
+		toast.addEventListener('mouseleave', Swal.resumeTimer)
 	}
 })
 
@@ -37,23 +37,33 @@ window.Form = Form
 
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
-Vue.component('pagination', require('laravel-vue-pagination')); 
+Vue.component('pagination', require('laravel-vue-pagination'));
 
 Vue.use(VueRouter)
 Vue.use(VueProgressBar, {
-  color: 'rgba(143, 255, 199)',
-  failedColor: 'red',
-  height: '3px'
+	color: 'rgba(143, 255, 199)',
+	failedColor: 'red',
+	height: '3px'
 })
 
 let cmpAdmin = './components/admin/'
 let routes = [
-	{ path : '/admin', component : require(cmpAdmin + 'Dashboard').default },
-	{ path : '/admin/dashboard', component : require(cmpAdmin + 'Dashboard').default },
-	{ path : '/admin/developer', component : require(cmpAdmin + 'Developer').default },
-	{ path : '/admin/users', component : require(cmpAdmin + 'Users').default },
-	{ path : '/admin/setting', component : require(cmpAdmin + 'Setting').default },
-	{ path : '/admin/profile', component : require(cmpAdmin + 'Profile').default }
+	{ path: '/admin', component: require(cmpAdmin + 'Dashboard').default },
+	{ path: '/admin/dashboard', component: require(cmpAdmin + 'Dashboard').default },
+	{ path: '/admin/developer', component: require(cmpAdmin + 'Developer').default },
+	{ path: '/admin/users', component: require(cmpAdmin + 'Users').default },
+
+	{ path: '/admin/setting', component: require(cmpAdmin + 'Setting').default },
+	{ path: '/admin/setting/banner', component: require(cmpAdmin + 'SettingBanner').default },
+	{ path: '/admin/setting/description', component: require(cmpAdmin + 'SettingDescription').default },
+	{ path: '/admin/setting/rekening', component: require(cmpAdmin + 'SettingRekening').default },
+	{ path: '/admin/setting/sosmed', component: require(cmpAdmin + 'SettingSosmed').default },
+	{ path: '/admin/setting/address', component: require(cmpAdmin + 'SettingAddress').default },
+	{ path: '/admin/setting/delivery', component: require(cmpAdmin + 'SettingDelivery').default },
+	{ path: '/admin/setting/cod', component: require(cmpAdmin + 'SettingCOD').default },
+	{ path: '/admin/setting/footer', component: require(cmpAdmin + 'SettingFooter').default },
+
+	{ path: '/admin/profile', component: require(cmpAdmin + 'Profile').default }
 ]
 
 const router = new VueRouter({
@@ -88,18 +98,18 @@ Vue.filter('myDate', function (created) {
 window.Fire = new Vue();
 
 Vue.component(
-    'passport-clients',
-    require('./components/passport/Clients.vue').default
+	'passport-clients',
+	require('./components/passport/Clients.vue').default
 );
 
 Vue.component(
-    'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue').default
+	'passport-authorized-clients',
+	require('./components/passport/AuthorizedClients.vue').default
 );
 
 Vue.component(
-    'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue').default
+	'passport-personal-access-tokens',
+	require('./components/passport/PersonalAccessTokens.vue').default
 );
 
 Vue.component('setting-menu', require('./components/admin/SettingMenu.vue').default);
