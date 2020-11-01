@@ -29,7 +29,33 @@
                   id="desc"
                   class="form-control"
                   rows="5"
+                  :class="{
+                    'is-invalid': submitted && $v.description.$error,
+
+                    'is-valid': !$v.description.$invalid,
+                  }"
                 ></textarea>
+                <div class="valid-feedback">Description is valid.</div>
+                <div
+                  v-if="submitted && !$v.description.required"
+                  class="invalid-feedback"
+                >
+                  Description harus diisi
+                </div>
+                <div
+                  v-if="submitted && !$v.description.maxLength"
+                  class="invalid-feedback"
+                >
+                  Description terlalu panjang ( maks :
+                  {{ $v.description.$params.maxLength.max }} karakter )
+                </div>
+                <div
+                  v-if="submitted && !$v.description.minLength"
+                  class="invalid-feedback"
+                >
+                  Description terlalu pendek ( min :
+                  {{ $v.description.$params.minLength.min }} karakter )
+                </div>
               </div>
               <button class="btn btn-primary">Edit Deskripsi</button>
             </form>
@@ -41,15 +67,34 @@
 </template>
 
 <script>
+import {
+  required,
+  minLength,
+  maxLength
+} from "vuelidate/lib/validators";
 export default {
   data() {
     return {
+      submitted: false,
       description: "",
     };
   },
+  validations: {
+    description: {
+      required,
+      minLength: minLength(5),
+      maxLength: maxLength(70),
+    }
+  },
   methods: {
     async createDescription() {
-      await axios
+      this.submitted = true
+      alert('createDescription')
+      this.$v.$touch();
+      if (this.$v.$error) {
+        return;
+      } else {
+        await axios
         .post("/api/base/create-description", {
           description: this.description,
         })
@@ -60,6 +105,9 @@ export default {
             Swal.fire(data.process + "!", data.message, "error");
           }
         });
+      }
+
+      
     },
     fetchData() {
      axios

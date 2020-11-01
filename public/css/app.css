@@ -13175,6 +13175,10 @@ a.text-muted:hover {
   color: #3a3b45 !important;
 }
 
+label:not(.form-check-label):not(.custom-file-label) {
+  font-weight: normal;
+}
+
 /*!
  * Bootstrap v4.5.2 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors

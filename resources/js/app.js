@@ -14,6 +14,7 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import VueProgressBar from 'vue-progressbar'
+import Vuelidate from 'vuelidate'
 
 export default axios.create({
 	baseURL: process.env.MIX_APP_URL
@@ -45,6 +46,7 @@ Vue.use(VueProgressBar, {
 	failedColor: 'red',
 	height: '3px'
 })
+Vue.use(Vuelidate)
 
 let cmpAdmin = './components/admin/'
 let routes = [

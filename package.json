@@ -36,6 +36,7 @@
         "vform": "^1.0.1",
         "vue-progressbar": "^0.7.5",
         "vue-router": "^3.4.3",
-        "vue-table-component": "^1.9.2"
+        "vue-table-component": "^1.9.2",
+        "vuelidate": "^0.7.6"
     }
 }

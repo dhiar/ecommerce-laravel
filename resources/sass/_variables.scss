@@ -96,3 +96,7 @@ $gray : #dddfeb;
 .text-gray-900 {
   color: #3a3b45 !important;
 }
+
+label:not(.form-check-label):not(.custom-file-label) {
+  font-weight: normal;
+}
