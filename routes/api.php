@@ -29,6 +29,9 @@ Route::get('findUser', 'API\UserController@search');
 Route::get('profile', 'API\UserController@profile');
 Route::put('profile', 'API\UserController@updateProfile');
 
+Route::get('base/show-description', 'API\BaseController@index')->name('base-show-description');
+Route::post('base/create-description', 'API\BaseController@createDescription')->name('base-create-description');
+
 /**
  * Router Binding
  */

@@ -4,17 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Base extends Model
+class Socmed extends Model
 {
+    protected $table = 'socmed';
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [
-        'shop_name',
-        'province',
-        'city',
-        'address',
-        'phone',
-        'description',
-        'logo'
+        'name',
+        'icon',
+        'link'
     ];
 }

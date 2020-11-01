@@ -18,5 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AddressSeeder::class);
         $this->call(UserOwnerExampleSeeder::class);
         $this->call(AdminSeeder::class);
+        $this->call(BaseSeeder::class);
+        $this->call(SocmedSeeder::class);
+        $this->call(RekeningSeeder::class);
     }
 }

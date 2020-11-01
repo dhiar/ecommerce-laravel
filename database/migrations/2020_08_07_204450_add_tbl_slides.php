@@ -21,9 +21,9 @@ class AddTblSlides extends Migration
                 ->references('id')
                 ->on('menus');
 
-            $table->string('title', 30);
-            $table->string('url', 40);
-            $table->string('icon', 30);
+            $table->string('title', 30)->unique();
+            $table->string('url', 40)->unique();
+            $table->string('icon', 30)->unique();
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

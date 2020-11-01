@@ -120,6 +120,16 @@ Vue.component('setting-menu', require('./components/admin/SettingMenu.vue').defa
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.mixin({
+	data: function() {
+	  return {
+		get baseURL() {
+		  return process.env.MIX_APP_URL;
+		}
+	  }
+	}
+  })
+
 const app = new Vue({
 	el: '#app',
 	router,

@@ -2635,6 +2635,30 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2662,18 +2686,55 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    baseUrl: {
-      type: String
-    }
-  },
   data: function data() {
     return {
-      propBaseUrl: ""
+      description: ""
     };
   },
+  methods: {
+    createDescription: function createDescription() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return axios.post("/api/base/create-description", {
+                  description: _this.description
+                }).then(function (_ref) {
+                  var data = _ref.data;
+
+                  if (data.success) {
+                    Swal.fire(data.process + "!", data.message, "success");
+                  } else {
+                    Swal.fire(data.process + "!", data.message, "error");
+                  }
+                });
+
+              case 2:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    fetchData: function fetchData() {
+      var _this2 = this;
+
+      axios.get("/api/base/show-description").then(function (_ref2) {
+        var data = _ref2.data;
+
+        if (data.id) {
+          _this2.description = data.description;
+        }
+      });
+    }
+  },
   mounted: function mounted() {
-    this.propBaseUrl = this.baseUrl;
+    this.fetchData();
   }
 });
 
@@ -2787,19 +2848,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    baseUrl: {
-      type: String
-    }
-  },
+  props: {},
   data: function data() {
-    return {
-      propBaseUrl: ""
-    };
+    return {};
   },
-  mounted: function mounted() {
-    this.propBaseUrl = this.baseUrl;
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -68366,7 +68419,60 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _vm._m(0)
+      _c("div", { staticClass: "col-md-9" }, [
+        _c("div", { staticClass: "card shadow" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("p", { staticClass: "text-muted" }, [
+              _vm._v(
+                "\n            Deskripsi singkat ini ditampilkan pada footer\n          "
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.createDescription($event, "")
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "form-group" }, [
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.description,
+                        expression: "description"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { name: "description", id: "desc", rows: "5" },
+                    domProps: { value: _vm.description },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.description = $event.target.value
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("button", { staticClass: "btn btn-primary" }, [
+                  _vm._v("Edit Deskripsi")
+                ])
+              ]
+            )
+          ])
+        ])
+      ])
     ])
   ])
 }
@@ -68375,15 +68481,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-9" }, [
-      _c("div", { staticClass: "card shadow" }, [
-        _c("div", { staticClass: "card-header" }, [
-          _c("h2", { staticClass: "lead text-dark mb-0" }, [
-            _vm._v("Deskripsi Singkat")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" })
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h2", { staticClass: "lead text-dark mb-0" }, [
+        _vm._v("Deskripsi Singkat")
       ])
     ])
   }
@@ -68474,7 +68574,7 @@ var render = function() {
       "a",
       {
         staticClass: "list-group-item list-group-item-action",
-        attrs: { href: _vm.propBaseUrl + "/admin/setting/banner" }
+        attrs: { href: _vm.baseURL + "/admin/setting/banner" }
       },
       [_vm._v("Banner Slider")]
     ),
@@ -68483,7 +68583,7 @@ var render = function() {
       "a",
       {
         staticClass: "list-group-item list-group-item-action",
-        attrs: { href: _vm.propBaseUrl + "/admin/setting/description" }
+        attrs: { href: _vm.baseURL + "/admin/setting/description" }
       },
       [_vm._v("Deskripsi Singkat")]
     ),
@@ -68492,7 +68592,7 @@ var render = function() {
       "a",
       {
         staticClass: "list-group-item list-group-item-action",
-        attrs: { href: _vm.propBaseUrl + "/admin/setting/rekening" }
+        attrs: { href: _vm.baseURL + "/admin/setting/rekening" }
       },
       [_vm._v("Rekening")]
     ),
@@ -68501,7 +68601,7 @@ var render = function() {
       "a",
       {
         staticClass: "list-group-item list-group-item-action",
-        attrs: { href: _vm.propBaseUrl + "/admin/setting/sosmed" }
+        attrs: { href: _vm.baseURL + "/admin/setting/sosmed" }
       },
       [_vm._v("Sosial Media")]
     ),
@@ -68510,7 +68610,7 @@ var render = function() {
       "a",
       {
         staticClass: "list-group-item list-group-item-action",
-        attrs: { href: _vm.propBaseUrl + "/admin/setting/address" }
+        attrs: { href: _vm.baseURL + "/admin/setting/address" }
       },
       [_vm._v("Alamat")]
     ),
@@ -68519,7 +68619,7 @@ var render = function() {
       "a",
       {
         staticClass: "list-group-item list-group-item-action",
-        attrs: { href: _vm.propBaseUrl + "/admin/setting/delivery" }
+        attrs: { href: _vm.baseURL + "/admin/setting/delivery" }
       },
       [_vm._v("Biaya Antar")]
     ),
@@ -68528,7 +68628,7 @@ var render = function() {
       "a",
       {
         staticClass: "list-group-item list-group-item-action",
-        attrs: { href: _vm.propBaseUrl + "/admin/setting/cod" }
+        attrs: { href: _vm.baseURL + "/admin/setting/cod" }
       },
       [_vm._v("Cash On Delivery")]
     ),
@@ -68537,7 +68637,7 @@ var render = function() {
       "a",
       {
         staticClass: "list-group-item list-group-item-action",
-        attrs: { href: _vm.propBaseUrl + "/admin/setting/footer" }
+        attrs: { href: _vm.baseURL + "/admin/setting/footer" }
       },
       [_vm._v("Footer")]
     )
@@ -86402,6 +86502,16 @@ Vue.component('setting-menu', __webpack_require__(/*! ./components/admin/Setting
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.mixin({
+  data: function data() {
+    return {
+      get baseURL() {
+        return "http://ecommerce-laravel.test";
+      }
+
+    };
+  }
+});
 var app = new Vue({
   el: '#app',
   router: router,
