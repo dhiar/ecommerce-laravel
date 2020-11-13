@@ -1,20 +1,14 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
-
 // Variables
 @import 'variables';
-$fa-font-path:        "../webfonts";
-
+$fa-font-path: "../webfonts";
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-
 @import '~admin-lte/dist/css/adminlte.css';
-
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
-
-
 .navbar-laravel {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
@@ -22,5 +16,9 @@ $fa-font-path:        "../webfonts";
 
 .router-link-exact-active {
     background-color: #ca3842;
-    color: #fff !important;
+    // color: #fff !important;
+}
+
+.list-group-item-action {
+    border: 1px solid rgba(0, 0, 0, 0.125) !important;
 }

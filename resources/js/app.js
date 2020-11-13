@@ -15,21 +15,29 @@ import Swal from 'sweetalert2'
 import axios from 'axios'
 import VueProgressBar from 'vue-progressbar'
 import Vuelidate from 'vuelidate'
+import ElementUI from "element-ui";
+import i18n from "vue-i18n";
+import "element-ui/lib/theme-chalk/index.css";
+import locale from "element-ui/lib/locale/lang/en";
+
+Vue.use(i18n);
+Vue.use(ElementUI, { locale });
+Vue.config.lang = "en";
 
 export default axios.create({
-	baseURL: process.env.MIX_APP_URL
+    baseURL: process.env.MIX_APP_URL
 })
 
 const Toast = Swal.mixin({
-	toast: true,
-	position: 'top-end',
-	showConfirmButton: false,
-	timer: 3000,
-	timerProgressBar: true,
-	onOpen: (toast) => {
-		toast.addEventListener('mouseenter', Swal.stopTimer)
-		toast.addEventListener('mouseleave', Swal.resumeTimer)
-	}
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    onOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
 })
 
 window.Swal = Swal
@@ -42,35 +50,35 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 
 Vue.use(VueRouter)
 Vue.use(VueProgressBar, {
-	color: 'rgba(143, 255, 199)',
-	failedColor: 'red',
-	height: '3px'
+    color: 'rgba(143, 255, 199)',
+    failedColor: 'red',
+    height: '3px'
 })
 Vue.use(Vuelidate)
 
 let cmpAdmin = './components/admin/'
 let routes = [
-	{ path: '/admin', component: require(cmpAdmin + 'Dashboard').default },
-	{ path: '/admin/dashboard', component: require(cmpAdmin + 'Dashboard').default },
-	{ path: '/admin/developer', component: require(cmpAdmin + 'Developer').default },
-	{ path: '/admin/users', component: require(cmpAdmin + 'Users').default },
+    { path: '/admin', component: require(cmpAdmin + 'Dashboard').default },
+    { path: '/admin/dashboard', component: require(cmpAdmin + 'Dashboard').default },
+    { path: '/admin/developer', component: require(cmpAdmin + 'Developer').default },
+    { path: '/admin/users', component: require(cmpAdmin + 'Users').default },
 
-	{ path: '/admin/setting', component: require(cmpAdmin + 'Setting').default },
-	{ path: '/admin/setting/banner', component: require(cmpAdmin + 'SettingBanner').default },
-	{ path: '/admin/setting/description', component: require(cmpAdmin + 'SettingDescription').default },
-	{ path: '/admin/setting/rekening', component: require(cmpAdmin + 'SettingRekening').default },
-	{ path: '/admin/setting/sosmed', component: require(cmpAdmin + 'SettingSosmed').default },
-	{ path: '/admin/setting/address', component: require(cmpAdmin + 'SettingAddress').default },
-	{ path: '/admin/setting/delivery', component: require(cmpAdmin + 'SettingDelivery').default },
-	{ path: '/admin/setting/cod', component: require(cmpAdmin + 'SettingCOD').default },
-	{ path: '/admin/setting/footer', component: require(cmpAdmin + 'SettingFooter').default },
+    { path: '/admin/setting', component: require(cmpAdmin + 'Setting').default },
+    { path: '/admin/setting/banner', component: require(cmpAdmin + 'SettingBanner').default },
+    { path: '/admin/setting/description', component: require(cmpAdmin + 'SettingDescription').default },
+    { path: '/admin/setting/rekening', component: require(cmpAdmin + 'SettingRekening').default },
+    { path: '/admin/setting/sosmed', component: require(cmpAdmin + 'SettingSosmed').default },
+    { path: '/admin/setting/address', component: require(cmpAdmin + 'SettingAddress').default },
+    { path: '/admin/setting/delivery', component: require(cmpAdmin + 'SettingDelivery').default },
+    { path: '/admin/setting/cod', component: require(cmpAdmin + 'SettingCOD').default },
+    { path: '/admin/setting/footer', component: require(cmpAdmin + 'SettingFooter').default },
 
-	{ path: '/admin/profile', component: require(cmpAdmin + 'Profile').default }
+    { path: '/admin/profile', component: require(cmpAdmin + 'Profile').default }
 ]
 
 const router = new VueRouter({
-	mode: 'history',
-	routes
+    mode: 'history',
+    routes
 })
 
 /**
@@ -85,33 +93,33 @@ const router = new VueRouter({
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 
-Vue.filter('upText', function (text) {
-	if (text) {
-		return text.charAt(0).toUpperCase() + text.slice(1)
-	}
+Vue.filter('upText', function(text) {
+    if (text) {
+        return text.charAt(0).toUpperCase() + text.slice(1)
+    }
 })
 
-Vue.filter('myDate', function (created) {
-	if (created) {
-		return moment(created, "YYYYMMDD").fromNow();
-	}
+Vue.filter('myDate', function(created) {
+    if (created) {
+        return moment(created, "YYYYMMDD").fromNow();
+    }
 })
 
 window.Fire = new Vue();
 
 Vue.component(
-	'passport-clients',
-	require('./components/passport/Clients.vue').default
+    'passport-clients',
+    require('./components/passport/Clients.vue').default
 );
 
 Vue.component(
-	'passport-authorized-clients',
-	require('./components/passport/AuthorizedClients.vue').default
+    'passport-authorized-clients',
+    require('./components/passport/AuthorizedClients.vue').default
 );
 
 Vue.component(
-	'passport-personal-access-tokens',
-	require('./components/passport/PersonalAccessTokens.vue').default
+    'passport-personal-access-tokens',
+    require('./components/passport/PersonalAccessTokens.vue').default
 );
 
 Vue.component('setting-menu', require('./components/admin/SettingMenu.vue').default);
@@ -123,28 +131,27 @@ Vue.component('setting-menu', require('./components/admin/SettingMenu.vue').defa
  */
 
 Vue.mixin({
-	data: function() {
-	  return {
-		get baseURL() {
-		  return process.env.MIX_APP_URL;
-		}
-	  }
-	}
-  })
+    data: function() {
+        return {
+            get baseURL() {
+                return process.env.MIX_APP_URL;
+            }
+        }
+    }
+})
 
 const app = new Vue({
-	el: '#app',
-	router,
-	data: {
-		search: '',
-		baseURL: process.env.MIX_APP_URL
-	},
-	methods:
-	{
-		searchit() {
-			Fire.$emit('searching')
-		}
-	}
+    el: '#app',
+    router,
+    data: {
+        search: '',
+        baseURL: process.env.MIX_APP_URL
+    },
+    methods: {
+        searchit() {
+            Fire.$emit('searching')
+        }
+    }
 });
 
 
