@@ -12,4 +12,39 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
+
+mix.browserSync('http://ecommerce-laravel.test');
+mix.options({
+    extractVueStyles: false,
+    processCssUrls: true,
+    purifyCss: false,
+    uglify: {
+      compress: {
+        drop_console: true,
+      },
+      uglifyOptions: {
+        compress: false
+      },
+    },
+    terser: {
+        minify: (file, sourceMap) => {
+            // https://github.com/mishoo/UglifyJS2#minify-options
+            const uglifyJsOptions = {
+              /* your `uglify-js` package options */
+            };
+  
+            if (sourceMap) {
+              uglifyJsOptions.sourceMap = {
+                content: sourceMap,
+              };
+            }
+  
+            return require("uglify-js").minify(file, uglifyJsOptions);
+          },
+    },
+    clearConsole: false,
+    cssNano: {
+      discardComments: {removeAll: true},
+    }
+});
