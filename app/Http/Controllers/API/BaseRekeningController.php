@@ -4,20 +4,33 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\API\{BaseRequest, CommonRequest};
-use App\{Base, Rekening};
+use App\Http\Requests\API\CommonRequest;
+use App\Transformers\RekeningTransformer;
+use App\Rekening;
 
 
-class BaseController extends Controller
+class BaseRekeningController extends Controller
 {
+    /**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+        $this->model = new Rekening();
+		$this->middleware(['auth:admin-api']);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(CommonRequest $request)
     {
-        return Base::first();
+        $transformer = new RekeningTransformer();
+        return $request->index($this->model, $transformer);
     }
 
     /**
@@ -36,9 +49,15 @@ class BaseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommonRequest $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|min:5|max:30',
+            'rekening' => 'required|min:3|max:30',
+            'number' => 'required|min:10|max:30',
+        ]);
+
+        return $request->store('rekening', $this->model, request()->all());
     }
 
     /**
@@ -84,9 +103,5 @@ class BaseController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function createDescription(BaseRequest $request){
-        return $request->createDescription();
     }
 }

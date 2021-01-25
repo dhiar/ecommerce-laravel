@@ -8,7 +8,8 @@
 
 <template>
   <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800 mb-4">Pengaturan</h1>
+    <go-back></go-back>
+    <h1 class="h3 mb-2 text-gray-800 mb-4 mt-3">Pengaturan</h1>
     <div class="container">
       <div class="row">
         <div class="col-md-12">
@@ -24,8 +25,11 @@
 </template>
 
 <script>
+import GoBack from "../GoBack.vue";
 export default {
-  components: {},
+  components: {
+    GoBack,
+  },
   data() {
     return {};
   },

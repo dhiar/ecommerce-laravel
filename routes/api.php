@@ -31,6 +31,9 @@ Route::put('profile', 'API\UserController@updateProfile');
 
 Route::get('base/show-description', 'API\BaseController@index')->name('base-show-description');
 Route::post('base/create-description', 'API\BaseController@createDescription')->name('base-create-description');
+Route::apiResource('base/rekenings', 'API\BaseRekeningController')->names([
+    'store' => 'rekening.store'
+]);
 
 /**
  * Router Binding

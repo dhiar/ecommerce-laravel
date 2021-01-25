@@ -1,6 +1,7 @@
 <template>
   <!-- Begin Page Content -->
   <div class="container-fluid mb-5">
+    <go-back></go-back>
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800 mb-4">Pengaturan</h1>
     <div class="row">
@@ -15,7 +16,7 @@
       <div class="col-md-9">
         <div class="card shadow">
           <div class="card-header">
-            <h2 class="lead text-dark mb-0">Alamat</h2>
+            <h2 class="lead text-dark mb-0">COD</h2>
           </div>
           <div class="card-body"></div>
         </div>
@@ -25,7 +26,12 @@
 </template>
 
 <script>
+import GoBack from "../GoBack.vue";
+
 export default {
+  components: {
+    GoBack,
+  },
   props: {
     baseUrl: {
       type: String,
@@ -33,11 +39,9 @@ export default {
   },
   data() {
     return {
-      propBaseUrl: "",
     };
   },
   mounted() {
-    this.propBaseUrl = this.baseUrl;
   },
 };
 </script>
