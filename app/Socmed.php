@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Socmed extends Model
 {
-    protected $table = 'socmed';
+    protected $table = 'socmeds';
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [

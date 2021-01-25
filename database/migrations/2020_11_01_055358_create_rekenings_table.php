@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSocmedTable extends Migration
+class CreateRekeningTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateSocmedTable extends Migration
      */
     public function up()
     {
-        Schema::create('socmed', function (Blueprint $table) {
+        Schema::create('rekenings', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 20);
-            $table->string('icon', 20);
-            $table->string('link', 100)->nullable();
+            $table->string('rekening', 30);
+            $table->string('name', 50);
+            $table->string('number', 50)->unique(); // unique
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateSocmedTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('socmed');
+        Schema::dropIfExists('rekening');
     }
 }
