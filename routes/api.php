@@ -41,3 +41,7 @@ Route::apiResource('base/rekenings', 'API\BaseRekeningController')->names([
 Route::bind('user', function (string $id) {
 	return  MainHasher::decode($id);
 });
+
+Route::bind('rekening', function (string $id) {
+	return  MainHasher::decode($id);
+});

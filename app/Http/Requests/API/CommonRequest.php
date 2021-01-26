@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\API;
 
-use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Transformers\IlluminatePaginatorAdapter;
 use App\Helpers\PaginationFormat;
+use App\Http\Transformers\IlluminatePaginatorAdapter;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 
 class CommonRequest extends FormRequest
@@ -31,15 +31,16 @@ class CommonRequest extends FormRequest
         ];
     }
 
-    public function index($model, $transformer){
+    public function index($model, $transformer)
+    {
         if ($this->q) {
             $search = $this->q;
-            $paginator = $model::where(function($query) use ($search) {
+            $paginator = $model::where(function ($query) use ($search) {
                 $query
-                ->where('name', 'LIKE', "%$search%")
-                ->where('rekening', 'LIKE', "%$search%")
-                ->where('number', 'LIKE', "%$search%")
-                ->orWhere('address', 'LIKE', "%$search%");
+                    ->where('name', 'LIKE', "%$search%")
+                    ->where('rekening', 'LIKE', "%$search%")
+                    ->where('number', 'LIKE', "%$search%")
+                    ->orWhere('address', 'LIKE', "%$search%");
             })->paginate(10);
         } else {
             $paginator = $model::latest()->paginate(10);
@@ -51,12 +52,13 @@ class CommonRequest extends FormRequest
             ->collection($result, $transformer)
             ->paginateWith(new IlluminatePaginatorAdapter($paginator))
             ->toArray();
-		
-		return PaginationFormat::commit($paginator, $response);
+
+        return PaginationFormat::commit($paginator, $response);
     }
 
-    public function store($name, $model, $params)
+    public function store($model, $params)
     {
+        $className = $this->getClassName($model);
         DB::beginTransaction();
         try {
             $object = $model->create($params);
@@ -65,16 +67,72 @@ class CommonRequest extends FormRequest
                 'success' => true,
                 'process' => 'create',
                 'data' => $object,
-                'message' => 'Success create ' . $name,
+                'message' => 'Success create ' . $className,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'process' => 'create',
-                'data' => $object,
-                'message' => 'Success create ' . $name,
+                'data' => null,
+                'message' => 'Something went wrong. Failed create ' . $className,
             ]);
             DB::rollback();
         }
     }
+
+    public function show($id, $model, $transformer)
+    {
+        $object = $model::findOrFail($id);
+        return fractal($object, $transformer)->toArray()['data'];
+    }
+
+    public function update($id, $model, $transformer)
+    {
+        $params = \request()->all();
+        unset($params['id']);
+        unset($params['created_at_human']);
+        unset($params['created_at']);
+
+        $className = $this->getClassName($model);
+
+        $model::whereId($id)->update($params);
+        $object = $model::find($id);
+        return \response()->json([
+            'data' => fractal($object, $transformer)->toArray()['data'],
+            'success' => true,
+            'process' => 'update',
+            'message' => 'Success update ' . $className,
+        ]);
+    }
+
+    public function destroy($model, $id)
+    {
+        $object = $model::findOrFail($id);
+        $object->delete();
+        $className = $this->getClassName($model);
+
+        $find = $model::find($id);
+
+        if (!$find) {
+            return \response()->json([
+                'success' => true,
+                'process' => 'delete',
+                'message' => 'Success delete '.$className
+            ]);
+        } else {
+            return \response()->json([
+                'success' => false,
+                'process' => 'delete',
+                'message' => 'Failed delete '.$className
+            ]);
+        }
+    }
+
+    public function getClassName($model)
+    {
+        $path = explode('\\', get_class($model));
+        $className = $path[count($path) - 1];
+        return $className;
+    }
+
 }

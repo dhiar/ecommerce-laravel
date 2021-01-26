@@ -24,7 +24,7 @@
           </div>
           <!-- modal-header -->
 
-          <form @submit.prevent="createRekening($event)">
+          <form @submit.prevent="createRekening(form.id)">
             <div class="modal-body">
               <label for="rekening">Nama Bank / Provider E-Money</label>
               <div class="form-group">
@@ -176,7 +176,7 @@
             <h2 class="lead text-dark mb-0">Rekening</h2>
           </div>
           <div class="card-body table-responsive">
-            <button @click="showModalRekening" class="btn btn-primary">
+            <button @click="showModalRekening()" class="btn btn-primary">
               Tambah Rekening
             </button>
             <hr />
@@ -197,22 +197,38 @@
                   <td>{{ item.name }}</td>
                   <td>{{ item.number }}</td>
                   <td>
-                    <!-- <span>
-                      <a href="#" @click="showModalCreate(item.id)">
-                        <i class="fa fa-edit blue"></i>
-                      </a>
-                    </span>
-                    &nbsp;
-                    <span v-if="item.name.toLowerCase() != 'indonesia'">
-                      <a href="#" @click="deleteArea(item.id, item.name)">
-                        <i class="fa fa-trash red"></i>
-                      </a>
-                    </span> -->
+                    <a
+                      class="btn btn-sm btn-info"
+                      href="#"
+                      @click="showModalRekening(item.id)"
+                      ><i class="fa fa-pen text-gray-100"></i
+                    ></a>
+                    <a
+                      class="btn btn-sm btn-danger"
+                      @click="deleteRekening(item.id, item.name)"
+                      ><i class="fa fa-trash-alt text-gray-100"></i
+                    ></a>
                   </td>
                 </tr>
               </tbody>
             </table>
-
+          </div>
+          <!-- card-body -->
+          <div class="card-footer">
+            <!-- pagination -->
+            <div class="overflow-auto">
+              <b-pagination
+                size="md"
+                first-text="First"
+                prev-text="Prev"
+                next-text="Next"
+                last-text="Last"
+                :total-rows="totalItems"
+                v-model="currentPage"
+                :per-page="perPage"
+                align="center"
+              ></b-pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -241,10 +257,12 @@ export default {
       totalItems: 50,
       results: {},
       submitted: false,
+      page: 'rekening',
       form: new Form({
-        name: "",
-        rekening: "",
-        number: "",
+        id: "",
+        name: "Usva Dhiar Praditya",
+        rekening: "BNI",
+        number: "12345678910",
       }),
     };
   },
@@ -271,27 +289,13 @@ export default {
     this.fetchData(1);
   },
   methods: {
-    showModalRekening() {
+    async showModalRekening(id) {
       $("#modalRekening").modal("show");
-    },
-    async createRekening() {
-      this.submitted = true;
 
-      this.$v.$touch();
-      if (this.$v.$error) {
-        return;
-      } else {
-        await axios
-          .post("/api/base/rekenings", this.form)
-          .then(({ data }) => {
-            console.log("data == " + JSON.stringify(data));
-            if (data.success) {
-              Swal.fire(data.process + "!", data.message, "success");
-            } else {
-              Swal.fire(data.process + "!", data.message, "error");
-            }
-            $("#modalRekening").modal("hide");
-          })
+      this.form.id = id;
+      if (id) {
+        const result = await axios
+          .get("/api/base/rekenings/" + id)
           .catch((error) => {
             let errMsg = "";
             if (typeof error.response.data === "object") {
@@ -299,9 +303,99 @@ export default {
             } else {
               errMsg = ["Something went wrong. Please try again."];
             }
-            Swal.fire("Failed save data !", errMsg.join(""), "error");
+            Swal.fire("Failed load data !", errMsg.join(""), "error");
           });
+
+        this.form = result.data;
       }
+    },
+    async createRekening(id) {
+      this.submitted = true;
+
+      this.$v.$touch();
+      if (this.$v.$error) {
+        return;
+      } else {
+        if (id) {
+          axios
+            .put("/api/base/rekenings/" + id, this.form)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              $("#modalRekening").modal("hide");
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        } else {
+          await axios
+            .post("/api/base/rekenings", this.form)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              $("#modalRekening").modal("hide");
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        }
+        this.fetchData();
+      }
+    },
+    deleteRekening(id, name) {
+      Swal.fire({
+        title: "Are you sure delete " + this.page + " : " + name + " ?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.value) {
+          axios
+            .delete(
+              process.env.MIX_APP_URL + "/api/base/rekenings/" + id
+            )
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              $("#modalRekening").modal("hide");
+              this.fetchData();
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        }
+      });
+
     },
     async fetchData(page = 1) {
       await axios
@@ -312,6 +406,13 @@ export default {
           this.totalItems = data.total;
           this.results = data;
         });
+    },
+  },
+   watch: {
+    currentPage: {
+      handler: function (value) {
+        this.fetchData(value);
+      },
     },
   },
 };

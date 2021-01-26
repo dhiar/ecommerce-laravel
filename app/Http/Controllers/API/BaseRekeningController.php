@@ -19,6 +19,7 @@ class BaseRekeningController extends Controller
 	public function __construct()
 	{
         $this->model = new Rekening();
+        $this->transformer = new RekeningTransformer();
 		$this->middleware(['auth:admin-api']);
     }
 
@@ -29,8 +30,7 @@ class BaseRekeningController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        $transformer = new RekeningTransformer();
-        return $request->index($this->model, $transformer);
+        return $request->index($this->model, $this->transformer);
     }
 
     /**
@@ -54,10 +54,10 @@ class BaseRekeningController extends Controller
         $validated = $request->validate([
             'name' => 'required|min:5|max:30',
             'rekening' => 'required|min:3|max:30',
-            'number' => 'required|min:10|max:30',
+            'number' => "required|min:10|max:30|unique:rekenings,number,{$this->model->id}",
         ]);
 
-        return $request->store('rekening', $this->model, request()->all());
+        return $request->store($this->model, request()->all());
     }
 
     /**
@@ -66,10 +66,10 @@ class BaseRekeningController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+    public function show($id, CommonRequest $request)
+	{
+		return $request->show($id, $this->model, $this->transformer);
+	}
 
     /**
      * Show the form for editing the specified resource.
@@ -79,7 +79,7 @@ class BaseRekeningController extends Controller
      */
     public function edit($id)
     {
-        //
+        dd('edit');
     }
 
     /**
@@ -89,10 +89,10 @@ class BaseRekeningController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+    public function update(CommonRequest $request, $id)
+	{
+		return $request->update($id, $this->model, $this->transformer);
+	}
 
     /**
      * Remove the specified resource from storage.
@@ -100,8 +100,8 @@ class BaseRekeningController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
+    public function destroy($id,CommonRequest $request)
+	{
+		return $request->destroy($this->model, $id);
+	}
 }

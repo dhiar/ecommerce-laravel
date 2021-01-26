@@ -15,7 +15,7 @@ class RekeningSeeder extends Seeder
         Rekening::create([
             'rekening'  => 'BCA',
             'name' => 'Usva Dhiar Praditya',
-            'number' => '12345'
+            'number' => '12345678910'
         ]);
     }
 }
