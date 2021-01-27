@@ -20,40 +20,11 @@
 					<div class="widget-user-image">
 						<img class="img-circle" :src="getProfilePhoto()" alt="User Avatar">
 					</div>
-					<div class="card-footer">
-						<div class="row">
-							<div class="col-sm-4 border-right">
-								<div class="description-block">
-									<h5 class="description-header">3,200</h5>
-									<span class="description-text">SALES</span>
-								</div>
-								<!-- /.description-block -->
-							</div>
-							<!-- /.col -->
-							<div class="col-sm-4 border-right">
-								<div class="description-block">
-									<h5 class="description-header">13,000</h5>
-									<span class="description-text">FOLLOWERS</span>
-								</div>
-								<!-- /.description-block -->
-							</div>
-							<!-- /.col -->
-							<div class="col-sm-4">
-								<div class="description-block">
-									<h5 class="description-header">35</h5>
-									<span class="description-text">PRODUCTS</span>
-								</div>
-								<!-- /.description-block -->
-							</div>
-							<!-- /.col -->
-						</div>
-						<!-- /.row -->
-					</div>
 				</div>
 
 					<div class="card">
-              <div class="card-header p-2">
-                Profile
+              <div class="card-header">
+                <h3 class="card-title">Profile</h3>
               </div><!-- /.card-header -->
               <div class="card-body">
                 <form class="form-horizontal">

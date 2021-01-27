@@ -5,11 +5,11 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
-use App\Transformers\RekeningTransformer;
-use App\Rekening;
+use App\Transformers\SlideTransformer;
+use App\Slide;
 
 
-class BaseRekeningController extends Controller
+class BaseSlideController extends Controller
 {
     /**
 	 * Create a new controller instance.
@@ -18,8 +18,8 @@ class BaseRekeningController extends Controller
 	 */
 	public function __construct()
 	{
-        $this->model = new Rekening();
-        $this->transformer = new RekeningTransformer();
+        $this->model = new Slide();
+        $this->transformer = new SlideTransformer();
 		$this->middleware(['auth:admin-api']);
     }
 
@@ -51,10 +51,11 @@ class BaseRekeningController extends Controller
      */
     public function store(CommonRequest $request)
     {
+        request()->request->add(['image' => request('storage_path_image')]);
         $validated = $request->validate([
-            'name' => 'required|min:5|max:30',
-            'rekening' => 'required|min:3|max:30',
-            'number' => "required|min:10|max:30|unique:rekenings,number,{$this->model->id}",
+            'title' => "required|min:5|max:30|unique:slides,title,{$this->model->id}",
+            'url' => 'required|min:1|max:50',
+            'image' => "required|min:5|max:200|unique:slides,image,{$this->model->id}",
         ]);
 
         return $request->store($this->model, request()->all(), $this->transformer);

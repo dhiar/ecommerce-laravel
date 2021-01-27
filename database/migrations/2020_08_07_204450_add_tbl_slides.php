@@ -15,15 +15,9 @@ class AddTblSlides extends Migration
     {
         Schema::create('slides', function (Blueprint $table) {
             $table->bigIncrements('id');
-            
-            $table->unsignedBigInteger('id_menu');
-            $table->foreign('id_menu')
-                ->references('id')
-                ->on('menus');
-
             $table->string('title', 30)->unique();
-            $table->string('url', 40)->unique();
-            $table->string('icon', 30)->unique();
+            $table->string('url', 50);
+            $table->string('image', 100)->unique();
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

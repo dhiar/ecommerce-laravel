@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\{UserController, FileController};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\User;
@@ -34,6 +34,12 @@ Route::post('base/create-description', 'API\BaseController@createDescription')->
 Route::apiResource('base/rekenings', 'API\BaseRekeningController')->names([
     'store' => 'rekening.store'
 ]);
+Route::apiResource('base/slides', 'API\BaseSlideController')->names([
+    'store' => 'slide.store'
+]);
+// base/slides
+
+Route::post('upload', [FileController::class, 'upload']);
 
 /**
  * Router Binding
@@ -45,3 +51,5 @@ Route::bind('user', function (string $id) {
 Route::bind('rekening', function (string $id) {
 	return  MainHasher::decode($id);
 });
+
+Route::post('upload', [FileController::class, 'upload']);

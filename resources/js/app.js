@@ -139,6 +139,9 @@ Vue.mixin({
         };
     },
     methods: {
+        imgErrorCondition(event){
+            event.target.src = process.env.MIX_APP_URL + "/img/layout/no_image.jpg"
+        },
         getNumber(currentPage, idx) {
             let number = (currentPage * 10) - 9 + idx
             return number

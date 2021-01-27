@@ -258,11 +258,12 @@ export default {
       results: {},
       submitted: false,
       page: 'rekening',
+      endpoint: '/api/base/rekenings',
       form: new Form({
         id: "",
-        name: "Usva Dhiar Praditya",
-        rekening: "BNI",
-        number: "12345678910",
+        name: "",
+        rekening: "",
+        number: "",
       }),
     };
   },
@@ -291,11 +292,11 @@ export default {
   methods: {
     async showModalRekening(id) {
       $("#modalRekening").modal("show");
-
+      const self = this
       this.form.id = id;
       if (id) {
         const result = await axios
-          .get("/api/base/rekenings/" + id)
+          .get(self.endpoint + "/" + id)
           .catch((error) => {
             let errMsg = "";
             if (typeof error.response.data === "object") {
@@ -311,6 +312,7 @@ export default {
     },
     async createRekening(id) {
       this.submitted = true;
+      const self = this
 
       this.$v.$touch();
       if (this.$v.$error) {
@@ -318,7 +320,7 @@ export default {
       } else {
         if (id) {
           axios
-            .put("/api/base/rekenings/" + id, this.form)
+            .put(self.endpoint+"/" + id, this.form)
             .then(({ data }) => {
               if (data.success) {
                 Swal.fire("Success !", data.message, "success");
@@ -338,7 +340,7 @@ export default {
             });
         } else {
           await axios
-            .post("/api/base/rekenings", this.form)
+            .post(self.endpoint, this.form)
             .then(({ data }) => {
               if (data.success) {
                 Swal.fire("Success !", data.message, "success");
@@ -361,6 +363,7 @@ export default {
       }
     },
     deleteRekening(id, name) {
+      const self = this
       Swal.fire({
         title: "Are you sure delete " + this.page + " : " + name + " ?",
         text: "You won't be able to revert this!",
@@ -373,7 +376,7 @@ export default {
         if (result.value) {
           axios
             .delete(
-              process.env.MIX_APP_URL + "/api/base/rekenings/" + id
+              process.env.MIX_APP_URL + self.endpoint + "/" + id
             )
             .then(({ data }) => {
               if (data.success) {
@@ -398,8 +401,9 @@ export default {
 
     },
     async fetchData(page = 1) {
+      const self = this
       await axios
-        .get("/api/base/rekenings" + "?page=" + page)
+        .get(self.endpoint + "?page=" + page)
         .then(({ data }) => {
           this.currentPage = data.current_page;
           this.perPage = data.per_page;

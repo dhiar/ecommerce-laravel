@@ -56,7 +56,7 @@ class CommonRequest extends FormRequest
         return PaginationFormat::commit($paginator, $response);
     }
 
-    public function store($model, $params)
+    public function store($model, $params, $transformer)
     {
         $className = $this->getClassName($model);
         DB::beginTransaction();
@@ -66,7 +66,7 @@ class CommonRequest extends FormRequest
             return response()->json([
                 'success' => true,
                 'process' => 'create',
-                'data' => $object,
+                'data' => fractal($object, $transformer)->toArray()['data'],
                 'message' => 'Success create ' . $className,
             ]);
         } catch (\Exception $e) {
@@ -74,7 +74,7 @@ class CommonRequest extends FormRequest
                 'success' => false,
                 'process' => 'create',
                 'data' => null,
-                'message' => 'Something went wrong. Failed create ' . $className,
+                'message' => $e->getMessage(),
             ]);
             DB::rollback();
         }
@@ -95,14 +95,26 @@ class CommonRequest extends FormRequest
 
         $className = $this->getClassName($model);
 
-        $model::whereId($id)->update($params);
-        $object = $model::find($id);
-        return \response()->json([
-            'data' => fractal($object, $transformer)->toArray()['data'],
-            'success' => true,
-            'process' => 'update',
-            'message' => 'Success update ' . $className,
-        ]);
+        DB::beginTransaction();
+        try {
+            $model::whereId($id)->update($params);
+            $object = $model::find($id);
+            DB::commit();
+            return \response()->json([
+                'data' => fractal($object, $transformer)->toArray()['data'],
+                'success' => true,
+                'process' => 'update',
+                'message' => 'Success update ' . $className,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'process' => 'update',
+                'data' => null,
+                'message' => $e->getMessage(),
+            ]);
+            DB::rollback();
+        }
     }
 
     public function destroy($model, $id)

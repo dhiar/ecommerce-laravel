@@ -20,52 +20,115 @@
           </div>
           <div class="card-body">
             <form
-              @submit.prevent="createSlides($event, '')"
+              @submit.prevent="createSlides(form.id)"
               method="post"
               enctype="multipart/form-data"
             >
               <div class="form-group">
-                <div class="form-group">
-                  <label for="banner_image">Gambar Banner</label>
-                  <el-upload
-                    :action="baseUrl + '/api/upload'"
-                    style="
-                      border-style: dashed;
-                      border-width: 1px;
-                      border-color: gray;
-                      width: 50%;
-                    "
+                <label for="image">Gambar Banner</label>
+                <el-upload
+                  :action="baseUrl + '/api/upload'"
+                  style="
+                    border-style: dashed;
+                    border-width: 1px;
+                    border-color: gray;
+                    width: 50%;
+                  "
+                  class="img-fluid text-center"
+                  :show-file-list="false"
+                  :on-success="handleBannerSuccess"
+                  :before-upload="beforeBannerUpload"
+                >
+                  <img
+                    v-if="form.image"
+                    :src="form.image"
                     class="img-fluid text-center"
-                    :show-file-list="false"
-                  >
-                      <img
-                        v-if="form.banner_image"
-                        :src="form.banner_image"
-                        class="img-fluid text-center"
-                        :on-success="handleBannerSuccess"
-                        :before-upload="beforeBannerUpload"
-                      />
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  </el-upload>
-                </div>
+                    @error="imgErrorCondition"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
                 <small class="text-muted"
                   >Pastikan gambar berukuran maksimal 2mb, berformat png, jpg,
                   jpeg. Dan berukuran 1600x400px</small
                 >
               </div>
               <div class="form-group">
-                <label for="url">URL (opsional)</label>
+                <label for="title">Title</label>
                 <input
+                  v-model="form.title"
                   type="text"
+                  id="title"
+                  name="title"
+                  placeholder="Title"
                   class="form-control"
-                  name="url"
-                  autocomplete="off"
+                  :class="{
+                    'is-invalid': submitted && $v.form.title.$error,
+
+                    'is-valid': !$v.form.title.$invalid,
+                  }"
+                />
+                <div class="valid-feedback">Title is valid.</div>
+                <div
+                  v-if="submitted && !$v.form.title.required"
+                  class="invalid-feedback"
+                >
+                  Title harus diisi
+                </div>
+                <div
+                  v-if="submitted && !$v.form.title.maxLength"
+                  class="invalid-feedback"
+                >
+                  Title terlalu panjang ( maks :
+                  {{ $v.form.title.$params.maxLength.max }} karakter )
+                </div>
+                <div
+                  v-if="submitted && !$v.form.title.minLength"
+                  class="invalid-feedback"
+                >
+                  Title terlalu pendek ( maks :
+                  {{ $v.form.title.$params.minLength.min }} karakter )
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="url">URL (opsional - defaut is '#')</label>
+                <input
+                  v-model="form.url"
+                  type="text"
                   id="url"
+                  name="url"
+                  placeholder="Url"
+                  class="form-control"
+                  :class="{
+                    'is-invalid': submitted && $v.form.url.$error,
+
+                    'is-valid': !$v.form.url.$invalid,
+                  }"
                 />
                 <small class="text-muted"
                   >Jika banner di klik maka akan mengarah ke link/url diatas.
                   Misal: https://domain.com/p/produk-keren</small
                 >
+                <div class="valid-feedback">Url is valid.</div>
+                <div
+                  v-if="submitted && !$v.form.url.required"
+                  class="invalid-feedback"
+                >
+                  Url harus diisi
+                </div>
+                <div
+                  v-if="submitted && !$v.form.url.maxLength"
+                  class="invalid-feedback"
+                >
+                  Url terlalu panjang ( maks :
+                  {{ $v.form.url.$params.maxLength.max }} karakter )
+                </div>
+                <div
+                  v-if="submitted && !$v.form.url.minLength"
+                  class="invalid-feedback"
+                >
+                  Url terlalu pendek ( maks :
+                  {{ $v.form.url.$params.minLength.min }} karakter )
+                </div>
               </div>
               <button type="submit" class="btn btn-primary">Tambah</button>
             </form>
@@ -78,6 +141,7 @@
 
 <script>
 import GoBack from "../GoBack.vue";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
   components: {
@@ -86,20 +150,47 @@ export default {
   data() {
     return {
       baseUrl: process.env.MIX_APP_URL,
+      results: [],
+      submitted: false,
+      page: 'slide',
+      endpoint: '/api/base/slides',
       form: new Form({
-        image_banner: "",
-        url_banner: "",
-        banner_image: "",
-        storage_path_banner_image: "",
+        id: "",
+        title: "",
+        url: "#",
+        image: "", // path image
+        storage_path_image: "",
+        active: true
       }),
     };
   },
-  mounted() {
+  validations: {
+    form: {
+      title: {
+        required,
+        minLength: minLength(5),
+        maxLength: maxLength(30),
+      },
+      image: {
+        required
+      },
+      url: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(50),
+      }
+    },
   },
+  mounted() {},
   methods: {
     handleBannerSuccess(res, file) {
-      this.form.storage_path_banner_image = res.result;
-      this.form.banner_image = URL.createObjectURL(file.raw);
+      this.form.storage_path_image = res.result;
+      this.form.image = URL.createObjectURL(file.raw);
+
+      console.log(
+        "storage_path_url = " + this.form.storage_path_image
+      );
+      console.log("image = " + this.form.image);
     },
     beforeBannerUpload(file) {
       const isJPG = file.type === "image/jpeg";
@@ -114,8 +205,43 @@ export default {
       }
 
       return isJPG || isPNG;
-    }
-  }
+    },
+    async createSlides(id) {
+      this.submitted = true;
+      const self = this
+
+      this.$v.$touch();
+      if (this.$v.$error) {
+        return;
+      } else {
+        if (id) {
+          console.log('update')
+        }
+        else {
+          await axios
+            .post(self.endpoint, this.form)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              // $("#modalRekening").modal("hide");
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        }
+      }
+
+    },
+  },
 };
 </script>
 
