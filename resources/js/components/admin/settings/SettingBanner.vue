@@ -1,38 +1,42 @@
 <template>
   <!-- Begin Page Content -->
   <div class="container-fluid mb-5">
-    <go-back></go-back>
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800 mb-4 mt-3">Pengaturan</h1>
-    <div class="row">
-      <div class="col-md-3">
-        <div class="card shadow">
-          <div class="card-body">
-            <setting-menu :baseUrl="$parent.baseURL"></setting-menu>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-9">
-        <div class="card shadow">
-          <div class="card-header">
-            <h2 class="lead text-dark mb-0">Banner Slider</h2>
-          </div>
-          <div class="card-body">
-            <form
-              @submit.prevent="createSlides(form.id)"
-              method="post"
-              enctype="multipart/form-data"
+    <div
+      class="modal fade"
+      id="modalBanner"
+      tabindex="-1"
+      aria-labelledby="addNewLabel"
+      aria-hidden="true"
+      style="width: 100%"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="h5 text-gray-800 line-height-222">
+              Tambah Banner Slide
+            </div>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
             >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <!-- modal-header -->
+
+          <form @submit.prevent="createBanner(form.id)">
+            <div class="modal-body">
               <div class="form-group">
                 <label for="image">Gambar Banner</label>
                 <el-upload
-                  :action="baseUrl + '/api/upload'"
+                  :action="baseURL + '/api/upload'"
                   style="
                     border-style: dashed;
                     border-width: 1px;
                     border-color: gray;
-                    width: 50%;
+                    width: 100%;
                   "
                   class="img-fluid text-center"
                   :show-file-list="false"
@@ -130,9 +134,90 @@
                   {{ $v.form.url.$params.minLength.min }} karakter )
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary">Tambah</button>
-            </form>
+            </div>
+            <!--modal body-->
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                Close
+              </button>
+              <button
+                type="submit"
+                :disabled="form.busy"
+                class="btn btn-primary"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <go-back></go-back>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800 mb-4 mt-3">Pengaturan</h1>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="card shadow">
+          <div class="card-body">
+            <setting-menu></setting-menu>
           </div>
+        </div>
+      </div>
+
+      <div class="col-md-9">
+        <div class="card shadow">
+          <div class="card-header">
+            <h2 class="lead text-dark mb-0">Banner Slide</h2>
+          </div>
+          <div class="card-body table-responsive">
+            <button @click="showModalBanner()" class="btn btn-primary">
+              Tambah Banner
+            </button>
+          </div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th class="text-center" style="width: 8% !important">No</th>
+                <th style="width: 20% !important">Title</th>
+                <th style="width: 25% !important">Image</th>
+                <th style="width: 20% !important">Url</th>
+                <th style="width: 13% !important">Active</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, idx) in results.data" :key="item.id">
+                <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+                <td>{{ item.title }}</td>
+                <td>
+                  <img
+                    :src="item.image"
+                    @error="imgErrorCondition"
+                    class="img-fluid"
+                    style="max-height: 100px !important"
+                  />
+                </td>
+                <td>{{ item.url }}</td>
+                <td>{{ item.active | yesNo }}</td>
+                <td>
+                  <a
+                    class="btn btn-sm btn-info"
+                    href="#"
+                    @click="showModalBanner(item.id)"
+                    ><i class="fa fa-pen text-gray-100"></i
+                  ></a>
+                  <a
+                    class="btn btn-sm btn-danger"
+                    href="#"
+                    @click="deleteBanner(item.id, item.name)"
+                    ><i class="fa fa-trash-alt text-gray-100"></i
+                  ></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -149,18 +234,20 @@ export default {
   },
   data() {
     return {
-      baseUrl: process.env.MIX_APP_URL,
-      results: [],
+      currentPage: 1,
+      perPage: 10,
+      totalItems: 50,
+      results: {},
       submitted: false,
-      page: 'slide',
-      endpoint: '/api/base/slides',
+      page: "slide",
+      endpoint: "/api/base/slides",
       form: new Form({
         id: "",
         title: "",
         url: "#",
         image: "", // path image
         storage_path_image: "",
-        active: true
+        active: true,
       }),
     };
   },
@@ -172,24 +259,44 @@ export default {
         maxLength: maxLength(30),
       },
       image: {
-        required
+        required,
       },
       url: {
         required,
         minLength: minLength(1),
         maxLength: maxLength(50),
-      }
+      },
     },
   },
-  mounted() {},
+  mounted() {
+    this.fetchData(1);
+  },
   methods: {
+    async showModalBanner(id) {
+      $("#modalBanner").modal("show");
+      const self = this;
+      this.form.id = id;
+      if (id) {
+        const result = await axios
+          .get(self.endpoint + "/" + id)
+          .catch((error) => {
+            let errMsg = "";
+            if (typeof error.response.data === "object") {
+              errMsg = _.flatten(_.toArray(error.response.data.errors));
+            } else {
+              errMsg = ["Something went wrong. Please try again."];
+            }
+            Swal.fire("Failed load data !", errMsg.join(""), "error");
+          });
+
+        this.form = result.data;
+      }
+    },
     handleBannerSuccess(res, file) {
       this.form.storage_path_image = res.result;
       this.form.image = URL.createObjectURL(file.raw);
 
-      console.log(
-        "storage_path_url = " + this.form.storage_path_image
-      );
+      console.log("storage_path_url = " + this.form.storage_path_image);
       console.log("image = " + this.form.image);
     },
     beforeBannerUpload(file) {
@@ -206,18 +313,35 @@ export default {
 
       return isJPG || isPNG;
     },
-    async createSlides(id) {
+    async createBanner(id) {
       this.submitted = true;
-      const self = this
+      const self = this;
 
       this.$v.$touch();
       if (this.$v.$error) {
         return;
       } else {
         if (id) {
-          console.log('update')
-        }
-        else {
+          axios
+            .put(self.endpoint + "/" + id, this.form)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              $("#modalBanner").modal("hide");
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        } else {
           await axios
             .post(self.endpoint, this.form)
             .then(({ data }) => {
@@ -226,7 +350,7 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
-              // $("#modalRekening").modal("hide");
+              $("#modalBanner").modal("hide");
             })
             .catch((error) => {
               let errMsg = "";
@@ -238,8 +362,24 @@ export default {
               Swal.fire("Failed save data !", errMsg.join(""), "error");
             });
         }
+        this.fetchData();
       }
-
+    },
+    async fetchData(page = 1) {
+      const self = this;
+      await axios.get(self.endpoint + "?page=" + page).then(({ data }) => {
+        this.currentPage = data.current_page;
+        this.perPage = data.per_page;
+        this.totalItems = data.total;
+        this.results = data;
+      });
+    },
+  },
+  watch: {
+    currentPage: {
+      handler: function (value) {
+        this.fetchData(value);
+      },
     },
   },
 };

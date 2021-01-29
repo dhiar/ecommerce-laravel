@@ -165,7 +165,7 @@
       <div class="col-md-3">
         <div class="card shadow">
           <div class="card-body">
-            <setting-menu :baseUrl="$parent.baseURL"></setting-menu>
+            <setting-menu></setting-menu>
           </div>
         </div>
       </div>
@@ -412,7 +412,7 @@ export default {
         });
     },
   },
-   watch: {
+  watch: {
     currentPage: {
       handler: function (value) {
         this.fetchData(value);

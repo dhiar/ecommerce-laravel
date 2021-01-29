@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class FileController extends Controller
 {
     public function upload(Request $request) {
-        $result = $request->file('file')->store('apiDocs');
+        $result = $request->file('file')->store('public/images');
         return ['result' => $result];
     }
 }

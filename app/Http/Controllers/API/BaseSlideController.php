@@ -92,7 +92,23 @@ class BaseSlideController extends Controller
      */
     public function update(CommonRequest $request, $id)
 	{
-		return $request->update($id, $this->model, $this->transformer);
+        $params = [];
+        if (request('storage_path_image')) {
+            $obj = $this->model->find($id);
+            $pathCurrentImage = storage_path('app/'.$obj->image);
+
+			if (file_exists($pathCurrentImage)) {
+                @unlink($pathCurrentImage);
+            }
+
+            request()->request->add(['image' => request('storage_path_image')]);
+            $params = request()->except(['storage_path_image']);
+        } else {
+            $params = request()->except(['image']);
+            
+        }
+
+		return $request->update($id, $this->model, $this->transformer, $params);
 	}
 
     /**

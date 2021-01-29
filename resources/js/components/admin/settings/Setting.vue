@@ -15,7 +15,7 @@
         <div class="col-md-12">
           <div class="card shadow">
             <div class="card-body">
-              <setting-menu :baseUrl="$parent.baseURL"></setting-menu>
+              <setting-menu></setting-menu>
             </div>
           </div>
         </div>

@@ -52,4 +52,8 @@ Route::bind('rekening', function (string $id) {
 	return  MainHasher::decode($id);
 });
 
+Route::bind('slide', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
 Route::post('upload', [FileController::class, 'upload']);

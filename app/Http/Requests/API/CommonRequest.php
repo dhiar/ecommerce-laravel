@@ -86,9 +86,12 @@ class CommonRequest extends FormRequest
         return fractal($object, $transformer)->toArray()['data'];
     }
 
-    public function update($id, $model, $transformer)
+    public function update($id, $model, $transformer, $params = null)
     {
-        $params = \request()->all();
+        if (!$params) {
+            $params = \request()->all();
+        }
+        
         unset($params['id']);
         unset($params['created_at_human']);
         unset($params['created_at']);

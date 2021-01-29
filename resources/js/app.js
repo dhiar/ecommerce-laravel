@@ -99,6 +99,14 @@ Vue.filter('upText', function(text) {
     }
 })
 
+Vue.filter('yesNo', function(text) {
+    if (text == 1 || text == "1") {
+        return "Yes"
+    } else {
+        return "Yes"
+    }
+})
+
 Vue.filter('myDate', function(created) {
     if (created) {
         return moment(created, "YYYYMMDD").fromNow();
@@ -140,7 +148,7 @@ Vue.mixin({
     },
     methods: {
         imgErrorCondition(event){
-            event.target.src = process.env.MIX_APP_URL + "/img/layout/no_image.jpg"
+            event.target.src = process.env.MIX_APP_URL + "/img/no_image.jpg"
         },
         getNumber(currentPage, idx) {
             let number = (currentPage * 10) - 9 + idx

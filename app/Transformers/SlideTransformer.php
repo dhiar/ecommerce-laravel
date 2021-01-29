@@ -5,6 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Slide;
 use App\Hashers\MainHasher;
+use Illuminate\Support\Facades\Storage;
 
 class SlideTransformer extends TransformerAbstract
 {
@@ -37,7 +38,8 @@ class SlideTransformer extends TransformerAbstract
             'id' => MainHasher::encode($model->id),
             'title' => $model->title,
             'url' => $model->url,
-            'image' => $model->image,
+            'image' => \env('APP_URL').Storage::url($model->image) ,
+            // storage_path('app/'.$model->image),
             'active' => $model->active,
         ];
     }
