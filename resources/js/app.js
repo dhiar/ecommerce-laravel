@@ -103,7 +103,7 @@ Vue.filter('yesNo', function(text) {
     if (text == 1 || text == "1") {
         return "Yes"
     } else {
-        return "Yes"
+        return "No"
     }
 })
 

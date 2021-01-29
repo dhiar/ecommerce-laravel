@@ -48,6 +48,11 @@
                     :src="form.image"
                     class="img-fluid text-center"
                     @error="imgErrorCondition"
+                    :class="{
+                      'is-invalid': submitted && $v.form.image.$error,
+
+                      'is-valid': !$v.form.image.$invalid,
+                    }"
                   />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
@@ -55,6 +60,13 @@
                   >Pastikan gambar berukuran maksimal 2mb, berformat png, jpg,
                   jpeg. Dan berukuran 1600x400px</small
                 >
+                <div class="valid-feedback">Image is valid.</div>
+                <div
+                  v-if="submitted && !$v.form.image.required"
+                  class="invalid-feedback"
+                >
+                  Image harus diisi
+                </div>
               </div>
               <div class="form-group">
                 <label for="title">Title</label>
@@ -134,6 +146,15 @@
                   {{ $v.form.url.$params.minLength.min }} karakter )
                 </div>
               </div>
+              <div class="form-group">
+								<label>Is Active</label>
+								<select name="active" v-model="form.active" id="active"
+									class="form-control">
+									<option value="1">Yes</option>
+									<option value="0">No</option>
+								</select>
+								<has-error :form="form" field="gender"></has-error>
+							</div>
             </div>
             <!--modal body-->
 
@@ -247,7 +268,7 @@ export default {
         url: "#",
         image: "", // path image
         storage_path_image: "",
-        active: true,
+        active: '1',
       }),
     };
   },

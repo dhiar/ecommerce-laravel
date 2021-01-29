@@ -18,7 +18,7 @@ class AddTblSlides extends Migration
             $table->string('title', 30)->unique();
             $table->string('url', 50);
             $table->string('image', 100)->unique();
-            $table->boolean('active')->default(true);
+            $table->enum('active', ['0', '1'])->default('1');
             $table->timestamps();
         });
     }
