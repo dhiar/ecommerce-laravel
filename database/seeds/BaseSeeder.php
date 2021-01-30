@@ -14,9 +14,7 @@ class BaseSeeder extends Seeder
     {
         Base::create([
             'shop_name'  => 'Green Store',
-            'province' => 'Jawa Tengah',
-            'city' => 'Sragen',
-            'address' => 'Masaran, Sragen, Jateng',
+            'address' => 'Pandak Kulon, RT.06, RW.02',
             'phone' => '081289482090',
             'description' => 'Green store adalah sebuah toko yang menyediakan/menjual produk-produk alami.',
             'logo' => ''

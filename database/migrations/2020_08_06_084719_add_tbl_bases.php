@@ -16,8 +16,9 @@ class AddTblBases extends Migration
         Schema::create('bases', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('shop_name', 30)->nullable();
-            $table->string('province', 25)->nullable();
-            $table->string('city', 25)->nullable();
+            $table->integer('province_id')->nullable();
+            $table->integer('city_id')->nullable();
+            $table->integer('district_id')->nullable();
             $table->text('address')->nullable();
             $table->string('phone', 15)->nullable();
             $table->string('logo', 30)->nullable();

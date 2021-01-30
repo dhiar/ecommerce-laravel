@@ -10,8 +10,9 @@ class Base extends Model
     protected $guarded = ['id'];
     protected $fillable = [
         'shop_name',
-        'province',
-        'city',
+        'province_id',
+        'city_id',
+        'district_id',
         'address',
         'phone',
         'description',
