@@ -37,6 +37,10 @@ Route::apiResource('base/rekenings', 'API\BaseRekeningController')->names([
 Route::apiResource('base/slides', 'API\BaseSlideController')->names([
     'store' => 'slide.store'
 ]);
+
+Route::apiResource('base/socmeds', 'API\BaseSocmedController')->names([
+    'store' => 'socmed.store'
+]);
 // base/slides
 
 Route::post('upload', [FileController::class, 'upload']);
@@ -53,6 +57,10 @@ Route::bind('rekening', function (string $id) {
 });
 
 Route::bind('slide', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('socmed', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

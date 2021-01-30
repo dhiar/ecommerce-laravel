@@ -15,7 +15,7 @@ class CreateSocmedsTable extends Migration
     {
         Schema::create('socmeds', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 20);
+            $table->string('name', 20)->unique();
             $table->string('icon', 20);
             $table->string('link', 100)->nullable();
             $table->timestamps();

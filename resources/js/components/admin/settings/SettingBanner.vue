@@ -147,14 +147,17 @@
                 </div>
               </div>
               <div class="form-group">
-								<label>Is Active</label>
-								<select name="active" v-model="form.active" id="active"
-									class="form-control">
-									<option value="1">Yes</option>
-									<option value="0">No</option>
-								</select>
-								<has-error :form="form" field="gender"></has-error>
-							</div>
+                <label>Is Active</label>
+                <select
+                  name="active"
+                  v-model="form.active"
+                  id="active"
+                  class="form-control"
+                >
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
             </div>
             <!--modal body-->
 
@@ -232,7 +235,7 @@
                   <a
                     class="btn btn-sm btn-danger"
                     href="#"
-                    @click="deleteBanner(item.id, item.name)"
+                    @click="deleteBanner(item.id, item.title)"
                     ><i class="fa fa-trash-alt text-gray-100"></i
                   ></a>
                 </td>
@@ -260,7 +263,7 @@ export default {
       totalItems: 50,
       results: {},
       submitted: false,
-      page: "slide",
+      page: "banner",
       endpoint: "/api/base/slides",
       form: new Form({
         id: "",
@@ -268,7 +271,7 @@ export default {
         url: "#",
         image: "", // path image
         storage_path_image: "",
-        active: '1',
+        active: "1",
       }),
     };
   },
@@ -294,6 +297,7 @@ export default {
   },
   methods: {
     async showModalBanner(id) {
+      this.submitted = false;
       $("#modalBanner").modal("show");
       const self = this;
       this.form.id = id;
@@ -351,6 +355,7 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
+              this.fetchData();
               $("#modalBanner").modal("hide");
             })
             .catch((error) => {
@@ -371,6 +376,7 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
+              this.fetchData();
               $("#modalBanner").modal("hide");
             })
             .catch((error) => {
@@ -383,8 +389,42 @@ export default {
               Swal.fire("Failed save data !", errMsg.join(""), "error");
             });
         }
-        this.fetchData();
       }
+    },
+    deleteBanner(id, name) {
+      const self = this;
+      Swal.fire({
+        title: "Are you sure delete " + this.page + " : " + name + " ?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.value) {
+          axios
+            .delete(self.baseURL + self.endpoint + "/" + id)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              $("#modalRekening").modal("hide");
+              this.fetchData();
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        }
+      });
     },
     async fetchData(page = 1) {
       const self = this;

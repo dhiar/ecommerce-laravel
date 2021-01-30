@@ -3,7 +3,7 @@
   <div class="container-fluid mb-5">
     <div
       class="modal fade"
-      id="modalRekening"
+      id="modalSocmed"
       tabindex="-1"
       aria-labelledby="addNewLabel"
       aria-hidden="true"
@@ -12,7 +12,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <div class="h5 text-gray-800 line-height-222">Tambah Rekening</div>
+            <div class="h5 text-gray-800 line-height-222">Tambah Socmed</div>
             <button
               type="button"
               class="close"
@@ -24,53 +24,16 @@
           </div>
           <!-- modal-header -->
 
-          <form @submit.prevent="createRekening(form.id)">
+          <form @submit.prevent="createSocmed(form.id)">
             <div class="modal-body">
-              <label for="rekening">Nama Bank / Provider E-Money</label>
               <div class="form-group">
-                <input
-                  v-model="form.rekening"
-                  type="text"
-                  id="rekening"
-                  name="rekening"
-                  placeholder="Nama Bank / Provider E-Money"
-                  class="form-control"
-                  :class="{
-                    'is-invalid': submitted && $v.form.rekening.$error,
-
-                    'is-valid': !$v.form.rekening.$invalid,
-                  }"
-                />
-                <div class="valid-feedback">Description is valid.</div>
-                <div
-                  v-if="submitted && !$v.form.rekening.required"
-                  class="invalid-feedback"
-                >
-                  Nama Bank harus diisi
-                </div>
-                <div
-                  v-if="submitted && !$v.form.rekening.maxLength"
-                  class="invalid-feedback"
-                >
-                  Nama Bank terlalu panjang ( maks :
-                  {{ $v.form.rekening.$params.maxLength.max }} karakter )
-                </div>
-                <div
-                  v-if="submitted && !$v.form.rekening.minLength"
-                  class="invalid-feedback"
-                >
-                  Nama Bank terlalu pendek ( maks :
-                  {{ $v.form.rekening.$params.minLength.min }} karakter )
-                </div>
-              </div>
-              <label for="name">Atas Nama</label>
-              <div class="form-group">
+                <label for="name">Jenis Sosmed</label>
                 <input
                   v-model="form.name"
                   type="text"
                   id="name"
                   name="name"
-                  placeholder="Atas Nama"
+                  placeholder="name"
                   class="form-control"
                   :class="{
                     'is-invalid': submitted && $v.form.name.$error,
@@ -78,67 +41,110 @@
                     'is-valid': !$v.form.name.$invalid,
                   }"
                 />
-                <div class="valid-feedback">Atas Nama is valid.</div>
+                <div class="valid-feedback">Name is valid.</div>
                 <div
                   v-if="submitted && !$v.form.name.required"
                   class="invalid-feedback"
                 >
-                  Atas Nama harus diisi
+                  Name harus diisi
                 </div>
                 <div
                   v-if="submitted && !$v.form.name.maxLength"
                   class="invalid-feedback"
                 >
-                  Atas Nama terlalu panjang ( maks :
+                  Name terlalu panjang ( maks :
                   {{ $v.form.name.$params.maxLength.max }} karakter )
                 </div>
                 <div
                   v-if="submitted && !$v.form.name.minLength"
                   class="invalid-feedback"
                 >
-                  Atas Nama terlalu pendek ( maks :
+                  Name terlalu pendek ( maks :
                   {{ $v.form.name.$params.minLength.min }} karakter )
                 </div>
               </div>
-              <label for="number">Nomor Rekening</label>
               <div class="form-group">
+                <label for="icon">Icon Sosmed</label>
                 <input
-                  v-model="form.number"
+                  v-model="form.icon"
                   type="text"
-                  id="number"
-                  name="number"
-                  placeholder="Nomor Rekening"
+                  id="icon"
+                  name="icon"
+                  placeholder="fa fa-some-icon"
                   class="form-control"
                   :class="{
-                    'is-invalid': submitted && $v.form.number.$error,
-
-                    'is-valid': !$v.form.number.$invalid,
+                    'is-invalid': submitted && $v.form.icon.$error,
+                    'is-valid': !$v.form.icon.$invalid,
                   }"
                 />
-                <div class="valid-feedback">Nomor Rekening is valid.</div>
+                <small class="text-muted">
+                  Buka link ini
+                  <a href="https://fontawesome.com/v4.7.0/icons">fontawesome</a>
+                  lalu cari nama sosmed. Misal icon untuk Facebook adalah
+                  facebook-f</small
+                >
+                <div class="valid-feedback">Icon is valid.</div>
                 <div
-                  v-if="submitted && !$v.form.number.required"
+                  v-if="submitted && !$v.form.icon.required"
                   class="invalid-feedback"
                 >
-                  Nomor Rekening harus diisi
+                  Icon harus diisi
                 </div>
                 <div
-                  v-if="submitted && !$v.form.number.maxLength"
+                  v-if="submitted && !$v.form.icon.maxLength"
                   class="invalid-feedback"
                 >
-                  Nomor Rekening terlalu panjang ( maks :
-                  {{ $v.form.number.$params.maxLength.max }} karakter )
+                  Icon terlalu panjang ( maks :
+                  {{ $v.form.icon.$params.maxLength.max }} karakter )
                 </div>
                 <div
-                  v-if="submitted && !$v.form.number.minLength"
+                  v-if="submitted && !$v.form.icon.minLength"
                   class="invalid-feedback"
                 >
-                  Nomor Rekening terlalu pendek ( maks :
-                  {{ $v.form.number.$params.minLength.min }} karakter )
+                  Icon terlalu pendek ( maks :
+                  {{ $v.form.icon.$params.minLength.min }} karakter )
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="link">Link atau URL</label>
+                <input
+                  v-model="form.link"
+                  type="text"
+                  id="link"
+                  name="link"
+                  placeholder="http://www.some-url.com"
+                  class="form-control"
+                  :class="{
+                    'is-invalid': submitted && $v.form.link.$error,
+
+                    'is-valid': !$v.form.link.$invalid,
+                  }"
+                />
+                <div class="valid-feedback">Link is valid.</div>
+                <div
+                  v-if="submitted && !$v.form.link.required"
+                  class="invalid-feedback"
+                >
+                  Link harus diisi
+                </div>
+                <div
+                  v-if="submitted && !$v.form.link.maxLength"
+                  class="invalid-feedback"
+                >
+                  Link terlalu panjang ( maks :
+                  {{ $v.form.link.$params.maxLength.max }} karakter )
+                </div>
+                <div
+                  v-if="submitted && !$v.form.link.minLength"
+                  class="invalid-feedback"
+                >
+                  Link terlalu pendek ( maks :
+                  {{ $v.form.link.$params.minLength.min }} karakter )
                 </div>
               </div>
             </div>
-            <!-- modal-body -->
+            <!--modal body-->
 
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-dismiss="modal">
@@ -152,14 +158,13 @@
                 Save
               </button>
             </div>
-            <!-- modal-footer -->
           </form>
         </div>
       </div>
     </div>
 
-    <!-- Page Heading -->
     <go-back></go-back>
+    <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800 mb-4 mt-3">Pengaturan</h1>
     <div class="row">
       <div class="col-md-3">
@@ -173,63 +178,46 @@
       <div class="col-md-9">
         <div class="card shadow">
           <div class="card-header">
-            <h2 class="lead text-dark mb-0">Rekening</h2>
+            <h2 class="lead text-dark mb-0">Sosial Media</h2>
           </div>
           <div class="card-body table-responsive">
-            <button @click="showModalRekening()" class="btn btn-primary">
-              Tambah Rekening
+            <button @click="showModalSocmed()" class="btn btn-primary">
+              Tambah Socmed
             </button>
-            <hr />
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th style="width: 10% !important">No</th>
-                  <th style="width: 15% !important">Nama Bank</th>
-                  <th style="width: 25% !important">Atas Nama</th>
-                  <th style="width: 35% !important">No Rekening</th>
-                  <th style="width: 15% !important">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, idx) in results.data" :key="item.id">
-                  <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-                  <td>{{ item.rekening }}</td>
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.number }}</td>
-                  <td>
-                    <a
-                      class="btn btn-sm btn-info"
-                      href="#"
-                      @click="showModalRekening(item.id)"
-                      ><i class="fa fa-pen text-gray-100"></i
-                    ></a>
-                    <a
-                      class="btn btn-sm btn-danger"
-                      @click="deleteRekening(item.id, item.name)"
-                      ><i class="fa fa-trash-alt text-gray-100"></i
-                    ></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
-          <!-- card-body -->
-          <div class="card-footer">
-            <!-- pagination -->
-            <div class="overflow-auto">
-              <b-pagination
-                size="md"
-                first-text="First"
-                prev-text="Prev"
-                next-text="Next"
-                last-text="Last"
-                :total-rows="totalItems"
-                v-model="currentPage"
-                :per-page="perPage"
-                align="center"
-              ></b-pagination>
-            </div>
-          </div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th class="text-center" style="width: 8% !important">No</th>
+                <th style="width: 20% !important">Jenis Socmed</th>
+                <th style="width: 20% !important">Icon</th>
+                <th style="width: 35% !important">Link atau URL</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, idx) in results.data" :key="item.id">
+                <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.icon }}</td>
+                <td>{{ item.link }}</td>
+                <td>
+                  <a
+                    class="btn btn-sm btn-info"
+                    href="#"
+                    @click="showModalSocmed(item.id)"
+                    ><i class="fa fa-pen text-gray-100"></i
+                  ></a>
+                  <a
+                    class="btn btn-sm btn-danger"
+                    href="#"
+                    @click="deleteBanner(item.id, item.name)"
+                    ><i class="fa fa-trash-alt text-gray-100"></i
+                  ></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -238,17 +226,11 @@
 
 <script>
 import GoBack from "../GoBack.vue";
-import { BPagination } from "bootstrap-vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
+
 export default {
   components: {
-    "b-pagination": BPagination,
     GoBack,
-  },
-  props: {
-    baseUrl: {
-      type: String,
-    },
   },
   data() {
     return {
@@ -257,13 +239,13 @@ export default {
       totalItems: 50,
       results: {},
       submitted: false,
-      page: "rekening",
-      endpoint: "/api/base/rekenings",
+      page: "socmed",
+      endpoint: "/api/base/socmeds",
       form: new Form({
         id: "",
         name: "",
-        rekening: "",
-        number: "",
+        icon: "#",
+        link: "",
       }),
     };
   },
@@ -272,17 +254,17 @@ export default {
       name: {
         required,
         minLength: minLength(5),
-        maxLength: maxLength(30),
+        maxLength: maxLength(20),
       },
-      rekening: {
+      icon: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(30),
+        minLength: minLength(5),
+        maxLength: maxLength(20),
       },
-      number: {
+      link: {
         required,
-        minLength: minLength(10),
-        maxLength: maxLength(30),
+        minLength: minLength(1),
+        maxLength: maxLength(200),
       },
     },
   },
@@ -290,8 +272,9 @@ export default {
     this.fetchData(1);
   },
   methods: {
-    async showModalRekening(id) {
-      $("#modalRekening").modal("show");
+    async showModalSocmed(id) {
+      this.submitted = false;
+      $("#modalSocmed").modal("show");
       const self = this;
       this.form.id = id;
       if (id) {
@@ -310,7 +293,7 @@ export default {
         this.form = result.data;
       }
     },
-    async createRekening(id) {
+    async createSocmed(id) {
       this.submitted = true;
       const self = this;
 
@@ -327,8 +310,7 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
-              this.fetchData();
-              $("#modalRekening").modal("hide");
+              $("#modalSocmed").modal("hide");
             })
             .catch((error) => {
               let errMsg = "";
@@ -348,8 +330,7 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
-              this.fetchData();
-              $("#modalRekening").modal("hide");
+              $("#modalSocmed").modal("hide");
             })
             .catch((error) => {
               let errMsg = "";
@@ -361,9 +342,10 @@ export default {
               Swal.fire("Failed save data !", errMsg.join(""), "error");
             });
         }
+        this.fetchData();
       }
     },
-    deleteRekening(id, name) {
+    deleteBanner(id, name) {
       const self = this;
       Swal.fire({
         title: "Are you sure delete " + this.page + " : " + name + " ?",
@@ -417,3 +399,5 @@ export default {
   },
 };
 </script>
+
+

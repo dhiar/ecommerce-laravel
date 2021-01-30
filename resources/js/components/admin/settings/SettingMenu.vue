@@ -16,7 +16,7 @@
       >Rekening</a
     >
     <a
-      :href="'/admin/setting/sosmed'"
+      :href="'/admin/setting/socmed'"
       class="list-group-item list-group-item-action"
       >Sosial Media</a
     >

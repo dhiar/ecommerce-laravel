@@ -67,7 +67,7 @@ let routes = [
     { path: '/admin/setting/banner', component: require(cmpAdmin + 'settings/SettingBanner').default },
     { path: '/admin/setting/description', component: require(cmpAdmin + 'settings/SettingDescription').default },
     { path: '/admin/setting/rekening', component: require(cmpAdmin + 'settings/SettingRekening').default },
-    { path: '/admin/setting/sosmed', component: require(cmpAdmin + 'settings/SettingSosmed').default },
+    { path: '/admin/setting/socmed', component: require(cmpAdmin + 'settings/SettingSocmed').default },
     { path: '/admin/setting/address', component: require(cmpAdmin + 'settings/SettingAddress').default },
     { path: '/admin/setting/delivery', component: require(cmpAdmin + 'settings/SettingDelivery').default },
     { path: '/admin/setting/cod', component: require(cmpAdmin + 'settings/SettingCOD').default },
