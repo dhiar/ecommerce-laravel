@@ -86,7 +86,7 @@ class BaseController extends Controller
         //
     }
 
-    public function createDescription(BaseRequest $request){
-        return $request->createDescription();
+    public function createBase(BaseRequest $request){
+        return $request->createBase();
     }
 }

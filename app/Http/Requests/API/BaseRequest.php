@@ -30,7 +30,7 @@ class BaseRequest extends FormRequest
         ];
     }
 
-    public function createDescription()
+    public function createBase()
     {
         $count = Base::count();
 
@@ -38,9 +38,7 @@ class BaseRequest extends FormRequest
 
             DB::beginTransaction();
             try {
-                $base = Base::create([
-                    'description'  => $this->description
-                ]);
+                $base = Base::create(request()->all());
 
                 DB::commit();
 
@@ -48,7 +46,7 @@ class BaseRequest extends FormRequest
                     'success' => true,
                     'process' => 'Create',
                     'data' => $base,
-                    'message' => 'Success create base : ' . $this->description,
+                    'message' => 'Success create base',
                 ]);
             } catch (\Exception $e) {
                 return response()->json([
@@ -67,18 +65,20 @@ class BaseRequest extends FormRequest
                 $base->update(request()->all());
                 DB::commit();
 
+                $base = Base::first();
+
                 return response()->json([
                     'success' => true,
                     'process' => 'Update',
                     'data' => $base,
-                    'message' => 'Success update base : ' . $this->description,
+                    'message' => 'Success update base',
                 ]);
             } catch (\Exception $e) {
                 return response()->json([
                     'success' => false,
                     'process' => 'Update',
                     'data' => [],
-                    'message' => 'Failed create base',
+                    'message' => 'Failed update base',
                 ]);
                 DB::rollback();
             }

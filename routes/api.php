@@ -30,7 +30,7 @@ Route::get('profile', 'API\UserController@profile');
 Route::put('profile', 'API\UserController@updateProfile');
 
 Route::get('base/show-description', 'API\BaseController@index')->name('base-show-description');
-Route::post('base/create-description', 'API\BaseController@createDescription')->name('base-create-description');
+Route::post('base/create', 'API\BaseController@createBase')->name('base-create');
 Route::apiResource('base/rekenings', 'API\BaseRekeningController')->names([
     'store' => 'rekening.store'
 ]);
@@ -41,7 +41,10 @@ Route::apiResource('base/slides', 'API\BaseSlideController')->names([
 Route::apiResource('base/socmeds', 'API\BaseSocmedController')->names([
     'store' => 'socmed.store'
 ]);
-// base/slides
+
+Route::get('list-province', 'API\ShippingController@listProvince');
+Route::get('list-city/{province}', 'API\ShippingController@listCity');
+Route::get('list-district/{city}', 'API\ShippingController@listDistrict');
 
 Route::post('upload', [FileController::class, 'upload']);
 

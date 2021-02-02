@@ -19,6 +19,7 @@ import ElementUI from "element-ui";
 import i18n from "vue-i18n";
 import "element-ui/lib/theme-chalk/index.css";
 import locale from "element-ui/lib/locale/lang/en";
+import Multiselect from 'vue-multiselect'
 
 Vue.use(i18n);
 Vue.use(ElementUI, { locale });
@@ -47,6 +48,7 @@ window.Form = Form
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 Vue.component('pagination', require('laravel-vue-pagination'));
+Vue.component('multiselect', Multiselect)
 
 Vue.use(VueRouter)
 Vue.use(VueProgressBar, {

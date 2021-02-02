@@ -69,11 +69,7 @@
 
 <script>
 import GoBack from "../GoBack.vue";
-import {
-  required,
-  minLength,
-  maxLength
-} from "vuelidate/lib/validators";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
   components: {
     GoBack,
@@ -88,40 +84,44 @@ export default {
     description: {
       required,
       minLength: minLength(5),
-      maxLength: maxLength(70),
-    }
+      maxLength: maxLength(300),
+    },
   },
   methods: {
     async createDescription() {
-      this.submitted = true
-      alert('createDescription')
+      this.submitted = true;
       this.$v.$touch();
       if (this.$v.$error) {
         return;
       } else {
         await axios
-        .post("/api/base/create-description", {
-          description: this.description,
-        })
-        .then(({ data }) => {
-          if (data.success) {
-            Swal.fire(data.process + "!", data.message, "success");
-          } else {
-            Swal.fire(data.process + "!", data.message, "error");
-          }
-        });
+          .post("/api/base/create", {
+            description: this.description,
+          })
+          .then(({ data }) => {
+            if (data.success) {
+              Swal.fire(data.process + "!", data.message, "success");
+            } else {
+              Swal.fire(data.process + "!", data.message, "error");
+            }
+          })
+          .catch((error) => {
+            let errMsg = "";
+            if (typeof error.response.data === "object") {
+              errMsg = _.flatten(_.toArray(error.response.data.errors));
+            } else {
+              errMsg = ["Something went wrong. Please try again."];
+            }
+            Swal.fire("Failed load data !", errMsg.join(""), "error");
+          });
       }
-
-      
     },
     fetchData() {
-     axios
-        .get("/api/base/show-description")
-        .then(({ data }) => {
-          if (data.id) {
-            this.description = data.description
-          }
-        });
+      axios.get("/api/base/show-description").then(({ data }) => {
+        if (data.id) {
+          this.description = data.description;
+        }
+      });
     },
   },
   mounted() {
