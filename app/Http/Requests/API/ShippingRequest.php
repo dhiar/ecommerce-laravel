@@ -36,7 +36,7 @@ class ShippingRequest extends FormRequest
     {
         $client = new Client();
         $headers = [
-            'Authorization' => \env('API_RUANGAPI'),
+            'Authorization' => \env('APIKEY_RUANGAPI'),
             'Accept' => 'application/json',
         ];
 

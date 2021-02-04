@@ -25,6 +25,8 @@ Route::apiResource('user', 'API\UserController')->names([
     'store' => 'user.store'
 ]);
 
+Route::get('bitly', 'API\BaseController@bitly');
+
 Route::get('findUser', 'API\UserController@search');
 Route::get('profile', 'API\UserController@profile');
 Route::put('profile', 'API\UserController@updateProfile');
@@ -40,6 +42,10 @@ Route::apiResource('base/slides', 'API\BaseSlideController')->names([
 
 Route::apiResource('base/socmeds', 'API\BaseSocmedController')->names([
     'store' => 'socmed.store'
+]);
+
+Route::apiResource('base/cods', 'API\BaseCodController')->names([
+    'store' => 'cod.store'
 ]);
 
 Route::get('list-province', 'API\ShippingController@listProvince');
@@ -64,6 +70,10 @@ Route::bind('slide', function (string $id) {
 });
 
 Route::bind('socmed', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('cod', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

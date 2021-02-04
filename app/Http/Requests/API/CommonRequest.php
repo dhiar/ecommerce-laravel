@@ -7,6 +7,9 @@ use App\Http\Transformers\IlluminatePaginatorAdapter;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+
 class CommonRequest extends FormRequest
 {
     /**

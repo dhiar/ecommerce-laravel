@@ -411,7 +411,7 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
-              $("#modalRekening").modal("hide");
+              $("#modalBanner").modal("hide");
               this.fetchData();
             })
             .catch((error) => {
