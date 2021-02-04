@@ -26,11 +26,6 @@
       >Alamat</a
     >
     <a
-      :href="'/admin/setting/delivery'"
-      class="list-group-item list-group-item-action"
-      >Biaya Antar</a
-    >
-    <a
       :href="'/admin/setting/cod'"
       class="list-group-item list-group-item-action"
       >Cash On Delivery</a

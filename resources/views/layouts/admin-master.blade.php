@@ -121,8 +121,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
           </li>
 
-          
-
           <!-- @can('isAdmin') -->
           <li class="nav-item">
             <router-link to="/admin/developer" class="nav-link">
