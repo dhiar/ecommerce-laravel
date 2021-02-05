@@ -3,7 +3,7 @@
   <div class="container-fluid mb-5">
     <div
       class="modal fade"
-      id="modalCod"
+      id="modalPage"
       tabindex="-1"
       aria-labelledby="addNewLabel"
       aria-hidden="true"
@@ -12,9 +12,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <div class="h5 text-gray-800 line-height-222">
-              Tambah Lokasi COD
-            </div>
+            <div class="h5 text-gray-800 line-height-222">Tambah Halaman</div>
             <button
               type="button"
               class="close"
@@ -26,54 +24,118 @@
           </div>
           <!-- modal-header -->
 
-          <form @submit.prevent="createCod(form.id)">
+          <form @submit.prevent="createPage()">
             <div class="modal-body">
               <div class="form-group">
-                <label for="name">Lokasi COD</label>
+                <label for="title">Title</label>
                 <input
                   v-model="form.location"
                   type="text"
-                  id="location"
-                  name="location"
-                  placeholder="location"
+                  id="title"
+                  name="title"
+                  placeholder="title"
                   class="form-control"
                   :class="{
-                    'is-invalid': submitted && $v.form.location.$error,
+                    'is-invalid': submitted && $v.form.title.$error,
 
-                    'is-valid': !$v.form.location.$invalid,
+                    'is-valid': !$v.form.title.$invalid,
                   }"
                 />
-                <div class="valid-feedback">Location is valid.</div>
+                <div class="valid-feedback">Title is valid.</div>
                 <div
-                  v-if="submitted && !$v.form.location.required"
+                  v-if="submitted && !$v.form.title.required"
                   class="invalid-feedback"
                 >
-                  Location harus diisi
+                  Title harus diisi
                 </div>
                 <div
-                  v-if="submitted && !$v.form.location.maxLength"
+                  v-if="submitted && !$v.form.title.maxLength"
                   class="invalid-feedback"
                 >
-                  Location terlalu panjang ( maks :
-                  {{ $v.form.location.$params.maxLength.max }} karakter )
+                  Title terlalu panjang ( maks :
+                  {{ $v.form.title.$params.maxLength.max }} karakter )
                 </div>
                 <div
-                  v-if="submitted && !$v.form.location.minLength"
+                  v-if="submitted && !$v.form.title.minLength"
                   class="invalid-feedback"
                 >
-                  Location terlalu pendek ( maks :
-                  {{ $v.form.location.$params.minLength.min }} karakter )
+                  Title terlalu pendek ( maks :
+                  {{ $v.form.title.$params.minLength.min }} karakter )
                 </div>
               </div>
               <div class="form-group">
-                <label for="url_gmaps">URL Google Maps</label>
+                <label for="content">Content</label>
                 <textarea
-                  v-model="form.url_gmaps"
-                  name="url_gmaps"
-                  id="url_gmaps"
+                  v-model="form.content"
+                  name="content"
+                  id="content"
                   class="form-control"
                   rows="5"
+                  :class="{
+                    'is-invalid': submitted && $v.form.content.$error,
+
+                    'is-valid': !$v.form.content.$invalid,
+                  }"
                 ></textarea>
+
+                <div class="valid-feedback">Content is valid.</div>
+                <div
+                  v-if="submitted && !$v.form.content.required"
+                  class="invalid-feedback"
+                >
+                  Content harus diisi
+                </div>
+                <div
+                  v-if="submitted && !$v.form.content.maxLength"
+                  class="invalid-feedback"
+                >
+                  Content terlalu panjang ( maks :
+                  {{ $v.form.content.$params.maxLength.max }} karakter )
+                </div>
+                <div
+                  v-if="submitted && !$v.form.content.minLength"
+                  class="invalid-feedback"
+                >
+                  Content terlalu pendek ( maks :
+                  {{ $v.form.content.$params.minLength.min }} karakter )
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="slug">Slug</label>
+                <input
+                  v-model="form.slug"
+                  type="text"
+                  id="slug"
+                  name="slug"
+                  placeholder="slug"
+                  class="form-control"
+                  :class="{
+                    'is-invalid': submitted && $v.form.slug.$error,
+
+                    'is-valid': !$v.form.slug.$invalid,
+                  }"
+                />
+                <div class="valid-feedback">Slug is valid.</div>
+                <div
+                  v-if="submitted && !$v.form.slug.required"
+                  class="invalid-feedback"
+                >
+                  Slug harus diisi
+                </div>
+                <div
+                  v-if="submitted && !$v.form.slug.maxLength"
+                  class="invalid-feedback"
+                >
+                  Slug terlalu panjang ( maks :
+                  {{ $v.form.slug.$params.maxLength.max }} karakter )
+                </div>
+                <div
+                  v-if="submitted && !$v.form.slug.minLength"
+                  class="invalid-feedback"
+                >
+                  Slug terlalu pendek ( maks :
+                  {{ $v.form.slug.$params.minLength.min }} karakter )
+                </div>
               </div>
             </div>
             <!--modal body-->
@@ -97,67 +159,53 @@
 
     <go-back></go-back>
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800 mb-4 mt-3">Pengaturan</h1>
-    <div class="row">
-      <div class="col-md-3">
-        <div class="card shadow">
-          <div class="card-body">
-            <setting-menu></setting-menu>
-          </div>
-        </div>
-      </div>
 
-      <div class="col-md-9">
-        <div class="card shadow">
-          <div class="card-header">
-            <h2 class="lead text-dark mb-0">COD</h2>
-          </div>
-          <div class="card-body table-responsive">
-            <button @click="showModalCod()" class="btn btn-primary">
-              Tambah Lokasi COD
-            </button>
-          </div>
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th class="text-center" style="width: 10% !important">No</th>
-                <th style="width: 40% !important">Location Name</th>
-                <th style="width: 30% !important">Url Gmaps</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, idx) in results.data" :key="item.id">
-                <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-                <td>{{ item.location }}</td>
-                <td>
-                  <a :href="item.url_gmaps">{{ item.short_url_gmaps }}</a>
-                </td>
-                <td>
-                  <a
-                    class="btn btn-sm btn-info"
-                    href="#"
-                    @click="showModalCod(item.id)"
-                    ><i class="fa fa-pen text-gray-100"></i
-                  ></a>
-                  <a
-                    class="btn btn-sm btn-danger"
-                    href="#"
-                    @click="deleteCod(item.id, item.name)"
-                    ><i class="fa fa-trash-alt text-gray-100"></i
-                  ></a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <h1 class="h3 mb-2 text-gray-800 mb-4">Halaman</h1>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <button @click="showModalPage()" class="btn btn-primary">Tambah</button>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 10% !important">No</th>
+              <th style="width: 40% !important">Title</th>
+              <th style="width: 35% !important">Slug</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, idx) in results.data" :key="item.id">
+              <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+              <td>{{ item.title }}</td>
+              <td>{{ item.slug }}</td>
+              <td>
+                <a
+                  class="btn btn-sm btn-info"
+                  href="#"
+                  @click="showModalPage(item.id)"
+                  ><i class="fa fa-pen text-gray-100"></i
+                ></a>
+                <a
+                  class="btn btn-sm btn-danger"
+                  href="#"
+                  @click="deletePage(item.id, item.name)"
+                  ><i class="fa fa-trash-alt text-gray-100"></i
+                ></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import GoBack from "../GoBack.vue";
+import GoBack from "./GoBack.vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
@@ -171,22 +219,30 @@ export default {
       totalItems: 50,
       results: {},
       submitted: false,
-      page: "cod",
-      endpoint: "/api/base/cods",
+      page: "page",
+      endpoint: "/api/pages",
       form: new Form({
         id: "",
-        location: "",
-        url_gmaps: "",
-        short_url_gmaps: "",
+        title: "",
+        content: "",
+        slug: "",
       }),
     };
   },
   validations: {
     form: {
-      location: {
+      title: {
         required,
-        minLength: minLength(10),
-        maxLength: maxLength(200),
+        minLength: minLength(5),
+        maxLength: maxLength(30),
+      },
+      content: {
+        required,
+      },
+      slug: {
+        required,
+        minLength: minLength(5),
+        maxLength: maxLength(25),
       },
     },
   },
@@ -194,9 +250,9 @@ export default {
     this.fetchData(1);
   },
   methods: {
-    async showModalCod(id) {
+    async showModalPage(id) {
       this.submitted = false;
-      $("#modalCod").modal("show");
+      $("#modalPage").modal("show");
       const self = this;
       this.form.id = id;
       if (id) {
@@ -215,7 +271,7 @@ export default {
         this.form = result.data;
       }
     },
-    async createCod(id) {
+    async createPage(id) {
       this.submitted = true;
       const self = this;
 
@@ -232,7 +288,8 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
-              $("#modalCod").modal("hide");
+              $("#modalPage").modal("hide");
+              self.form.reset()
             })
             .catch((error) => {
               let errMsg = "";
@@ -252,7 +309,8 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
-              $("#modalCod").modal("hide");
+              $("#modalPage").modal("hide");
+              self.form.reset()
             })
             .catch((error) => {
               let errMsg = "";
@@ -267,7 +325,7 @@ export default {
         this.fetchData();
       }
     },
-    deleteCod(id, name) {
+    deletePage(id, name) {
       const self = this;
       Swal.fire({
         title: "Are you sure delete " + this.page + " : " + name + " ?",
@@ -287,7 +345,8 @@ export default {
               } else {
                 Swal.fire("Failed !", data.message, "error");
               }
-              $("#modalCod").modal("hide");
+              $("#modalPage").modal("hide");
+              self.form.reset()
               this.fetchData();
             })
             .catch((error) => {

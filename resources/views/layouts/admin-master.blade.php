@@ -88,7 +88,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul class="nav nav-treeview">
               {{-- fas fa-fw fa-file --}}
               <li class="nav-item">
-                <router-link to="/admin/setting" class="nav-link">
+                <router-link to="/admin/page" class="nav-link">
                   <i class="fas fa-fw fa-file nav-icon"></i>
                   <p>Page</p>
                 </router-link>

@@ -48,6 +48,10 @@ Route::apiResource('base/cods', 'API\BaseCodController')->names([
     'store' => 'cod.store'
 ]);
 
+Route::apiResource('pages', 'API\PageController')->names([
+    'store' => 'cod.store'
+]);
+
 Route::get('list-province', 'API\ShippingController@listProvince');
 Route::get('list-city/{province}', 'API\ShippingController@listCity');
 Route::get('list-district/{city}', 'API\ShippingController@listDistrict');
@@ -74,6 +78,10 @@ Route::bind('socmed', function (string $id) {
 });
 
 Route::bind('cod', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('page', function (string $id) {
 	return  MainHasher::decode($id);
 });
 
