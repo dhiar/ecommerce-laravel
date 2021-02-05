@@ -9,7 +9,7 @@ class Page extends Model
 {
     public $timestamps = true;
     protected $guarded = ['id'];
-    protected $fillable = ['name'];
+    protected $fillable = ['title','content','slug'];
 
     // public function usertypes()
     // {

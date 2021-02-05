@@ -52,13 +52,11 @@ class PageController extends Controller
     public function store(CommonRequest $request)
     {
         $validated = $request->validate([
-            'location' => 'required|min:10|max:200'
+            'title' => 'required|min:5|max:30',
+            'content' => 'required|min:5',
+            'slug' => 'required|min:5|max:25',
         ]);
 
-        if ( !empty(request('url_gmaps'))){
-            $shortUrl = $this->generateShortUrl();
-            request()->request->add(['short_url_gmaps' => $shortUrl]);
-        }
 
         return $request->store($this->model, request()->all(), $this->transformer);
     }

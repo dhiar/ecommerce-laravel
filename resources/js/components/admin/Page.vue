@@ -9,7 +9,7 @@
       aria-hidden="true"
       style="width: 100%"
     >
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <div class="h5 text-gray-800 line-height-222">Tambah Halaman</div>
@@ -24,12 +24,13 @@
           </div>
           <!-- modal-header -->
 
-          <form @submit.prevent="createPage()">
+          <form @submit.prevent="createPage(form.id)">
+            
             <div class="modal-body">
               <div class="form-group">
                 <label for="title">Title</label>
                 <input
-                  v-model="form.location"
+                  v-model="form.title"
                   type="text"
                   id="title"
                   name="title"
@@ -77,27 +78,12 @@
                     'is-valid': !$v.form.content.$invalid,
                   }"
                 ></textarea>
-
                 <div class="valid-feedback">Content is valid.</div>
                 <div
                   v-if="submitted && !$v.form.content.required"
                   class="invalid-feedback"
                 >
                   Content harus diisi
-                </div>
-                <div
-                  v-if="submitted && !$v.form.content.maxLength"
-                  class="invalid-feedback"
-                >
-                  Content terlalu panjang ( maks :
-                  {{ $v.form.content.$params.maxLength.max }} karakter )
-                </div>
-                <div
-                  v-if="submitted && !$v.form.content.minLength"
-                  class="invalid-feedback"
-                >
-                  Content terlalu pendek ( maks :
-                  {{ $v.form.content.$params.minLength.min }} karakter )
                 </div>
               </div>
               <div class="form-group">
@@ -115,6 +101,7 @@
                     'is-valid': !$v.form.slug.$invalid,
                   }"
                 />
+                <small class="text-muted">Gunakan tanda - jika lebih dari 1 kata. Contoh: about-us</small>
                 <div class="valid-feedback">Slug is valid.</div>
                 <div
                   v-if="submitted && !$v.form.slug.required"
@@ -157,14 +144,14 @@
       </div>
     </div>
 
-    <go-back></go-back>
+    <go-back></go-back><br />
     <!-- Page Heading -->
 
     <h1 class="h3 mb-2 text-gray-800 mb-4">Halaman</h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-      <div class="card-header py-3">
+      <div class="card-header py-3 right-align">
         <button @click="showModalPage()" class="btn btn-primary">Tambah</button>
       </div>
       <div class="card-body table-responsive">
@@ -255,6 +242,7 @@ export default {
       $("#modalPage").modal("show");
       const self = this;
       this.form.id = id;
+
       if (id) {
         const result = await axios
           .get(self.endpoint + "/" + id)
@@ -269,6 +257,11 @@ export default {
           });
 
         this.form = result.data;
+      } else {
+        // clear form
+        Object.keys(this.form).forEach(function (key, index) {
+          self.form[key] = "";
+        });
       }
     },
     async createPage(id) {
@@ -289,7 +282,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalPage").modal("hide");
-              self.form.reset()
+              this.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -310,7 +303,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalPage").modal("hide");
-              self.form.reset()
+              this.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -322,7 +315,6 @@ export default {
               Swal.fire("Failed save data !", errMsg.join(""), "error");
             });
         }
-        this.fetchData();
       }
     },
     deletePage(id, name) {
@@ -346,7 +338,6 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalPage").modal("hide");
-              self.form.reset()
               this.fetchData();
             })
             .catch((error) => {

@@ -49,7 +49,7 @@ Route::apiResource('base/cods', 'API\BaseCodController')->names([
 ]);
 
 Route::apiResource('pages', 'API\PageController')->names([
-    'store' => 'cod.store'
+    'store' => 'page.store'
 ]);
 
 Route::get('list-province', 'API\ShippingController@listProvince');
