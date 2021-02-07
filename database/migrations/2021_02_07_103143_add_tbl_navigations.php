@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTblPages extends Migration
+class AddTblNavigations extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class AddTblPages extends Migration
      */
     public function up()
     {
-        Schema::create('pages', function (Blueprint $table) {
+        Schema::create('navigations', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 30);
-            $table->longText('content');
-            $table->string('slug', 25);
+            $table->string('name', 30)->unique();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class AddTblPages extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('navigations');
     }
 }

@@ -30,7 +30,7 @@ class PageController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        return $request->index($this->model, $this->transformer);
+        return $request->index($this->model, $this->transformer, 'asc');
     }
 
     /**

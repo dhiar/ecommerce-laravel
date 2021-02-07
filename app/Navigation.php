@@ -4,15 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Footer;
-
-class Page extends Model
+class Navigation extends Model
 {
     public $timestamps = true;
     protected $guarded = ['id'];
-    protected $fillable = ['title','content','slug'];
+    protected $fillable = [
+        'name'
+    ];
 
     public function footers(){
-        return $this->hasOne(Footer::class, 'id_footer', 'id');
+        return $this->hasMany(Footer::class, 'id_footer', 'id');
     }
 }

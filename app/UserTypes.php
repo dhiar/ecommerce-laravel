@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{User, Menu};
+use App\{User};
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserTypes extends Model
@@ -20,8 +20,8 @@ class UserTypes extends Model
         return $this->hasMany(User::class, 'id_user_type', 'id');
     }
 
-    public function menus()
-    {
-        return $this->belongsToMany(Menu::class)->withTimestamps()->withPivot(['name']);
-    }
+    // public function menus()
+    // {
+    //     return $this->belongsToMany(Menu::class)->withTimestamps()->withPivot(['name']);
+    // }
 }
