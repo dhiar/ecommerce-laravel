@@ -25,7 +25,6 @@
           <!-- modal-header -->
 
           <form @submit.prevent="createPage(form.id)">
-            
             <div class="modal-body">
               <div class="form-group">
                 <label for="title">Title</label>
@@ -66,25 +65,7 @@
               </div>
               <div class="form-group">
                 <label for="content">Content</label>
-                <textarea
-                  v-model="form.content"
-                  name="content"
-                  id="content"
-                  class="form-control"
-                  rows="5"
-                  :class="{
-                    'is-invalid': submitted && $v.form.content.$error,
-
-                    'is-valid': !$v.form.content.$invalid,
-                  }"
-                ></textarea>
-                <div class="valid-feedback">Content is valid.</div>
-                <div
-                  v-if="submitted && !$v.form.content.required"
-                  class="invalid-feedback"
-                >
-                  Content harus diisi
-                </div>
+                <editor ref="tuiEditor" />
               </div>
               <div class="form-group">
                 <label for="slug">Slug</label>
@@ -101,7 +82,10 @@
                     'is-valid': !$v.form.slug.$invalid,
                   }"
                 />
-                <small class="text-muted">Gunakan tanda - jika lebih dari 1 kata. Contoh: about-us</small>
+                <small class="text-muted"
+                  >Gunakan tanda - jika lebih dari 1 kata. Contoh:
+                  about-us</small
+                >
                 <div class="valid-feedback">Slug is valid.</div>
                 <div
                   v-if="submitted && !$v.form.slug.required"
@@ -179,7 +163,7 @@
                 <a
                   class="btn btn-sm btn-danger"
                   href="#"
-                  @click="deletePage(item.id, item.name)"
+                  @click="deletePage(item.id, item.title)"
                   ><i class="fa fa-trash-alt text-gray-100"></i
                 ></a>
               </td>
@@ -192,12 +176,22 @@
 </template>
 
 <script>
+// import "tui-editor/dist/tui-editor.css"
+
+import "codemirror/lib/codemirror.css";
+import "@toast-ui/editor/dist/toastui-editor.css";
+
+// import { Editor } from "@toast-ui/vue-editor";
+
+import { Editor } from "@toast-ui/vue-editor";
+
 import GoBack from "./GoBack.vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
   components: {
     GoBack,
+    editor: Editor,
   },
   data() {
     return {
@@ -222,9 +216,6 @@ export default {
         required,
         minLength: minLength(5),
         maxLength: maxLength(30),
-      },
-      content: {
-        required,
       },
       slug: {
         required,
@@ -257,16 +248,29 @@ export default {
           });
 
         this.form = result.data;
+        this.$refs.tuiEditor.invoke("setHtml", this.form.content);
       } else {
         // clear form
-        Object.keys(this.form).forEach(function (key, index) {
-          self.form[key] = "";
-        });
+        if (!this.submitted) {
+          Object.keys(this.form).forEach(function (key, index) {
+            self.form[key] = "";
+          });
+        }
+        this.$refs.tuiEditor.invoke("setHtml", null);
       }
     },
     async createPage(id) {
       this.submitted = true;
       const self = this;
+
+      // return error if empty content
+      let content = this.$refs.tuiEditor.invoke("getHtml");
+
+      if (!content) {
+        Swal.fire("Failed !", "Content must be filled", "error");
+      } else {
+        self.form.content = content;
+      }
 
       this.$v.$touch();
       if (this.$v.$error) {
@@ -315,6 +319,8 @@ export default {
               Swal.fire("Failed save data !", errMsg.join(""), "error");
             });
         }
+
+        this.submitted = false;
       }
     },
     deletePage(id, name) {
