@@ -4,12 +4,13 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\API\CommonRequest;
-use App\Transformers\PageTransformer;
-use App\Page;
+use App\Http\Requests\API\{CommonRequest, FooterRequest};
+use App\Transformers\{FooterNavTransformer, FooterTransformer};
+use App\Footer;
+use Illuminate\Support\Facades\DB;
 
 
-class PageController extends Controller
+class FooterController extends Controller
 {
     /**
 	 * Create a new controller instance.
@@ -18,8 +19,9 @@ class PageController extends Controller
 	 */
 	public function __construct()
 	{
-        $this->model = new Page();
-        $this->transformer = new PageTransformer;
+        $this->model = new Footer();
+        $this->transformer = new FooterTransformer;
+        $this->footer_nav_transformer = new FooterNavTransformer;
 		// $this->middleware(['auth:admin-api']);
     }
 
@@ -28,9 +30,13 @@ class PageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(CommonRequest $request)
+    public function index(FooterRequest $request)
     {
-        return $request->index($this->model, $this->transformer, 'asc');
+        $object = DB::table('footers')
+                 ->select('id_navigation', DB::raw('count(*) as total'))
+                 ->groupBy('id_navigation')
+                 ->get();
+        return $request->index($object, $this->footer_nav_transformer, 'asc');
     }
 
     /**

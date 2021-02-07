@@ -52,6 +52,10 @@ Route::apiResource('pages', 'API\PageController')->names([
     'store' => 'page.store'
 ]);
 
+Route::apiResource('footers', 'API\FooterController')->names([
+    'store' => 'footer.store'
+]);
+
 Route::get('list-province', 'API\ShippingController@listProvince');
 Route::get('list-city/{province}', 'API\ShippingController@listCity');
 Route::get('list-district/{city}', 'API\ShippingController@listDistrict');

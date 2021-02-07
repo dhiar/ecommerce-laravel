@@ -13,7 +13,7 @@ class Footer extends Model
     protected $fillable = ['id_page','id_navigation'];
 
     public function page(){
-        return $this->belongsTo(Navigation::class,'id_navigation');
+        return $this->belongsTo(Page::class,'id_page');
     }
 
     public function navigation(){
