@@ -291,6 +291,13 @@ export default {
           });
 
         this.form = result.data;
+      } else {
+        // clear form
+        if (!this.submitted) {
+          Object.keys(this.form).forEach(function (key, index) {
+            self.form[key] = "";
+          });
+        }
       }
     },
     async createSocmed(id) {
@@ -311,6 +318,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalSocmed").modal("hide");
+              self.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -331,6 +339,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalSocmed").modal("hide");
+              self.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -342,8 +351,8 @@ export default {
               Swal.fire("Failed save data !", errMsg.join(""), "error");
             });
         }
-        this.fetchData();
       }
+      this.submitted = false;
     },
     deleteBanner(id, name) {
       const self = this;

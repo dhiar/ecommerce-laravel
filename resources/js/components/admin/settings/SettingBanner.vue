@@ -315,6 +315,13 @@ export default {
           });
 
         this.form = result.data;
+      } else {
+        // clear form
+        if (!this.submitted) {
+          Object.keys(this.form).forEach(function (key, index) {
+            self.form[key] = "";
+          });
+        }
       }
     },
     handleBannerSuccess(res, file) {
@@ -390,6 +397,7 @@ export default {
             });
         }
       }
+      this.submitted = false;
     },
     deleteBanner(id, name) {
       const self = this;

@@ -213,6 +213,13 @@ export default {
           });
 
         this.form = result.data;
+      } else {
+        // clear form
+        if (!this.submitted) {
+          Object.keys(this.form).forEach(function (key, index) {
+            self.form[key] = "";
+          });
+        }
       }
     },
     async createCod(id) {
@@ -233,6 +240,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalCod").modal("hide");
+              this.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -253,6 +261,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalCod").modal("hide");
+              this.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -264,8 +273,8 @@ export default {
               Swal.fire("Failed save data !", errMsg.join(""), "error");
             });
         }
-        this.fetchData();
       }
+      this.submitted = false;
     },
     deleteCod(id, name) {
       const self = this;

@@ -308,6 +308,13 @@ export default {
           });
 
         this.form = result.data;
+      } else {
+        // clear form
+        if (!this.submitted) {
+          Object.keys(this.form).forEach(function (key, index) {
+            self.form[key] = "";
+          });
+        }
       }
     },
     async createRekening(id) {
@@ -362,6 +369,7 @@ export default {
             });
         }
       }
+      this.submitted = false;
     },
     deleteRekening(id, name) {
       const self = this;

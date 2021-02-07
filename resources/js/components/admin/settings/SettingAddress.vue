@@ -359,7 +359,6 @@ export default {
       if (this.$v.$error) {
         return;
       } else {
-        alert(JSON.stringify(self.form))
         axios
           .post(self.baseURL + self.endpoint,self.form)
           .then(({ data }) => {
