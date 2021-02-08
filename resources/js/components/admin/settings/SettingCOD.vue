@@ -216,9 +216,7 @@ export default {
       } else {
         // clear form
         if (!this.submitted) {
-          Object.keys(this.form).forEach(function (key, index) {
-            self.form[key] = "";
-          });
+          self.clearForm(self.form)
         }
       }
     },
