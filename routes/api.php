@@ -52,6 +52,10 @@ Route::apiResource('pages', 'API\PageController')->names([
     'store' => 'page.store'
 ]);
 
+Route::apiResource('navigations', 'API\NavigationController')->names([
+    'store' => 'navigation.store'
+]);
+
 Route::apiResource('footers', 'API\FooterController')->names([
     'store' => 'footer.store'
 ]);
@@ -86,6 +90,22 @@ Route::bind('cod', function (string $id) {
 });
 
 Route::bind('page', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('page_id', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('navigation', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('navigation_id', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('footer', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

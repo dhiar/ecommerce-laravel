@@ -10,13 +10,13 @@ class Footer extends Model
 {
     public $timestamps = true;
     protected $guarded = ['id'];
-    protected $fillable = ['id_page','id_navigation'];
+    protected $fillable = ['page_id','navigation_id'];
 
     public function page(){
-        return $this->belongsTo(Page::class,'id_page');
+        return $this->belongsTo(Page::class,'page_id');
     }
 
     public function navigation(){
-        return $this->belongsTo(Navigation::class,'id_navigation');
+        return $this->belongsTo(Navigation::class,'navigation_id');
     }
 }

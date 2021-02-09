@@ -34,7 +34,7 @@ class CommonRequest extends FormRequest
         ];
     }
 
-    public function index($model, $transformer, $sort = null)
+    public function index($model, $transformer, $sort = null, $limit = 10)
     {
         if ($this->q) {
             $search = $this->q;
@@ -44,12 +44,12 @@ class CommonRequest extends FormRequest
                     ->where('rekening', 'LIKE', "%$search%")
                     ->where('number', 'LIKE', "%$search%")
                     ->orWhere('address', 'LIKE', "%$search%");
-            })->paginate(10);
+            })->paginate($limit);
         } else {
             if ($sort) {
-                $paginator = $model->paginate(10);
+                $paginator = $model->paginate($limit);
             } else {
-                $paginator = $model::latest()->paginate(10);
+                $paginator = $model::latest()->paginate($limit);
             }
         }
 

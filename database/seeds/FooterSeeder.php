@@ -13,32 +13,32 @@ class FooterSeeder extends Seeder
     public function run()
     {
         Footer::create([
-            'id_page'  => '1',
-            'id_navigation' => '1'
+            'page_id'  => '1',
+            'navigation_id' => '1'
         ]);
         Footer::create([
-            'id_page'  => '2',
-            'id_navigation' => '2'
+            'page_id'  => '2',
+            'navigation_id' => '2'
         ]);
         Footer::create([
-            'id_page'  => '3',
-            'id_navigation' => '1'
+            'page_id'  => '3',
+            'navigation_id' => '1'
         ]);
         Footer::create([
-            'id_page'  => '4',
-            'id_navigation' => '1'
+            'page_id'  => '4',
+            'navigation_id' => '1'
         ]);
         Footer::create([
-            'id_page'  => '5',
-            'id_navigation' => '1'
+            'page_id'  => '5',
+            'navigation_id' => '1'
         ]);
         Footer::create([
-            'id_page'  => '6',
-            'id_navigation' => '2'
+            'page_id'  => '6',
+            'navigation_id' => '2'
         ]);
         Footer::create([
-            'id_page'  => '7',
-            'id_navigation' => '2'
+            'page_id'  => '7',
+            'navigation_id' => '2'
         ]);
     }
 }

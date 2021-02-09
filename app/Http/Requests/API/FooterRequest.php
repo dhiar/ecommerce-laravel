@@ -36,35 +36,7 @@ class FooterRequest extends FormRequest
 
     public function index($model, $transformer, $sort = null)
     {
-        // dd($model);
         return fractal($model , $transformer)->toArray()['data'];
-        // $object = $model->paginate(10);
-        // return fractal($object , $transformer)->toArray()['data'];
-        // if ($this->q) {
-        //     $search = $this->q;
-        //     $paginator = $model::where(function ($query) use ($search) {
-        //         $query
-        //             ->where('name', 'LIKE', "%$search%")
-        //             ->where('rekening', 'LIKE', "%$search%")
-        //             ->where('number', 'LIKE', "%$search%")
-        //             ->orWhere('address', 'LIKE', "%$search%");
-        //     })->paginate(10);
-        // } else {
-        //     if ($sort) {
-        //         $paginator = $model->paginate(10);
-        //     } else {
-        //         $paginator = $model::latest()->paginate(10);
-        //     }
-        // }
-
-        // $result = $paginator->getCollection();
-
-        // $response = fractal()
-        //     ->collection($result, $transformer)
-        //     ->paginateWith(new IlluminatePaginatorAdapter($paginator))
-        //     ->toArray();
-
-        // return PaginationFormat::commit($paginator, $response);
     }
 
     public function store($model, $params, $transformer)

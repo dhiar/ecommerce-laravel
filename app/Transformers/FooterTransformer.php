@@ -35,8 +35,8 @@ class FooterTransformer extends TransformerAbstract
     {
         return [
             'id' => MainHasher::encode($model->id),
-            'page' => MainHasher::encode($model->page),
-            'navigation' => MainHasher::encode($model->navigation),
+            'page_id' => MainHasher::encode($model->page_id),
+            'navigation_id' => MainHasher::encode($model->navigation_id),
         ];
     }
 }

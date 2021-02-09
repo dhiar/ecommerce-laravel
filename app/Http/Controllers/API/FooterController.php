@@ -8,6 +8,7 @@ use App\Http\Requests\API\{CommonRequest, FooterRequest};
 use App\Transformers\{FooterNavTransformer, FooterTransformer};
 use App\Footer;
 use Illuminate\Support\Facades\DB;
+use App\Hashers\MainHasher;
 
 
 class FooterController extends Controller
@@ -33,8 +34,8 @@ class FooterController extends Controller
     public function index(FooterRequest $request)
     {
         $object = DB::table('footers')
-                 ->select('id_navigation', DB::raw('count(*) as total'))
-                 ->groupBy('id_navigation')
+                 ->select('navigation_id', DB::raw('count(*) as total'))
+                 ->groupBy('navigation_id')
                  ->get();
         return $request->index($object, $this->footer_nav_transformer, 'asc');
     }
@@ -58,13 +59,32 @@ class FooterController extends Controller
     public function store(CommonRequest $request)
     {
         $validated = $request->validate([
-            'title' => 'required|min:5|max:30',
-            'content' => 'required|min:5',
-            'slug' => 'required|min:5|max:25',
+            'page_id' => 'required',
+            'navigation_id' => 'required',
         ]);
 
+        // unique data footer , if is-exist, return error
 
-        return $request->store($this->model, request()->all(), $this->transformer);
+        $pageId = MainHasher::decode(request('page_id'));
+        $navigationId = MainHasher::decode(request('navigation_id'));
+
+        request()->request->add(['page_id' => $pageId]);
+        request()->request->add(['navigation_id' => $navigationId]);
+
+        $count = Footer::wherePageId($pageId)
+                ->whereNavigationId($navigationId)->count();
+
+        if ($count > 0) {
+            return response()->json([
+                'success' => false,
+                'process' => 'create',
+                'data' => null,
+                'message' => 'Failed create footer, because data is exist.',
+            ]);
+        } else {
+            // dd(request()->all());
+            return $request->store($this->model, request()->all(), $this->transformer);
+        }
     }
 
     /**

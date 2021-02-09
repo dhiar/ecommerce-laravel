@@ -34,18 +34,21 @@ class FooterNavTransformer extends TransformerAbstract
      */
     public function transform($object)
     {
-        // $footers = Footer::whereIdNavigation($object->id_navigation)->get();
+        // $footers = Footer::whereIdNavigation($object->navigation_id)->get();
         // fractal($footers , FooterTransformer::class)->toArray()['data'],
 
-        $id_navigation = $object->id_navigation;
-        $navigation = Navigation::find($id_navigation);
-        $navPages = Navigation::find($id_navigation)->pages;
+        $navigation_id = $object->navigation_id;
+        $navigation = Navigation::find($navigation_id);
+        $navPages = Navigation::find($navigation_id)->pages;
 
         $pages = [];
         foreach ($navPages as $page) {
+            $footer =$navigation->footers->where('page_id',$page->id)->first();
             $pages[] = [
                 'id' => MainHasher::encode($page->id),
-                'title' => $page->title
+                'title' => $page->title,
+                'navigation_id' => $navigation->id,
+                'footer' =>fractal($footer , FooterTransformer::class)->toArray()['data']
             ];
         }
         

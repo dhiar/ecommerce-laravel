@@ -12,7 +12,7 @@ class Page extends Model
     protected $guarded = ['id'];
     protected $fillable = ['title','content','slug'];
 
-    public function footers(){
-        return $this->hasOne(Footer::class, 'id_footer', 'id');
+    public function footer(){
+        return $this->hasOne(Footer::class, 'page_id', 'id');
     }
 }

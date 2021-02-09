@@ -16,13 +16,13 @@ class AddTblFooters extends Migration
         Schema::create('footers', function (Blueprint $table) {
             $table->id();
             
-            $table->unsignedBigInteger('id_page');
-            $table->foreign('id_page')
+            $table->unsignedBigInteger('page_id');
+            $table->foreign('page_id')
                 ->references('id')
                 ->on('pages');
 
-            $table->unsignedBigInteger('id_navigation');
-            $table->foreign('id_navigation')
+            $table->unsignedBigInteger('navigation_id');
+            $table->foreign('navigation_id')
                 ->references('id')
                 ->on('navigations');
 
@@ -38,10 +38,10 @@ class AddTblFooters extends Migration
     public function down()
     {
         Schema::table('footers', function (Blueprint $table) {
-            $table->dropForeign(['id_page']);
-            $table->dropColumn('id_page');
-            $table->dropForeign(['id_navigation']);
-            $table->dropColumn('id_navigation');
+            $table->dropForeign(['page_id']);
+            $table->dropColumn('page_id');
+            $table->dropForeign(['navigation_id']);
+            $table->dropColumn('navigation_id');
         });
         Schema::dropIfExists('footers');
     }

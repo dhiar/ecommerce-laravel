@@ -16,6 +16,10 @@ class Navigation extends Model
     ];
 
     public function pages(){
-        return $this->belongsToMany(Page::class, 'footers', 'id_navigation', 'id_page')->withTimestamps();
+        return $this->belongsToMany(Page::class, 'footers', 'navigation_id', 'page_id')->withTimestamps();
+    }
+
+    public function footers(){
+        return $this->hasMany(Footer::class, 'navigation_id', 'id');
     }
 }

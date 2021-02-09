@@ -5,11 +5,11 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
-use App\Transformers\PageTransformer;
-use App\Page;
+use App\Transformers\NavigationTransformer;
+use App\Navigation;
 
 
-class PageController extends Controller
+class NavigationController extends Controller
 {
     /**
 	 * Create a new controller instance.
@@ -18,8 +18,8 @@ class PageController extends Controller
 	 */
 	public function __construct()
 	{
-        $this->model = new Page();
-        $this->transformer = new PageTransformer;
+        $this->model = new Navigation();
+        $this->transformer = new NavigationTransformer;
 		// $this->middleware(['auth:admin-api']);
     }
 
@@ -30,7 +30,7 @@ class PageController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        return $request->index($this->model, $this->transformer, 'asc', 100);
+        return $request->index($this->model, $this->transformer, 'asc', 100); // number is limit
     }
 
     /**
