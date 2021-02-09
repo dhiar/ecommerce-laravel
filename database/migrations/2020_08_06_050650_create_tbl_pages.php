@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTblProductTypes extends Migration
+class CreateTblPages extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class AddTblProductTypes extends Migration
      */
     public function up()
     {
-        Schema::create('product_types', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name', 30);
+        Schema::create('pages', function (Blueprint $table) {
+            $table->id();
+            $table->string('title', 30);
+            $table->longText('content');
+            $table->string('slug', 25);
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class AddTblProductTypes extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_types');
+        Schema::dropIfExists('menus');
     }
 }

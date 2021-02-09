@@ -12,17 +12,24 @@ class UserTypesSeeder extends Seeder
      */
     public function run()
     {
+        // bisa men-delete admin
+        UserTypes::create([
+            'name'  => 'Super Admin'
+        ]);
+
+        // Tidak bisa men-delete admin
         UserTypes::create([
             'name'  => 'Admin'
         ]);
+        
+        // Admin Owner Product
         UserTypes::create([
-            'name'  => 'Owner'
+            'name'  => 'Owner Product'
         ]);
+
+        // Table User
         UserTypes::create([
             'name'  => 'Customer'
-        ]);
-        UserTypes::create([
-            'name'  => 'Guest'
         ]);
     }
 }

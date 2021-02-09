@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTblNavigations extends Migration
+class CreateTblProductBrands extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddTblNavigations extends Migration
      */
     public function up()
     {
-        Schema::create('navigations', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 30)->unique();
+        Schema::create('product_brands', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name', 30);
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class AddTblNavigations extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('navigations');
+        Schema::dropIfExists('product_brands');
     }
 }

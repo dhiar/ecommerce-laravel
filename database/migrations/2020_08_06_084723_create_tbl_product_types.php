@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTblDeliveryStatus extends Migration
+class CreateTblProductTypes extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddTblDeliveryStatus extends Migration
      */
     public function up()
     {
-        Schema::create('delivery_status', function (Blueprint $table) {
+        Schema::create('product_types', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 15);
+            $table->string('name', 30);
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class AddTblDeliveryStatus extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('delivery_status');
+        Schema::dropIfExists('product_types');
     }
 }
