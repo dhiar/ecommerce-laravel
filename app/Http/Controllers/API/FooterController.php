@@ -118,6 +118,12 @@ class FooterController extends Controller
      */
     public function update(CommonRequest $request, $id)
 	{
+        $pageId = MainHasher::decode(request('page_id'));
+        $navigationId = MainHasher::decode(request('navigation_id'));
+        request()->request->add(['page_id' => $pageId]);
+        request()->request->add(['navigation_id' => $navigationId]);
+        $params = \request()->all();
+        
 		return $request->update($id, $this->model, $this->transformer);
 	}
 

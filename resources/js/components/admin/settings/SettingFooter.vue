@@ -12,7 +12,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <div class="h5 text-gray-800 line-height-222">Tambah Navigasi</div>
+            <div class="h5 text-gray-800 line-height-222">{{ form.id ? 'Update ' : 'Tambah' }} Navigasi</div>
             <button
               type="button"
               class="close"
@@ -127,7 +127,7 @@
           </div>
           <div v-for="result in results" :key="result.navigation.id">
             <!-- {{results}} -->
-            <table class="table table-hover">
+            <table class="table table-hover ml-2">
               <thead>
                 <tr>
                   <th class="font-weight-bold text-dark h5">
@@ -141,6 +141,12 @@
                     {{ page.title }}
                   </td>
                   <td class="text-center">
+                    <a
+                      class="btn btn-sm btn-info"
+                      href="#"
+                      @click="showModalFooter(page.footer.id)"
+                      ><i class="fa fa-pen text-gray-100"></i
+                    ></a>
                     <a
                       class="btn btn-sm btn-danger"
                       href="#"
@@ -249,6 +255,7 @@ export default {
             Swal.fire("Failed load data !", errMsg.join(""), "error");
           });
 
+        alert('result.data = ' + JSON.stringify(result.data))
         this.form = result.data;
       } else {
         // clear form
@@ -312,7 +319,6 @@ export default {
       this.submitted = false;
     },
     deleteFooter(id, name) {
-      alert(id)
       const self = this;
       Swal.fire({
         title: "Are you sure delete " + this.page + " : " + name + " ?",

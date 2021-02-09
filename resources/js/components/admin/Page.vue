@@ -12,7 +12,7 @@
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <div class="h5 text-gray-800 line-height-222">Tambah Halaman</div>
+            <div class="h5 text-gray-800 line-height-222">{{ form.id ? 'Update ' : 'Tambah' }} Halaman</div>
             <button
               type="button"
               class="close"

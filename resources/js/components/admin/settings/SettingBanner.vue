@@ -13,7 +13,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <div class="h5 text-gray-800 line-height-222">
-              Tambah Banner Slide
+              {{ form.id ? 'Update ' : 'Tambah' }} Banner Slide
             </div>
             <button
               type="button"
