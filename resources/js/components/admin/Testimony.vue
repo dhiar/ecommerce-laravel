@@ -83,53 +83,44 @@
       </div>
     </div>
 
-    <go-back></go-back>
+    <go-back></go-back><br />
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800 mb-4 mt-3">Pengaturan</h1>
 
-        <div class="card shadow">
-          <div class="card-header">
-            <h2 class="lead text-dark mb-0">COD</h2>
-          </div>
-          <div class="card-body table-responsive">
-            <button @click="showModalTestimony()" class="btn btn-primary">
-              Tambah Testimony
-            </button>
-          </div>
-          <!-- <table class="table table-hover">
-            <thead>
-              <tr>
-                <th class="text-center" style="width: 10% !important">No</th>
-                <th style="width: 40% !important">Location Name</th>
-                <th style="width: 30% !important">Url Gmaps</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, idx) in results.data" :key="item.id">
-                <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-                <td>{{ item.location }}</td>
-                <td>
-                  <a :href="item.url_gmaps">{{ item.short_url_gmaps }}</a>
-                </td>
-                <td>
-                  <a
-                    class="btn btn-sm btn-info"
-                    href="#"
-                    @click="showModalTestimony(item.id)"
-                    ><i class="fa fa-pen text-gray-100"></i
-                  ></a>
-                  <a
-                    class="btn btn-sm btn-danger"
-                    href="#"
-                    @click="deleteTestimony(item.id, item.name)"
-                    ><i class="fa fa-trash-alt text-gray-100"></i
-                  ></a>
-                </td>
-              </tr>
-            </tbody>
-          </table> -->
-        </div>
+    <div class="card shadow">
+      <div class="card-header">
+        <h2 class="lead text-dark mb-0">Testimony</h2>
+      </div>
+      <div class="card-body table-responsive">
+        <button @click="showModalTestimony()" class="btn btn-primary">
+          Tambah Testimony
+        </button>
+      </div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 10% !important">No</th>
+            <th style="width: 45% !important">Content</th>
+            <th style="width: 25% !important">Created By</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, idx) in results.data" :key="item.id">
+            <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+            <td>{{ item.content }}</td>
+            <td>{{ item.relationships.user.name }}</td>
+            <td>
+              <a
+                class="btn btn-sm btn-danger"
+                href="#"
+                @click="deleteTestimony(item.id, item.id)"
+                ><i class="fa fa-trash-alt text-gray-100"></i
+              ></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -153,8 +144,7 @@ export default {
       form: new Form({
         id: "",
         content: "",
-        created_by: "",
-        testymony_type: "admin"
+        relationships: [],
       }),
     };
   },
@@ -168,7 +158,7 @@ export default {
     },
   },
   mounted() {
-    // this.fetchData(1);
+    this.fetchData(1);
   },
   methods: {
     async showModalTestimony(id) {
@@ -215,7 +205,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalTestimony").modal("hide");
-              // this.fetchData();
+              this.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -236,7 +226,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalTestimony").modal("hide");
-              // this.fetchData();
+              this.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -272,7 +262,7 @@ export default {
                 Swal.fire("Failed !", data.message, "error");
               }
               $("#modalTestimony").modal("hide");
-              // this.fetchData();
+              this.fetchData();
             })
             .catch((error) => {
               let errMsg = "";
@@ -286,20 +276,20 @@ export default {
         }
       });
     },
-    // async fetchData(page = 1) {
-    //   const self = this;
-    //   await axios.get(self.endpoint + "?page=" + page).then(({ data }) => {
-    //     this.currentPage = data.current_page;
-    //     this.perPage = data.per_page;
-    //     this.totalItems = data.total;
-    //     this.results = data;
-    //   });
-    // },
+    async fetchData(page = 1) {
+      const self = this;
+      await axios.get(self.endpoint + "?page=" + page).then(({ data }) => {
+        this.currentPage = data.current_page;
+        this.perPage = data.per_page;
+        this.totalItems = data.total;
+        this.results = data;
+      });
+    },
   },
   watch: {
     currentPage: {
       handler: function (value) {
-        // this.fetchData(value);
+        this.fetchData(value);
       },
     },
   },

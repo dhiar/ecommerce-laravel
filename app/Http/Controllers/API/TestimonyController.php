@@ -32,8 +32,7 @@ class TestimonyController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        dd('index');
-        // return $request->index($this->model, $this->transformer);
+        return $request->index($this->model, $this->transformer);
     }
 
     /**
@@ -43,7 +42,7 @@ class TestimonyController extends Controller
      */
     public function create()
     {
-        //
+        dd('create');
     }
 
     /**
@@ -122,7 +121,6 @@ class TestimonyController extends Controller
      */
     public function destroy($id,CommonRequest $request)
 	{
-        dd('destroy');
-		// return $request->destroy($this->model, $id);
+		return $request->destroy($this->model, $id);
 	}
 }
