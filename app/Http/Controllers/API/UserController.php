@@ -21,7 +21,11 @@ class UserController extends Controller
 	 */
 	public function __construct()
 	{
-		$this->middleware(['auth:api'],['auth:admin-api']);
+		// example
+		// $this->middleware('auth', ['only' => 'index']);
+		// $this->middleware('auth', ['except' => ['create', 'store', 'edit', 'update', 'delete']]);
+
+		$this->middleware('auth:admin-api', ['profile', 'updateProfile']);
 	}
 
 	/**
@@ -114,13 +118,13 @@ class UserController extends Controller
 	 */
 	public function updateProfile(Request $request)
 	{
-		$adminId = auth('admin-api')->id();
+		$adminId = Auth::id();
 
 		$this->validate($request, [
 			'name' => 'required|string|max:255',
 			'password' => 'sometimes|string|min:8|confirmed',
 			'job_title' => 'required|string|max:255',
-			'email' => 'required|string|email|max:191|unique:users,email,'.$adminId,
+			'email' => 'required|string|email|max:191|unique:admins,email,'.Auth::id(),
 			'phone' => 'required|numeric|regex:/^\S*$/u'
 		]);
 
@@ -165,7 +169,7 @@ class UserController extends Controller
 	 */
 	public function profile()
 	{
-		return fractal(auth('admin-api')->user(), AdminTransformer::class)->toArray()['data'];
+		return fractal(Auth::user(), AdminTransformer::class)->toArray()['data'];
 	}
 
 	/**

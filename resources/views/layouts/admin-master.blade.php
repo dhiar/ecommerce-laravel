@@ -86,11 +86,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
             <ul class="nav nav-treeview">
-              {{-- fas fa-fw fa-file --}}
+              <li class="nav-item">
+                <router-link to="/admin/testimony" class="nav-link">
+                  <i class="fas fa-fw fa-comments nav-icon"></i>
+                  <p>Testimoni</p>
+                </router-link>
+              </li>
               <li class="nav-item">
                 <router-link to="/admin/page" class="nav-link">
                   <i class="fas fa-fw fa-file nav-icon"></i>
-                  <p>Page</p>
+                  <p>Halaman</p>
                 </router-link>
               </li>
               <li class="nav-item">

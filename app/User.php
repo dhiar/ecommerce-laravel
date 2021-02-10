@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use App\{Address, UserTypes, Transaction};
+use App\{Address, UserTypes, Transaction, Testimony};
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
@@ -54,5 +54,13 @@ class User extends Authenticatable
     public function transactions()
     {
         return $this->belongsToMany(Transaction::class)->withTimestamps()->withPivot(['invoice']);
+    }
+
+    /**
+     * Get all of the user's testimonys.
+     */
+    public function testimonys()
+    {
+        return $this->morphMany(Testimony::class, 'testimonyable');
     }
 }

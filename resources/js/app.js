@@ -100,6 +100,10 @@ let routes = [
 		component: require(cmpAdmin + "settings/SettingCOD").default,
 	},
 	{
+		path: "/admin/testimony",
+		component: require(cmpAdmin + "Testimony").default,
+	},
+	{
 		path: "/admin/setting/footer",
 		component: require(cmpAdmin + "settings/SettingFooter").default,
 	},

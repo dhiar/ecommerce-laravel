@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\UserTypes;
+use App\{UserTypes, Testimony};
 
 class Admin extends Authenticatable
 {
@@ -46,5 +46,13 @@ class Admin extends Authenticatable
 
     public function usertype(){
         return $this->belongsTo(UserTypes::class,'id_user_type');
+    }
+
+    /**
+     * Get all of the admin's testimonys.
+     */
+    public function testimonys()
+    {
+        return $this->morphMany(Testimony::class, 'testimonyable');
     }
 }

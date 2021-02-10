@@ -60,6 +60,10 @@ Route::apiResource('footers', 'API\FooterController')->names([
     'store' => 'footer.store'
 ]);
 
+Route::apiResource('testimony', 'API\TestimonyController')->names([
+	'store' => 'testimony.store'
+]);
+
 Route::get('list-province', 'API\ShippingController@listProvince');
 Route::get('list-city/{province}', 'API\ShippingController@listCity');
 Route::get('list-district/{city}', 'API\ShippingController@listDistrict');
@@ -106,6 +110,10 @@ Route::bind('navigation_id', function (string $id) {
 });
 
 Route::bind('footer', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('testimony', function (string $id) {
 	return  MainHasher::decode($id);
 });
 
