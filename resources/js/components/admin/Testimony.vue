@@ -98,9 +98,10 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th class="text-center" style="width: 10% !important">No</th>
-            <th style="width: 45% !important">Content</th>
-            <th style="width: 25% !important">Created By</th>
+            <th class="text-center" style="width: 8% !important">No</th>
+            <th style="width: 40% !important">Content</th>
+            <th style="width: 20% !important">Created By</th>
+            <th style="width: 20% !important">Created At</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -109,6 +110,7 @@
             <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
             <td>{{ item.content }}</td>
             <td>{{ item.relationships.user.name }}</td>
+            <td>{{ item.created_at | myDate }}</td>
             <td>
               <a
                 class="btn btn-sm btn-danger"

@@ -20,7 +20,8 @@ class TestimonyController extends Controller
 	 */
 	public function __construct()
 	{
-        $this->middleware('auth:admin-api', ['store']);
+        $this->middleware('auth:admin-api', ['store', 'destroy']);
+        $this->middleware('auth:api', ['store']);
         $this->model = new Testimony();
         $this->transformer = new TestimonyTransformer();
     }

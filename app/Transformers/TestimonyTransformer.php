@@ -38,7 +38,8 @@ class TestimonyTransformer extends TransformerAbstract
             'content' => $model->content,
             'relationships' => [
                 'user' => $model->testimonyable
-            ]
+            ],
+            'created_at' => $model->created_at,
         ];
     }
 }
