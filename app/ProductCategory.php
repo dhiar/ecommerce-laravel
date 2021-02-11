@@ -5,15 +5,17 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Product;
 
-class Product_type extends Model
+class ProductCategory extends Model
 {
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [
-        'name'
+        'name',
+        'slug',
+        'icon'
     ];
 
     public function products(){
-        return $this->hasMany(Product::class, 'id_product_type', 'id');
+        return $this->hasMany(Product::class, 'id_product_category', 'id');
     }
 }

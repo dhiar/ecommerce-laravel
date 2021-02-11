@@ -16,28 +16,29 @@ class CreateTblProducts extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedBigInteger('id_product_type');
-            $table->foreign('id_product_type')
+            $table->unsignedBigInteger('id_product_category');
+            $table->foreign('id_product_category')
                 ->references('id')
-                ->on('product_types');
+                ->on('product_categories');
 
-            $table->unsignedBigInteger('id_product_brand');
-            $table->foreign('id_product_brand')
+            // Untuk ditampilkan no HP setiap product
+            $table->unsignedBigInteger('id_admin');
+            $table->foreign('id_admin')
                 ->references('id')
-                ->on('product_brands');
+                ->on('admins');
 
-            $table->string('name', 15)->nullable(false);
+            $table->string('name', 100)->unique();
+            $table->string('image', 100)->unique();
             $table->integer('price')->default(0);
+            $table->integer('weight')->default(0);
             $table->integer('stock')->default(0);
-            $table->tinyInteger('discount')->default(0);
+            $table->enum('condition', ['New', 'Second'])->default('New');
             $table->text('description');
-
-            $table->string('photo1', 30);
-            $table->string('photo2', 30);
-            $table->string('photo3', 30);
-            $table->string('photo4', 30);
-
-            $table->string('slug', 150)->nullable(false);
+            $table->enum('is_published', ['0', '1'])->default('1');
+            $table->string('slug', 100)->unique();
+            $table->integer('transaction')->default(0);
+            $table->integer('promo_price')->default(0);
+            $table->integer('viewer')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -51,10 +52,8 @@ class CreateTblProducts extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropForeign(['id_product_type']);
-            $table->dropColumn('id_product_type');
-            $table->dropForeign(['id_product_brand']);
-            $table->dropColumn('id_product_brand');
+            $table->dropForeign(['id_product_category']);
+            $table->dropColumn('id_product_category');
         });
         Schema::dropIfExists('products');
     }

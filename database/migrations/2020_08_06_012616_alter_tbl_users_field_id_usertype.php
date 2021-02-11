@@ -22,7 +22,7 @@ class AlterTblUsersFieldIdUsertype extends Migration
             $table->enum('gender', ['L', 'P'])->default('L');
             $table->string('address',200);
             $table->string('phone',15);
-            $table->string('photo', 100);
+            $table->string('photo', 100)->nullable();
         });
     }
 

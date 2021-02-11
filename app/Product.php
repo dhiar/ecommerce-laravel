@@ -3,32 +3,31 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{Product_brand, Product_type};
+use App\ProductCategory;
 
 class Product extends Model
 {
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [
+        'id_product_category',
+        'id_admin',
         'name',
-        'id_product_type',
-        'id_product_brand',
+        'image',
         'price',
+        'weight',
         'stock',
+        'condition',
         'description',
-        'discount',
-        'photo1',
-        'photo2',
-        'photo3',
-        'photo4',
-        'slug'
+        'description',
+        'is_published',
+        'slug',
+        'transaction',
+        'promo_price',
+        'viewer',
     ];
 
-    public function product_brand(){
-        return $this->belongsTo(Product_brand::class);
-    }
-
-    public function product_type(){
-        return $this->belongsTo(Product_type::class);
+    public function product_category(){
+        return $this->belongsTo(ProductCategory::class, 'id_product_category', 'id');
     }
 }

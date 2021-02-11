@@ -23,6 +23,8 @@ class CreateAdminsTable extends Migration
 				$table->string('email')->unique();
 				$table->string('job_title')->default("Manage & monitoring app.");
 				$table->string('password');
+				$table->string('phone',15);
+				$table->string('photo', 100)->nullable();
 				$table->rememberToken();
 				$table->timestamps();
 				$table->softDeletes();
