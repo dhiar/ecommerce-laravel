@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTblProducts extends Migration
+class CreateProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -34,6 +34,7 @@ class CreateTblProducts extends Migration
             $table->integer('stock')->default(0);
             $table->enum('condition', ['New', 'Second'])->default('New');
             $table->text('description');
+            // 1 is publish, 0 is draft
             $table->enum('is_published', ['0', '1'])->default('1');
             $table->string('slug', 100)->unique();
             $table->integer('transaction')->default(0);

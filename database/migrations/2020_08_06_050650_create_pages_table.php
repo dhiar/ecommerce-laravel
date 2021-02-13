@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTblProductCategories extends Migration
+class CreatePagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTblProductCategories extends Migration
      */
     public function up()
     {
-        Schema::create('product_categories', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name', 30)->unique();
-            $table->string('slug', 30)->unique();
-            $table->string('icon', 100)->nullable();
+        Schema::create('pages', function (Blueprint $table) {
+            $table->id();
+            $table->string('title', 30);
+            $table->longText('content');
+            $table->string('slug', 25);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateTblProductCategories extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_categories');
+        Schema::dropIfExists('menus');
     }
 }

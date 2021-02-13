@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTblPages extends Migration
+class CreateUserTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateTblPages extends Migration
      */
     public function up()
     {
-        Schema::create('pages', function (Blueprint $table) {
-            $table->id();
-            $table->string('title', 30);
-            $table->longText('content');
-            $table->string('slug', 25);
+        Schema::create('user_types', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name', 20);
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateTblPages extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('user_types');
     }
 }
