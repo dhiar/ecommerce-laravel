@@ -29,7 +29,7 @@
           <form @submit.prevent="createBanner(form.id)">
             <div class="modal-body">
               <div class="form-group">
-                <label for="image">Gambar Banner</label>
+                <label for="image">Banner</label>
                 <el-upload
                   :action="baseURL + '/api/upload'"
                   style="
