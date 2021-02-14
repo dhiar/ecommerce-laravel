@@ -1,0 +1,168 @@
+<template>
+  <!-- Begin Page Content -->
+  <div class="container-fluid mb-5">
+    <go-back></go-back><br />
+    <!-- Page Heading -->
+    <div class="card shadow">
+      <div class="card-header">
+        <h2 class="lead text-dark mb-0">Products</h2>
+      </div>
+      <div class="card-body table-responsive">
+        <button @click="pageNewProduct()" class="btn btn-primary">
+          Tambah Product
+        </button>
+      </div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 5% !important">No</th>
+            <th style="width: 10% !important">Image</th>
+            <th style="width: 20% !important">Name</th>
+            <th style="width: 10% !important">Price</th>
+            <th style="width: 1o% !important">Stock</th>
+            <th style="width: 10% !important">Category</th>
+            <th style="width: 10% !important">Is Publish</th>
+            <th class="text-center" >Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{results}}
+          <!-- <tr v-for="(item, idx) in results.data" :key="item.id">
+            <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.slug }}</td>
+            <td class="text-center">
+              <img
+                :src="item.icon"
+                @error="imgErrorCondition"
+                class="img-fluid"
+                style="max-height: 100px !important"
+              />
+            </td>
+            <td class="text-center">
+              <a
+                class="btn btn-sm btn-info"
+                href="#"
+                @click="pageNewProduct(item.id)"
+                ><i class="fa fa-pen text-gray-100"></i
+              ></a>
+
+              <a
+                class="btn btn-sm btn-danger"
+                href="#"
+                @click="deleteProduct(item.id, item.name)"
+                ><i class="fa fa-trash-alt text-gray-100"></i
+              ></a>
+            </td>
+          </tr> -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<script>
+import GoBack from "../GoBack.vue";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
+
+export default {
+  components: {
+    GoBack,
+  },
+  data() {
+    return {
+      currentPage: 1,
+      perPage: 10,
+      totalItems: 50,
+      results: {},
+      submitted: false,
+      page: "product",
+      endpoint: "/api/products",
+      conditions : [
+        {id: "New", label: "New"},
+        {id: "Second", label: "Second"}
+      ],
+      form: new Form({
+        id: "",
+        id_product_category: "",
+        id_admin: "",
+        name: "",
+        image: "",
+        price: "",
+        weight: "",
+        stock: "",
+        condition: "New",
+        description: "",
+        is_published: "",
+        slug: "",
+        transaction: "",
+        promo_price: "",
+        viewer: ""
+      }),
+    };
+  },
+  mounted() {
+    this.fetchData(1);
+  },
+  methods: {
+    async pageNewProduct(id) {      
+      if (id) {
+        this.$router.push({ path: `/admin/product/` + id });
+      } else {
+        alert('create')
+        this.$router.push({ path: `/admin/product/create` });
+      }
+    },
+    deleteProduct(id, name) {
+      const self = this;
+      Swal.fire({
+        title: "Are you sure delete " + this.page + " : " + name + " ?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.value) {
+          axios
+            .delete(self.baseURL + self.endpoint + "/" + id)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              this.fetchData();
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        }
+      });
+    },
+    async fetchData(page = 1) {
+      const self = this;
+      await axios.get(self.endpoint + "?page=" + page).then(({ data }) => {
+        this.currentPage = data.current_page;
+        this.perPage = data.per_page;
+        this.totalItems = data.total;
+        this.results = data;
+      });
+    },
+  },
+  watch: {
+    currentPage: {
+      handler: function (value) {
+        this.fetchData(value);
+      },
+    },
+  },
+};
+</script>

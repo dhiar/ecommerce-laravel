@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\ProductCategory;
+use App\{ProductCategory, Admin};
 
 class Product extends Model
 {
@@ -27,7 +27,11 @@ class Product extends Model
         'viewer',
     ];
 
-    public function product_category(){
+    public function category(){
         return $this->belongsTo(ProductCategory::class, 'id_product_category', 'id');
+    }
+
+    public function admin(){
+        return $this->belongsTo(Admin::class, 'id_admin', 'id');
     }
 }

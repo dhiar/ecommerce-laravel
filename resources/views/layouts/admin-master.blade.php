@@ -90,19 +90,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <li class="nav-item">
                 <router-link to="/admin/category" class="nav-link">
                   <i class="fas fa-fw fa-tag nav-icon"></i>
-                  <p>Kategori</p>
+                  <p>Category</p>
+                </router-link>
+              </li>
+
+              <li class="nav-item">
+                <router-link to="/admin/product" class="nav-link">
+                  <i class="fas fa-fw fa-box-open nav-icon"></i>
+                  <p>Product</p>
                 </router-link>
               </li>
               <li class="nav-item">
                 <router-link to="/admin/testimony" class="nav-link">
                   <i class="fas fa-fw fa-comments nav-icon"></i>
-                  <p>Testimoni</p>
+                  <p>Testimony</p>
                 </router-link>
               </li>
               <li class="nav-item">
                 <router-link to="/admin/page" class="nav-link">
                   <i class="fas fa-fw fa-file nav-icon"></i>
-                  <p>Halaman</p>
+                  <p>Page</p>
                 </router-link>
               </li>
               <li class="nav-item">

@@ -5,12 +5,12 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
-use App\Transformers\TestimonyTransformer;
-use App\{Admin, Testimony};
+use App\Transformers\ProductTransformer;
+use App\{Admin, Product};
 use Illuminate\Support\Facades\DB;
 use Auth;
 
-class TestimonyController extends Controller
+class ProductController extends Controller
 {
     // use Auth;
     /**
@@ -21,9 +21,8 @@ class TestimonyController extends Controller
 	public function __construct()
 	{
         $this->middleware('auth:admin-api', ['store', 'destroy']);
-        $this->middleware('auth:api', ['store']);
-        $this->model = new Testimony();
-        $this->transformer = new TestimonyTransformer();
+        $this->model = new Product();
+        $this->transformer = new ProductTransformer();
     }
 
     /**
@@ -54,28 +53,8 @@ class TestimonyController extends Controller
      */
     public function store(Request $request)
     {
-        DB::beginTransaction();
-        try {
-            $admin = Admin::find(Auth::id());
-            $this->model->content = \request('content');
-            $object = $admin->testimonys()->save($this->model);
-
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'process' => 'create',
-                'data' => fractal($object, $this->transformer)->toArray()['data'],
-                'message' => 'Success create testimony',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'process' => 'create',
-                'data' => null,
-                'message' => $e->getMessage(),
-            ]);
-            DB::rollback();
-        }
+        $adminId = Auth::id();
+        dd($adminId);
     }
 
     /**
