@@ -16,29 +16,34 @@
         <thead>
           <tr>
             <th class="text-center" style="width: 5% !important">No</th>
-            <th style="width: 10% !important">Image</th>
+            <th class="text-center" style="width: 10% !important">Image</th>
             <th style="width: 20% !important">Name</th>
             <th style="width: 10% !important">Price</th>
-            <th style="width: 1o% !important">Stock</th>
-            <th style="width: 10% !important">Category</th>
-            <th style="width: 10% !important">Is Publish</th>
+            <th style="width: 10% !important">Stock</th>
+            <th style="width: 15% !important">Category</th>
+            <!-- <th style="width: 10% !important">Publish</th> -->
+            <th style="width: 12% !important">Created By</th>
             <th class="text-center" >Aksi</th>
           </tr>
         </thead>
         <tbody>
-          {{results}}
-          <!-- <tr v-for="(item, idx) in results.data" :key="item.id">
+          <!-- {{results}} -->
+          <tr v-for="(item, idx) in results.data" :key="item.id">
             <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.slug }}</td>
             <td class="text-center">
               <img
-                :src="item.icon"
+                :src="item.image"
                 @error="imgErrorCondition"
                 class="img-fluid"
                 style="max-height: 100px !important"
               />
             </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.stock }}</td>
+            <td>{{ item.relationships.category.name }}</td>
+            <!-- <td>{{ item.is_published | isPublished }}</td> -->
+            <td>{{ item.relationships.admin.name | upText }}</td>
             <td class="text-center">
               <a
                 class="btn btn-sm btn-info"
@@ -54,7 +59,7 @@
                 ><i class="fa fa-trash-alt text-gray-100"></i
               ></a>
             </td>
-          </tr> -->
+          </tr>
         </tbody>
       </table>
     </div>
@@ -63,8 +68,6 @@
 
 <script>
 import GoBack from "../GoBack.vue";
-import { required, minLength, maxLength } from "vuelidate/lib/validators";
-
 export default {
   components: {
     GoBack,
@@ -75,30 +78,8 @@ export default {
       perPage: 10,
       totalItems: 50,
       results: {},
-      submitted: false,
       page: "product",
       endpoint: "/api/products",
-      conditions : [
-        {id: "New", label: "New"},
-        {id: "Second", label: "Second"}
-      ],
-      form: new Form({
-        id: "",
-        id_product_category: "",
-        id_admin: "",
-        name: "",
-        image: "",
-        price: "",
-        weight: "",
-        stock: "",
-        condition: "New",
-        description: "",
-        is_published: "",
-        slug: "",
-        transaction: "",
-        promo_price: "",
-        viewer: ""
-      }),
     };
   },
   mounted() {
@@ -109,7 +90,6 @@ export default {
       if (id) {
         this.$router.push({ path: `/admin/product/` + id });
       } else {
-        alert('create')
         this.$router.push({ path: `/admin/product/create` });
       }
     },

@@ -35,6 +35,7 @@
                   name="title"
                   placeholder="title"
                   class="form-control"
+                  @input="inputSlug()"
                   :class="{
                     'is-invalid': submitted && $v.form.title.$error,
 
@@ -62,10 +63,6 @@
                   Title terlalu pendek ( maks :
                   {{ $v.form.title.$params.minLength.min }} karakter )
                 </div>
-              </div>
-              <div class="form-group">
-                <label for="content">Content</label>
-                <editor ref="tuiEditor" />
               </div>
               <div class="form-group">
                 <label for="slug">Slug</label>
@@ -107,6 +104,10 @@
                   Slug terlalu pendek ( maks :
                   {{ $v.form.slug.$params.minLength.min }} karakter )
                 </div>
+              </div>
+              <div class="form-group">
+                <label for="content">Content</label>
+                <editor ref="tuiEditor" />
               </div>
             </div>
             <!--modal body-->
@@ -219,6 +220,10 @@ export default {
     this.fetchData(1);
   },
   methods: {
+    inputSlug() {
+      const self = this;
+      self.form.slug = self.sanitizeTitle(self.form.title);
+    },
     async showModalPage(id) {
       this.submitted = false;
       $("#modalPage").modal("show");

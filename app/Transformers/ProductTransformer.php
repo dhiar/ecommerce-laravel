@@ -5,6 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Product;
 use App\Hashers\MainHasher;
+use Illuminate\Support\Facades\Storage;
 
 class ProductTransformer extends TransformerAbstract
 {
@@ -33,14 +34,15 @@ class ProductTransformer extends TransformerAbstract
      */
     public function transform(Product $model)
     {
-        return $model->toArray();
-        // return [
-        //     'id' => MainHasher::encode($model->id),
-        //     'content' => $model->content,
-        //     'relationships' => [
-        //         'user' => $model->testimonyable
-        //     ],
-        //     'created_at' => $model->created_at,
-        // ];
+        $result = $model->toArray();
+        $result["id"] = MainHasher::encode($result["id"]);
+        $result["id_product_category"] = MainHasher::encode($result["id_product_category"]);
+        $result["id_admin"] = MainHasher::encode($result["id_admin"]);
+        $result["image"] = \env('APP_URL').Storage::url($model->image);
+        $result["relationships"] = [
+            'category' => $model->category,
+            'admin' => $model->admin,
+        ];
+        return $result;
     }
 }

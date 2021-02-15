@@ -163,6 +163,14 @@ Vue.filter("yesNo", function (text) {
 	}
 });
 
+Vue.filter("isPublished", function (text) {
+	if (text == 1 || text == "1") {
+		return "Publish";
+	} else {
+		return "Draft";
+	}
+});
+
 Vue.filter("myDate", function (created) {
 	if (created) {
 		return moment(created, "YYYYMMDD").fromNow();

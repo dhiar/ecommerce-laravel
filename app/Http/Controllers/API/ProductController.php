@@ -8,6 +8,7 @@ use App\Http\Requests\API\CommonRequest;
 use App\Transformers\ProductTransformer;
 use App\{Admin, Product};
 use Illuminate\Support\Facades\DB;
+use App\Hashers\MainHasher;
 use Auth;
 
 class ProductController extends Controller
@@ -51,14 +52,15 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommonRequest $request)
     {
         $adminId = Auth::id();
         
         request()->request->add(['image' => request('storage_path_image')]);
         request()->request->add(['id_admin' => $adminId]);
 
-        dd('request()'. request()->all());
+        $categoryId = MainHasher::decode(request('id_product_category'));
+        request()->request->add(['id_product_category' => $categoryId]);
 
         return $request->store($this->model, request()->all(), $this->transformer);
     }
@@ -108,6 +110,8 @@ class ProductController extends Controller
         } else {
             $params = request()->except(['image']);
         }
+
+        unset($params['id_admin']);
 
 		return $request->update($id, $this->model, $this->transformer, $params);
 	}

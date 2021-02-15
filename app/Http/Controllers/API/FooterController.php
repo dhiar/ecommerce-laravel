@@ -64,7 +64,6 @@ class FooterController extends Controller
         ]);
 
         // unique data footer , if is-exist, return error
-
         $pageId = MainHasher::decode(request('page_id'));
         $navigationId = MainHasher::decode(request('navigation_id'));
 

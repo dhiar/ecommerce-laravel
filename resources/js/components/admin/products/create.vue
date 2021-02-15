@@ -54,6 +54,29 @@
                     </div>
                   </div>
                   <div class="form-group">
+                    <label for="slug">Slug</label>
+                    <input
+                      v-model="form.slug"
+                      type="text"
+                      id="slug"
+                      name="slug"
+                      placeholder="slug"
+                      class="form-control"
+                      :class="{
+                        'is-invalid': submitted && $v.form.slug.$error,
+
+                        'is-valid': !$v.form.slug.$invalid,
+                      }"
+                    />
+                    <div class="valid-feedback">Slug is valid.</div>
+                    <div
+                      v-if="submitted && !$v.form.slug.required"
+                      class="invalid-feedback"
+                    >
+                      Slug harus diisi
+                    </div>
+                  </div>
+                  <div class="form-group">
                     <label for="stock">Stock</label>
                     <input
                       type="text"
@@ -259,6 +282,9 @@
                         'is-valid': !$v.form.weight.$invalid,
                       }"
                     />
+                    <small class="text-muted"
+                      >Pastikan berat dalam satuan gram</small
+                    >
                     <div class="valid-feedback">Weight is valid.</div>
                     <div
                       v-if="submitted && !$v.form.weight.required"
@@ -372,33 +398,41 @@ export default {
       categories: {},
       form: new Form({
         id: "",
-        id_product_category: "",
+        id_product_category: "1n",
         id_admin: "",
-        name: "",
+        name: "Madu Hutan NTT (Bunga Kayu Putih)",
         image: "",
         storage_path_image: "",
-        price: "0",
-        weight: "0",
-        stock: "0",
+        price: "125000",
+        weight: "800",
+        stock: "200",
         condition: "New",
-        description: "",
+        description: "Description madu hutan NTT",
         is_published: "1",
         slug: "",
-        transaction: "0",
-        promo_price: "0",
-        viewer: "0",
+        transaction: "123",
+        promo_price: "120000",
+        viewer: "321",
+
+        // id_product_category: "",
+        // id_admin: "",
+        // name: "",
+        // image: "",
+        // storage_path_image: "",
+        // price: "0",
+        // weight: "0",
+        // stock: "0",
+        // condition: "New",
+        // description: "",
+        // is_published: "1",
+        // slug: "",
+        // transaction: "0",
+        // promo_price: "0",
+        // viewer: "0",
       }),
     };
   },
   validations: {
-    //         $table->enum('condition', ['New', 'Second'])->default('New');
-    //         $table->text('description');
-    //         // 1 is publish, 0 is draft
-    //         $table->enum('is_published', ['0', '1'])->default('1');
-    //         $table->string('slug', 100)->unique();
-    //         $table->integer('transaction')->default(0);
-    //         $table->integer('promo_price')->default(0);
-    //         $table->integer('viewer')->default(0);
     form: {
       id_product_category: {
         required,
@@ -413,6 +447,9 @@ export default {
         required,
         minLength: minLength(5),
         maxLength: maxLength(100),
+      },
+      slug: {
+        required
       },
       image: {
         required,
@@ -462,6 +499,10 @@ export default {
     },
   },
   methods: {
+    inputSlug() {
+      const self = this;
+      self.form.slug = self.sanitizeTitle(self.form.name);
+    },
     async fetchData() {
       let productId = this.$route.params.id;
       const self = this;
@@ -522,6 +563,7 @@ export default {
     },
     async save(e, id = false) {
       this.submitted = true;
+      const self = this
 
       // return error if empty content
       let description = this.$refs.tuiEditor.invoke("getHtml");
