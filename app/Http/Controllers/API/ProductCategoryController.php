@@ -33,7 +33,7 @@ class ProductCategoryController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        return $request->index($this->model, $this->transformer, 'ASC');
+        return $request->index($this->model, $this->transformer, 'name', 'ASC', 100);
     }
 
     /**

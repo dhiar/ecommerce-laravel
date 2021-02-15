@@ -37,7 +37,7 @@ class FooterController extends Controller
                  ->select('navigation_id', DB::raw('count(*) as total'))
                  ->groupBy('navigation_id')
                  ->get();
-        return $request->index($object, $this->footer_nav_transformer, 'asc');
+        return $request->index($object, $this->footer_nav_transformer, 'id', 'ASC');
     }
 
     /**

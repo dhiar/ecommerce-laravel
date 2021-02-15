@@ -34,7 +34,7 @@ class CommonRequest extends FormRequest
         ];
     }
 
-    public function index($model, $transformer, $sort = null, $limit = 10)
+    public function index($model, $transformer, $fieldOrder = null, $sort = null, $limit = 10)
     {
         if ($this->q) {
             $search = $this->q;
@@ -46,8 +46,9 @@ class CommonRequest extends FormRequest
                     ->orWhere('address', 'LIKE', "%$search%");
             })->paginate($limit);
         } else {
-            if ($sort) {
-                $paginator = $model->paginate($limit);
+            if ($fieldOrder && $sort) {
+                // ->orderBy('created_at', 'desc')
+                $paginator = $model->orderBy($fieldOrder, $sort)->paginate($limit);
             } else {
                 $paginator = $model::latest()->paginate($limit);
             }

@@ -21,6 +21,10 @@ import "element-ui/lib/theme-chalk/index.css";
 import locale from "element-ui/lib/locale/lang/en";
 import Multiselect from "vue-multiselect";
 
+import "codemirror/lib/codemirror.css";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Editor } from "@toast-ui/vue-editor";
+
 Vue.use(i18n);
 Vue.use(ElementUI, { locale });
 Vue.config.lang = "en";
@@ -49,6 +53,7 @@ Vue.component(HasError.name, HasError);
 Vue.component(AlertError.name, AlertError);
 Vue.component("pagination", require("laravel-vue-pagination"));
 Vue.component("multiselect", Multiselect);
+Vue.component("editor", Editor);
 
 Vue.use(VueRouter);
 Vue.use(VueProgressBar, {

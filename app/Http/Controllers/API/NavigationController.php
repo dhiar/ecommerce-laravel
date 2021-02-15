@@ -30,7 +30,7 @@ class NavigationController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        return $request->index($this->model, $this->transformer, 'asc', 100); // number is limit
+        return $request->index($this->model, $this->transformer, 'id', 'ASC', 100); // number is limit
     }
 
     /**

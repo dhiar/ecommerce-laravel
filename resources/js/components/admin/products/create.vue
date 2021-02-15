@@ -53,6 +53,121 @@
                       {{ $v.form.name.$params.minLength.min }} karakter )
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input
+                      type="text"
+                      v-model="form.stock"
+                      id="stock"
+                      name="stock"
+                      class="form-control"
+                      :class="{
+                        'is-invalid': submitted && $v.form.stock.$error,
+                        'is-valid': !$v.form.stock.$invalid,
+                      }"
+                    />
+                    <div class="valid-feedback">Stock is valid.</div>
+                    <div
+                      v-if="submitted && !$v.form.stock.required"
+                      class="invalid-feedback"
+                    >
+                      Stock harus diisi
+                    </div>
+                    <div
+                      v-if="submitted && !$v.form.stock.maxLength"
+                      class="invalid-feedback"
+                    >
+                      Input stock terlalu panjang ( maks :
+                      {{ $v.form.stock.$params.maxLength.max }}
+                      karakter )
+                    </div>
+                    <div
+                      v-if="submitted && !$v.form.stock.minLength"
+                      class="invalid-feedback"
+                    >
+                      Input stock terlalu pendek ( min :
+                      {{ $v.form.stock.$params.minLength.min }}
+                      karakter )
+                    </div>
+                    <div
+                      v-if="submitted && !$v.form.stock.numeric"
+                      class="invalid-feedback"
+                    >
+                      Input stock harus berupa angka
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Condition</label><br />
+                    <el-select
+                      v-model="form.condition"
+                      filterable
+                      remote
+                      reserve-keyword
+                      placeholder="Please select category"
+                      style="width: 100%"
+                      :class="{
+                        'is-invalid': submitted && $v.form.condition.$error,
+                        'is-valid': !$v.form.condition.$invalid,
+                      }"
+                    >
+                      <el-option
+                        v-for="item in conditions"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      >
+                      </el-option>
+                    </el-select>
+                    <div class="valid-feedback">Condition is valid.</div>
+                    <div
+                      v-if="submitted && !$v.form.price.required"
+                      class="invalid-feedback"
+                    >
+                      Condition harus diisi
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="image">Main Image</label>
+                    <el-upload
+                      :action="baseURL + '/api/upload'"
+                      style="
+                        border-style: dashed;
+                        border-width: 1px;
+                        border-color: gray;
+                        width: 100%;
+                      "
+                      class="img-fluid text-center"
+                      :show-file-list="false"
+                      :on-success="handleImageSuccess"
+                      :before-upload="beforeImageUpload"
+                    >
+                      <img
+                        v-if="form.image"
+                        :src="form.image"
+                        class="img-fluid text-center"
+                        @error="imgErrorCondition"
+                        :class="{
+                          'is-invalid': submitted && $v.form.image.$error,
+
+                          'is-valid': !$v.form.image.$invalid,
+                        }"
+                      />
+                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                    <small class="text-muted"
+                      >Pastikan gambar berukuran maksimal 2mb, berformat png,
+                      jpg, jpeg. Dan berukuran 1600x400px</small
+                    >
+                    <div class="valid-feedback">Image is valid.</div>
+                    <div
+                      v-if="submitted && !$v.form.image.required"
+                      class="invalid-feedback"
+                    >
+                      Image harus diisi
+                    </div>
+                  </div>
                 </div>
                 <div class="col-12 col-md-6 col-sm-6 themed-grid-col">
                   <div class="form-group">
@@ -75,7 +190,7 @@
                       v-if="submitted && !$v.form.price.required"
                       class="invalid-feedback"
                     >
-                      Price fee harus diisi
+                      Price harus diisi
                     </div>
                     <div
                       v-if="submitted && !$v.form.price.maxLength"
@@ -100,6 +215,116 @@
                       Input price harus berupa angka
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label>Product Category</label><br />
+                    <el-select
+                      v-model="form.id_product_category"
+                      filterable
+                      remote
+                      reserve-keyword
+                      placeholder="Please select category"
+                      style="width: 100%"
+                      :class="{
+                        'is-invalid':
+                          submitted && $v.form.id_product_category.$error,
+                        'is-valid': !$v.form.id_product_category.$invalid,
+                      }"
+                    >
+                      <el-option
+                        v-for="item in categories.data"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      >
+                      </el-option>
+                    </el-select>
+                    <div class="valid-feedback">Category is valid.</div>
+                    <div
+                      v-if="submitted && !$v.form.id_product_category.required"
+                      class="invalid-feedback"
+                    >
+                      Category harus diisi
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="weight">Weight</label>
+                    <input
+                      type="text"
+                      v-model="form.weight"
+                      id="weight"
+                      name="weight"
+                      class="form-control"
+                      :class="{
+                        'is-invalid': submitted && $v.form.weight.$error,
+                        'is-valid': !$v.form.weight.$invalid,
+                      }"
+                    />
+                    <div class="valid-feedback">Weight is valid.</div>
+                    <div
+                      v-if="submitted && !$v.form.weight.required"
+                      class="invalid-feedback"
+                    >
+                      Weight harus diisi
+                    </div>
+                    <div
+                      v-if="submitted && !$v.form.weight.maxLength"
+                      class="invalid-feedback"
+                    >
+                      Input weight terlalu panjang ( maks :
+                      {{ $v.form.weight.$params.maxLength.max }}
+                      karakter )
+                    </div>
+                    <div
+                      v-if="submitted && !$v.form.weight.minLength"
+                      class="invalid-feedback"
+                    >
+                      Input weight terlalu pendek ( min :
+                      {{ $v.form.weight.$params.minLength.min }}
+                      karakter )
+                    </div>
+                    <div
+                      v-if="submitted && !$v.form.weight.numeric"
+                      class="invalid-feedback"
+                    >
+                      Input weight harus berupa angka
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Status Publish</label><br />
+                    <el-select
+                      v-model="form.is_published"
+                      filterable
+                      remote
+                      reserve-keyword
+                      placeholder="Please select is publish"
+                      style="width: 100%"
+                      :class="{
+                        'is-invalid': submitted && $v.form.is_published.$error,
+                        'is-valid': !$v.form.is_published.$invalid,
+                      }"
+                    >
+                      <el-option
+                        v-for="item in publish"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      >
+                      </el-option>
+                    </el-select>
+                    <div class="valid-feedback">Status publish is valid.</div>
+                    <div
+                      v-if="submitted && !$v.form.is_published.required"
+                      class="invalid-feedback"
+                    >
+                      Status publish harus diisi
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="description">Description</label>
+                    <editor ref="tuiEditor" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -123,10 +348,7 @@ import {
   required,
   minLength,
   maxLength,
-  betwween,
-  email,
   numeric,
-  sameAs,
 } from "vuelidate/lib/validators";
 export default {
   components: {
@@ -138,32 +360,37 @@ export default {
       isInputActive: false,
       page: "product",
       endpoint: "/api/products",
+      endpoint_category: "/api/product_category",
       conditions: [
-        { id: "New", label: "New" },
-        { id: "Second", label: "Second" },
+        { id: "New", name: "New" },
+        { id: "Second", name: "Second" },
       ],
+      publish: [
+        { id: "0", name: "Draft" },
+        { id: "1", name: "Publish" },
+      ],
+      categories: {},
       form: new Form({
         id: "",
         id_product_category: "",
         id_admin: "",
         name: "",
         image: "",
+        storage_path_image: "",
         price: "0",
         weight: "0",
         stock: "0",
         condition: "New",
         description: "",
-        is_published: "",
+        is_published: "1",
         slug: "",
         transaction: "0",
         promo_price: "0",
-        viewer: "",
+        viewer: "0",
       }),
     };
   },
   validations: {
-    //         $table->integer('weight')->default(0);
-    //         $table->integer('stock')->default(0);
     //         $table->enum('condition', ['New', 'Second'])->default('New');
     //         $table->text('description');
     //         // 1 is publish, 0 is draft
@@ -173,6 +400,15 @@ export default {
     //         $table->integer('promo_price')->default(0);
     //         $table->integer('viewer')->default(0);
     form: {
+      id_product_category: {
+        required,
+      },
+      condition: {
+        required,
+      },
+      is_published: {
+        required,
+      },
       name: {
         required,
         minLength: minLength(5),
@@ -187,6 +423,18 @@ export default {
         required,
         minLength: minLength(4),
         maxLength: maxLength(9),
+        numeric,
+      },
+      stock: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(4),
+        numeric,
+      },
+      weight: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(4),
         numeric,
       },
     },
@@ -219,8 +467,6 @@ export default {
       const self = this;
       this.submitted = false;
 
-      alert("productId = " + productId);
-
       if (productId) {
         this.form.id = productId;
         const result = await axios
@@ -238,92 +484,107 @@ export default {
         console.log("result = " + JSON.stringify(result));
 
         this.form = result.data;
+        this.$refs.tuiEditor.invoke("setHtml", this.form.description);
+      } else {
+        this.$refs.tuiEditor.invoke("setHtml", null);
       }
 
-      // if (sponsorId) {
-      //   await axios
-      //   .get("/api/admin/"+this.endpoint+"/" + sponsorId,
-      //   {
-      //     params: {
-      //       token: localStorage.token,
-      //     }
-      //   })
-      //   .then(({ data }) => {
-      //     if (data.success) {
-      //       let attributes = data.data.attributes;
-      //       this.form = attributes;
-      //       this.form.event_id = data.data.relationships.event.id
-      //       this.event_id = data.data.relationships.event.id
-      //     }
-      //   })
-      //   .catch((err, vm, info) => {
-      //     Swal.fire(
-      //       "Failed load "+ this.page +" edit page!",
-      //       "Something went wrong. Please contact admin.",
-      //       "warning"
-      //     );
-      //   });
-      // }
+      // get category
+      const result = await axios.get(self.endpoint_category).catch((error) => {
+        let errMsg = "";
+        if (typeof error.response.data === "object") {
+          errMsg = _.flatten(_.toArray(error.response.data.errors));
+        } else {
+          errMsg = ["Something went wrong. Please try again."];
+        }
+        Swal.fire("Failed load data !", errMsg.join(""), "error");
+      });
+
+      this.categories = result.data;
     },
-    async save(e, sponsorId = false) {
+    handleImageSuccess(res, file) {
+      this.form.storage_path_image = res.result;
+      this.form.image = URL.createObjectURL(file.raw);
+    },
+    beforeImageUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+
+      if (!isJPG && !isPNG) {
+        Swal.fire(
+          "Oops...!",
+          "Image picture must be JPG / PNG format!",
+          "error"
+        );
+      }
+
+      return isJPG || isPNG;
+    },
+    async save(e, id = false) {
       this.submitted = true;
-      // this.form.event_id = this.event_id
+
+      // return error if empty content
+      let description = this.$refs.tuiEditor.invoke("getHtml");
+
+      if (!description) {
+        Swal.fire("Failed !", "Description must be filled", "error");
+      } else {
+        self.form.description = description;
+      }
 
       // stop here if form is invalid
       this.$v.$touch();
-      // if (this.$v.$error) {
-      //   Swal.fire("Failed create "+this.page+" !", "All input is required.", "warning");
-      //   return;
-      // } else {
-      //   if (sponsorId) {
-      //     this.form.token = localStorage.token;
-      //     axios
-      //       .put(
-      //         process.env.MIX_APP_URL + "/api/admin/"+this.endpoint+"/" + sponsorId,
-      //         this.form
-      //       )
-      //       .then(({ data }) => {
-      //         if (data.code == 201 || data.code == 200) {
-      //           Swal.fire("Success!", "Success update "+this.endpoint+".", "success");
-      //           this.$router.push({ path: `/admin/`+this.endpoint });
-      //         } else {
-      //           let errors = data.data.errors;
-      //           let key = Object.keys(errors)[0];
-      //           let errMsg = errors[key][0];
-      //           Swal.fire("Failed update "+this.endpoint+"!", errMsg, "warning");
-      //         }
-      //       })
-      //       .catch((err, vm, info) => {
-      //         Swal.fire(
-      //           "Failed update "+this.endpoint+"!",
-      //           "Something went wrong. Please contact admin.",
-      //           "warning"
-      //         );
-      //       });
-      //   } else {
-      //     // Create
-      //     await this.form
-      //       .post(process.env.MIX_APP_URL + "/api/admin/"+this.endpoint)
-      //       .then(({ data }) => {
-      //         if (data.code == 201 || data.success) {
-      //           Swal.fire("Success!", "Success create "+this.page+".", "success");
-      //           this.$router.push({ path: `/admin/`+this.endpoint });
-      //         } else {
-      //           let errors = data.data.errors;
-      //           let key = Object.keys(errors)[0];
-      //           let errMsg = errors[key][0];
-      //           Swal.fire("Failed create "+this.page+" !", errMsg, "warning");
-      //         }
-      //       })
-      //       .catch((err, vm, info) => {
-      //         Swal.fire(
-      //           "Failed create "+this.page+"!",
-      //           "Something went wrong. Please contact admin.",
-      //           "warning"
-      //         );
-      //       });
-      //   }
-      // }
+      if (this.$v.$error) {
+        Swal.fire(
+          "Failed create " + this.page + " !",
+          "All input is required.",
+          "warning"
+        );
+        return;
+      } else {
+        if (id) {
+          axios
+            .put(self.endpoint + "/" + id, this.form)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              this.fetchData();
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        } else {
+          // Create
+          await axios
+            .post(self.endpoint, this.form)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              this.fetchData();
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        }
+      }
     },
   },
 };
