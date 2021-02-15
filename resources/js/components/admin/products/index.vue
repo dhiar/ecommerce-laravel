@@ -23,7 +23,7 @@
             <th style="width: 15% !important">Category</th>
             <!-- <th style="width: 10% !important">Publish</th> -->
             <th style="width: 12% !important">Created By</th>
-            <th class="text-center" >Aksi</th>
+            <th class="text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -39,12 +39,18 @@
               />
             </td>
             <td>{{ item.name }}</td>
-            <td>{{ item.price }}</td>
+            <td>{{ formatCurrency(item.price) }}</td>
             <td>{{ item.stock }}</td>
             <td>{{ item.relationships.category.name }}</td>
             <!-- <td>{{ item.is_published | isPublished }}</td> -->
             <td>{{ item.relationships.admin.name | upText }}</td>
             <td class="text-center">
+              <a
+                class="btn btn-sm btn-success"
+                href="#"
+                @click="pageEditProduct(item.id)"
+                ><i class="fa fa-eye text-gray-100"></i
+              ></a>
               <a
                 class="btn btn-sm btn-info"
                 href="#"
@@ -86,7 +92,10 @@ export default {
     this.fetchData(1);
   },
   methods: {
-    async pageNewProduct(id) {      
+    pageEditProduct(id) {
+      this.$router.push({ path: `/admin/product/detail/` + id });
+    },
+    pageNewProduct(id) {
       if (id) {
         this.$router.push({ path: `/admin/product/` + id });
       } else {
