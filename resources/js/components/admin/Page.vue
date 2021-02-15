@@ -132,12 +132,19 @@
     <go-back></go-back><br />
     <!-- Page Heading -->
 
-    <h1 class="h3 mb-2 text-gray-800 mb-4">Halaman</h1>
-
     <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-      <div class="card-header py-3 right-align">
-        <button @click="showModalPage()" class="btn btn-primary">Tambah</button>
+    <div class="card shadow">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-8 align-self-center">
+            <h2 class="lead text-dark mb-0">Pages</h2>
+          </div>
+          <div class="col-md-4 float-right text-right">
+            <button @click="showModalPage()" class="btn btn-primary">
+              Tambah Page
+            </button>
+          </div>
+        </div>
       </div>
       <div class="card-body table-responsive">
         <table class="table table-hover">
@@ -146,7 +153,7 @@
               <th class="text-center" style="width: 10% !important">No</th>
               <th style="width: 40% !important">Title</th>
               <th style="width: 35% !important">Slug</th>
-              <th>Aksi</th>
+              <th class="text-center">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -154,7 +161,7 @@
               <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
               <td>{{ item.title }}</td>
               <td>{{ item.slug }}</td>
-              <td>
+              <td class="text-center">
                 <a
                   class="btn btn-sm btn-info"
                   href="#"

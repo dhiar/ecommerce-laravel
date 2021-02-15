@@ -88,40 +88,46 @@
 
     <div class="card shadow">
       <div class="card-header">
-        <h2 class="lead text-dark mb-0">Testimony</h2>
+        <div class="row">
+          <div class="col-md-8 align-self-center">
+            <h2 class="lead text-dark mb-0">Testimony</h2>
+          </div>
+          <div class="col-md-4 float-right text-right">
+            <button @click="showModalTestimony()" class="btn btn-primary">
+              Tambah Testimony
+            </button>
+          </div>
+        </div>
       </div>
       <div class="card-body table-responsive">
-        <button @click="showModalTestimony()" class="btn btn-primary">
-          Tambah Testimony
-        </button>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 8% !important">No</th>
+              <th style="width: 40% !important">Content</th>
+              <th style="width: 20% !important">Created By</th>
+              <th style="width: 20% !important">Created At</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, idx) in results.data" :key="item.id">
+              <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+              <td>{{ item.content }}</td>
+              <td>{{ item.relationships.user.name }}</td>
+              <td>{{ item.created_at | myDate }}</td>
+              <td>
+                <a
+                  class="btn btn-sm btn-danger"
+                  href="#"
+                  @click="deleteTestimony(item.id, item.id)"
+                  ><i class="fa fa-trash-alt text-gray-100"></i
+                ></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th class="text-center" style="width: 8% !important">No</th>
-            <th style="width: 40% !important">Content</th>
-            <th style="width: 20% !important">Created By</th>
-            <th style="width: 20% !important">Created At</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, idx) in results.data" :key="item.id">
-            <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-            <td>{{ item.content }}</td>
-            <td>{{ item.relationships.user.name }}</td>
-            <td>{{ item.created_at | myDate }}</td>
-            <td>
-              <a
-                class="btn btn-sm btn-danger"
-                href="#"
-                @click="deleteTestimony(item.id, item.id)"
-                ><i class="fa fa-trash-alt text-gray-100"></i
-              ></a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </template>

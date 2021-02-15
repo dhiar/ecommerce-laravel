@@ -149,54 +149,60 @@
     <!-- Page Heading -->
     <div class="card shadow">
       <div class="card-header">
-        <h2 class="lead text-dark mb-0">Category</h2>
+        <div class="row">
+          <div class="col-md-8 align-self-center">
+            <h2 class="lead text-dark mb-0">Category</h2>
+          </div>
+          <div class="col-md-4 float-right text-right">
+            <button @click="showModalCategory()" class="btn btn-primary">
+              Tambah Category
+            </button>
+          </div>
+        </div>
       </div>
       <div class="card-body table-responsive">
-        <button @click="showModalCategory()" class="btn btn-primary">
-          Tambah Category
-        </button>
-      </div>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th class="text-center" style="width: 8% !important">No</th>
-            <th style="width: 25% !important">Category</th>
-            <th style="width: 25% !important">Slug</th>
-            <th class="text-center" style="width: 20% !important">Icon</th>
-            <th class="text-center" >Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, idx) in results.data" :key="item.id">
-            <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.slug }}</td>
-            <td class="text-center">
-              <img
-                :src="item.icon"
-                @error="imgErrorCondition"
-                class="img-fluid"
-                style="max-height: 100px !important"
-              />
-            </td>
-            <td class="text-center">
-              <a
-                class="btn btn-sm btn-info"
-                href="#"
-                @click="showModalCategory(item.id)"
-                ><i class="fa fa-pen text-gray-100"></i
-              ></a>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 8% !important">No</th>
+              <th style="width: 25% !important">Category</th>
+              <th style="width: 25% !important">Slug</th>
+              <th class="text-center" style="width: 20% !important">Icon</th>
+              <th class="text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, idx) in results.data" :key="item.id">
+              <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.slug }}</td>
+              <td class="text-center">
+                <img
+                  :src="item.icon"
+                  @error="imgErrorCondition"
+                  class="img-fluid"
+                  style="max-height: 100px !important"
+                />
+              </td>
+              <td class="text-center">
+                <a
+                  class="btn btn-sm btn-info"
+                  href="#"
+                  @click="showModalCategory(item.id)"
+                  ><i class="fa fa-pen text-gray-100"></i
+                ></a>
 
-              <a
-                class="btn btn-sm btn-danger"
-                href="#"
-                @click="deleteCategory(item.id, item.name)"
-                ><i class="fa fa-trash-alt text-gray-100"></i
-              ></a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                <a
+                  class="btn btn-sm btn-danger"
+                  href="#"
+                  @click="deleteCategory(item.id, item.name)"
+                  ><i class="fa fa-trash-alt text-gray-100"></i
+                ></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>

@@ -5,69 +5,75 @@
     <!-- Page Heading -->
     <div class="card shadow">
       <div class="card-header">
-        <h2 class="lead text-dark mb-0">Products</h2>
+        <div class="row">
+          <div class="col-md-8 align-self-center">
+            <h2 class="lead text-dark mb-0">Products</h2>
+          </div>
+          <div class="col-md-4 float-right text-right">
+            <button @click="pageNewProduct()" class="btn btn-primary">
+              Tambah Product
+            </button>
+          </div>
+        </div>
       </div>
       <div class="card-body table-responsive">
-        <button @click="pageNewProduct()" class="btn btn-primary">
-          Tambah Product
-        </button>
-      </div>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th class="text-center" style="width: 5% !important">No</th>
-            <th class="text-center" style="width: 10% !important">Image</th>
-            <th style="width: 20% !important">Name</th>
-            <th style="width: 10% !important">Price</th>
-            <th style="width: 10% !important">Stock</th>
-            <th style="width: 15% !important">Category</th>
-            <!-- <th style="width: 10% !important">Publish</th> -->
-            <th style="width: 12% !important">Created By</th>
-            <th class="text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- {{results}} -->
-          <tr v-for="(item, idx) in results.data" :key="item.id">
-            <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-            <td class="text-center">
-              <img
-                :src="item.image"
-                @error="imgErrorCondition"
-                class="img-fluid"
-                style="max-height: 100px !important"
-              />
-            </td>
-            <td>{{ item.name }}</td>
-            <td>{{ formatCurrency(item.price) }}</td>
-            <td>{{ item.stock }}</td>
-            <td>{{ item.relationships.category.name }}</td>
-            <!-- <td>{{ item.is_published | isPublished }}</td> -->
-            <td>{{ item.relationships.admin.name | upText }}</td>
-            <td class="text-center">
-              <a
-                class="btn btn-sm btn-success"
-                href="#"
-                @click="pageEditProduct(item.id)"
-                ><i class="fa fa-eye text-gray-100"></i
-              ></a>
-              <a
-                class="btn btn-sm btn-info"
-                href="#"
-                @click="pageNewProduct(item.id)"
-                ><i class="fa fa-pen text-gray-100"></i
-              ></a>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 5% !important">No</th>
+              <th class="text-center" style="width: 10% !important">Image</th>
+              <th style="width: 20% !important">Name</th>
+              <th style="width: 15% !important">Price</th>
+              <th style="width: 10% !important">Stock</th>
+              <th style="width: 15% !important">Category</th>
+              <!-- <th style="width: 10% !important">Publish</th> -->
+              <th style="width: 12% !important">Created By</th>
+              <th class="text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- {{results}} -->
+            <tr v-for="(item, idx) in results.data" :key="item.id">
+              <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+              <td class="text-center">
+                <img
+                  :src="item.image"
+                  @error="imgErrorCondition"
+                  class="img-fluid"
+                  style="max-height: 100px !important"
+                />
+              </td>
+              <td>{{ item.name }}</td>
+              <td>{{ formatCurrency(item.price) }}</td>
+              <td>{{ item.stock }}</td>
+              <td>{{ item.relationships.category.name }}</td>
+              <!-- <td>{{ item.is_published | isPublished }}</td> -->
+              <td>{{ item.relationships.admin.name | upText }}</td>
+              <td class="text-center">
+                <a
+                  class="btn btn-sm btn-success"
+                  href="#"
+                  @click="pageEditProduct(item.id)"
+                  ><i class="fa fa-eye text-gray-100"></i
+                ></a>
+                <a
+                  class="btn btn-sm btn-info"
+                  href="#"
+                  @click="pageNewProduct(item.id)"
+                  ><i class="fa fa-pen text-gray-100"></i
+                ></a>
 
-              <a
-                class="btn btn-sm btn-danger"
-                href="#"
-                @click="deleteProduct(item.id, item.name)"
-                ><i class="fa fa-trash-alt text-gray-100"></i
-              ></a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                <a
+                  class="btn btn-sm btn-danger"
+                  href="#"
+                  @click="deleteProduct(item.id, item.name)"
+                  ><i class="fa fa-trash-alt text-gray-100"></i
+                ></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
