@@ -72,6 +72,12 @@ Route::apiResource('products', 'API\ProductController')->names([
 	'store' => 'product.store'
 ]);
 
+Route::get('products/{product}/images', 'API\ProductController@listImages');
+
+Route::apiResource('product_images', 'API\ProductImageController')->names([
+	'store' => 'product_images.store'
+]);
+
 Route::get('list-province', 'API\ShippingController@listProvince');
 Route::get('list-city/{province}', 'API\ShippingController@listCity');
 Route::get('list-district/{city}', 'API\ShippingController@listDistrict');
@@ -126,6 +132,10 @@ Route::bind('testimony', function (string $id) {
 });
 
 Route::bind('product_category', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('product_images', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

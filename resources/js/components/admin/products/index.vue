@@ -42,6 +42,7 @@
                   class="img-fluid"
                   style="max-height: 100px !important"
                 />
+                <a @click="addImages(item.id)" class="badge badge-success text-gray-100 btn">Add Images</a>
               </td>
               <td>{{ item.name }}</td>
               <td>{{ formatCurrency(item.price) }}</td>
@@ -98,6 +99,9 @@ export default {
     this.fetchData(1);
   },
   methods: {
+    addImages(id) {
+      this.$router.push({ path: `/admin/product/images/` + id });
+    },
     pageEditProduct(id) {
       this.$router.push({ path: `/admin/product/detail/` + id });
     },

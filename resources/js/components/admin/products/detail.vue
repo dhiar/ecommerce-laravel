@@ -48,7 +48,7 @@
 											<tr>
 												<td>Promo Price</td>
 												<td>:</td>
-												<td>{{ form.promo_price }}</td>
+												<td>{{ formatCurrency(form.promo_price) }}</td>
 											</tr>
 											<tr>
 												<td>Weight</td>

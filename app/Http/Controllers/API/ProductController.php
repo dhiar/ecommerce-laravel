@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
-use App\Transformers\ProductTransformer;
-use App\{Admin, Product};
+use App\Transformers\{ProductTransformer, ProductImageTransformer};
+use App\{Admin, Product, ProductImage};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
 use Auth;
@@ -24,6 +24,7 @@ class ProductController extends Controller
         $this->middleware('auth:admin-api', ['store', 'update', 'destroy']);
         $this->model = new Product();
         $this->transformer = new ProductTransformer();
+        $this->transformer_images = new ProductImageTransformer();
     }
 
     /**
@@ -125,5 +126,16 @@ class ProductController extends Controller
     public function destroy($id,CommonRequest $request)
 	{
 		return $request->destroy($this->model, $id);
+	}
+
+    public function listImages(Product $product)
+	{
+        $productImages = ProductImage::whereIdProduct($product->id)->get();
+        return response()->json([
+            'success' => true,
+            'process' => 'list',
+            'data' => fractal($productImages, $this->transformer_images)->toArray()['data'],
+            'message' => 'Success show list product images',
+        ]);
 	}
 }

@@ -4,11 +4,15 @@
     <div class="row mt-5">
       <div class="col-md-12">
         <div class="card">
-          <!-- {{form}} <br>
-          $route.params.id = {{$route.params.id}} -->
           <div class="card-header">
-            <h3 v-if="$route.params.id" class="card-title">Edit Product</h3>
-            <h3 v-else class="card-title">Create Product</h3>
+            <div class="row">
+              <div class="col-md-12 align-self-center">
+                <h3 v-if="$route.params.id" class="lead text-dark mb-0">
+                  Edit Product
+                </h3>
+                <h3 v-else class="lead text-dark mb-0">Create Product</h3>
+              </div>
+            </div>
           </div>
 
           <form @submit.prevent="save($event, $route.params.id)">
@@ -449,7 +453,7 @@ export default {
         maxLength: maxLength(100),
       },
       slug: {
-        required
+        required,
       },
       image: {
         required,
@@ -563,7 +567,7 @@ export default {
     },
     async save(e, id = false) {
       this.submitted = true;
-      const self = this
+      const self = this;
 
       // return error if empty content
       let description = this.$refs.tuiEditor.invoke("getHtml");

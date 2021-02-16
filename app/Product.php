@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{ProductCategory, Admin};
+use App\{ProductCategory, ProductImage, Admin};
 
 class Product extends Model
 {
@@ -33,5 +33,9 @@ class Product extends Model
 
     public function admin(){
         return $this->belongsTo(Admin::class, 'id_admin', 'id');
+    }
+
+    public function images(){
+        return $this->hasMany(ProductImage::class, 'id_product', 'id');
     }
 }

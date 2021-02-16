@@ -245,11 +245,6 @@ export default {
     "b-pagination": BPagination,
     GoBack,
   },
-  props: {
-    baseUrl: {
-      type: String,
-    },
-  },
   data() {
     return {
       currentPage: 1,
