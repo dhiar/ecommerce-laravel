@@ -54,15 +54,22 @@ class ProductImageController extends Controller
                 // jika tidak ada dalam array yg lama, maka unlink
                 $pathImages[] = new ProductImage(['image' => $path]);
             }
-        }
 
-        $product->images()->delete();
-        $productImages = $product->images()->saveMany($pathImages);
-        return response()->json([
-            'success' => true,
-            'process' => 'store',
-            'data' => fractal($productImages, $this->transformer)->toArray()['data'],
-            'message' => 'Success store product images',
-        ]);
+            $product->images()->delete();
+            $productImages = $product->images()->saveMany($pathImages);
+            return response()->json([
+                'success' => true,
+                'process' => 'store',
+                'data' => fractal($productImages, $this->transformer)->toArray()['data'],
+                'message' => 'Success store product images',
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'process' => 'store',
+                'data' => [],
+                'message' => 'Failed store product images',
+            ]);
+        }
     }
 }

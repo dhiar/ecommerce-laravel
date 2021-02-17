@@ -26,7 +26,7 @@
               <div class="col-12 col-md-4 col-sm-4 themed-grid-col">
                 <div class="card shadow">
                   <div class="card-header">
-                    <h2 class="lead text-dark mb-0">Select Image</h2>
+                    <h2 class="lead text-dark mb-0">Add Image</h2>
                   </div>
                   <div class="card-body">
                     <el-upload

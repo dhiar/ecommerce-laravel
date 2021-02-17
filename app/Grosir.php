@@ -1,0 +1,21 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Product;
+
+class Grosir extends Model
+{
+    public $timestamps = true;
+    protected $guarded = ['id'];
+    protected $fillable = [
+        'id_product',
+        'min',
+        'price',
+    ];
+
+    public function product(){
+        return $this->belongsTo(Product::class, 'id_product', 'id');
+    }
+}

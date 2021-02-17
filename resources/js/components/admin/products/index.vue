@@ -45,7 +45,11 @@
                 <a @click="addImages(item.id)" class="badge badge-success text-gray-100 btn">Add Images</a>
               </td>
               <td>{{ item.name }}</td>
-              <td>{{ formatCurrency(item.price) }}</td>
+              <td>
+                {{ formatCurrency(item.price) }}
+                <a @click="addGrosir(item.id)" class="badge badge-success text-gray-100 btn">Add Grosir</a>
+
+              </td>
               <td>{{ item.stock }}</td>
               <td>{{ item.relationships.category.name }}</td>
               <!-- <td>{{ item.is_published | isPublished }}</td> -->
@@ -101,6 +105,9 @@ export default {
   methods: {
     addImages(id) {
       this.$router.push({ path: `/admin/product/images/` + id });
+    },
+    addGrosir(id) {
+      this.$router.push({ path: `/admin/product/grosir/` + id });
     },
     pageEditProduct(id) {
       this.$router.push({ path: `/admin/product/detail/` + id });
