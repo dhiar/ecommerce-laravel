@@ -7,7 +7,7 @@
           <div class="card-header">
             <div class="row">
               <div class="col-md-10 align-self-center">
-                <h3 class="lead text-dark mb-0">{{ form }}</h3>
+                <h3 class="lead text-dark mb-0">{{ form.relationships.product.name }}</h3>
               </div>
               <div class="col-md-2 float-right text-right">
                 <button
@@ -45,74 +45,14 @@
                     </el-upload>
                   </div>
                 </div>
-                <!-- <div class="card shadow text-center">
-									<img
-										v-if="form.image"
-										:src="form.image"
-										class="img-fluid text-center"
-										@error="imgErrorCondition"
-									/>
-								</div> -->
               </div>
               <div class="col-12 col-md-8 col-sm-8 themed-grid-col">
                 <form @submit.prevent="save($event, $route.params.id)">
                   <div class="card shadow">
                     <div class="card-header">
-                      <!-- <h5>{{ formatCurrency(form.price) }}</h5> -->
                       Images
                     </div>
-                    <!-- <table class="table table-hover">
-										<tbody>
-											<tr>
-												<td>Category</td>
-												<td>:</td>
-												<td>{{ form.relationships.category.name }}</td>
-											</tr>
-											<tr>
-												<td>Promo Price</td>
-												<td>:</td>
-												<td>{{ form.promo_price }}</td>
-											</tr>
-											<tr>
-												<td>Weight</td>
-												<td>:</td>
-												<td>{{ form.weight }} gram</td>
-											</tr>
-											<tr>
-												<td>Stock</td>
-												<td>:</td>
-												<td>{{ form.stock }}</td>
-											</tr>
-											<tr>
-												<td>Condition</td>
-												<td>:</td>
-												<td>{{ form.condition }}</td>
-											</tr>
-											<tr>
-												<td>Publish Type</td>
-												<td>:</td>
-												<td>{{ form.is_published | isPublished }}</td>
-											</tr>
-											<tr>
-												<td>Created By</td>
-												<td>:</td>
-												<td>{{ form.relationships.admin.name | upText }}</td>
-											</tr>
-											<tr>
-												<td>Count Transaction</td>
-												<td>:</td>
-												<td>{{ form.transaction }}</td>
-											</tr>
-											<tr>
-												<td>Count Viewer</td>
-												<td>:</td>
-												<td>{{ form.viewer }}</td>
-											</tr>
-										</tbody>
-									</table> -->
                     <div class="card-body">
-                      {{ form.images }}
-
                       <div v-for="(image, idx) in form.images" :key="idx">
                         <div class="row">
                           <div
@@ -215,9 +155,14 @@ export default {
           }
           Swal.fire("Failed load data !", errMsg.join(""), "error");
         });
-
-        if (result.data.length > 0) {
-          this.form = result.data;
+        
+        let productImages = result.data.data
+        if (productImages.length > 0) {
+          productImages.forEach(data => {
+            this.form.images.push(data.image)
+            this.form.storage_path_images.push(data.storage_path_image)
+            this.form.relationships = data.relationships
+          });
         }
       }
     },

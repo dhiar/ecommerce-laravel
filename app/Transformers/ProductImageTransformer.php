@@ -38,6 +38,7 @@ class ProductImageTransformer extends TransformerAbstract
         $result["id"] = MainHasher::encode($result["id"]);
         $result["id_product"] = MainHasher::encode($result["id_product"]);
         $result["image"] = \env('APP_URL').Storage::url($model->image);
+        $result["storage_path_image"] = $model->image;
         $result["relationships"] = [
             'product' => $model->product,
         ];
