@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
-use App\Transformers\{ProductTransformer, ProductImageTransformer};
-use App\{Admin, Product, ProductImage};
+use App\Transformers\{ProductTransformer, ProductImageTransformer, GrosirTransformer};
+use App\{Admin, Product, ProductImage, Grosir};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
 use Auth;
@@ -25,6 +25,7 @@ class ProductController extends Controller
         $this->model = new Product();
         $this->transformer = new ProductTransformer();
         $this->transformer_images = new ProductImageTransformer();
+        $this->transformer_grosirs = new GrosirTransformer();
     }
 
     /**
@@ -136,6 +137,17 @@ class ProductController extends Controller
             'process' => 'list',
             'data' => fractal($productImages, $this->transformer_images)->toArray()['data'],
             'message' => 'Success show list product images',
+        ]);
+	}
+
+    public function listGrosirs(Product $product)
+	{
+        $productGrosirs = Grosir::whereIdProduct($product->id)->get();
+        return response()->json([
+            'success' => true,
+            'process' => 'list',
+            'data' => fractal($productGrosirs, $this->transformer_grosirs)->toArray()['data'],
+            'message' => 'Success show list product grosir prices',
         ]);
 	}
 }

@@ -32,7 +32,6 @@
             </tr>
           </thead>
           <tbody>
-            <!-- {{results}} -->
             <tr v-for="(item, idx) in results.data" :key="item.id">
               <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
               <td class="text-center">

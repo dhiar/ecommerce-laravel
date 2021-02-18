@@ -67,13 +67,14 @@ Route::apiResource('testimony', 'API\TestimonyController')->names([
 Route::apiResource('product_category', 'API\ProductCategoryController')->names([
 	'store' => 'product_category.store'
 ]);
-
 Route::apiResource('products', 'API\ProductController')->names([
 	'store' => 'product.store'
 ]);
-
 Route::get('products/{product}/images', 'API\ProductController@listImages');
-
+Route::get('products/{product}/grosirs', 'API\ProductController@listGrosirs');
+Route::apiResource('grosirs', 'API\GrosirController')->names([
+	'store' => 'grosir.store'
+]);
 Route::apiResource('product_images', 'API\ProductImageController')->names([
 	'store' => 'product_images.store'
 ]);
@@ -140,6 +141,10 @@ Route::bind('product_images', function (string $id) {
 });
 
 Route::bind('product', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('grosir', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

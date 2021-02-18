@@ -50,7 +50,7 @@
                 <form @submit.prevent="save($event, $route.params.id)">
                   <div class="card shadow">
                     <div class="card-header">
-                      Images
+                      <h2 class="lead text-dark mb-0">Images</h2>
                     </div>
                     <div class="card-body">
                       <div v-for="(image, idx) in form.images" :key="idx">
@@ -163,6 +163,18 @@ export default {
             this.form.storage_path_images.push(data.storage_path_image)
             this.form.relationships = data.relationships
           });
+        } else {
+          const product = await axios.get("/api/products").catch((error) => {
+            let errMsg = "";
+            if (typeof error.response.data === "object") {
+              errMsg = _.flatten(_.toArray(error.response.data.errors));
+            } else {
+              errMsg = ["Something went wrong. Please try again."];
+            }
+            Swal.fire("Failed load data !", errMsg.join(""), "error");
+          });
+
+          this.form.relationships.product = product.data.data[0]
         }
       }
     },

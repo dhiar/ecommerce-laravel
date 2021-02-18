@@ -36,31 +36,51 @@ class GrosirController extends Controller
         $productId = MainHasher::decode(request('id_product'));
         $product = Product::find($productId);
 
-        $prices = request('prices');
-        $mins = request('mins');
+        DB::beginTransaction();
+		try {
+			$dataGrosir = Grosir::create([
+                'id_product' => $productId,
+                'min'  => request('min'),
+                'price' => request('price')
+            ]);
 
-        if ( count ($prices) > 0) {
-            $dataGrosirs = [];
-            foreach ($prices as $i => $price) {
-                // jika tidak ada dalam array yg lama, maka unlink
-                $dataGrosirs[] = new Grosir(['min' => $mins[$i], 'price' => $price]);
-            }
-
-            $product->grosirs()->delete();
-            $productGrosirs = $product->grosirs()->saveMany($dataGrosirs);
-            return response()->json([
+			DB::commit();
+			return response()->json([
                 'success' => true,
                 'process' => 'store',
-                'data' => fractal($productGrosirs, $this->transformer)->toArray()['data'],
+                'data' => fractal($dataGrosir, $this->transformer)->toArray()['data'],
                 'message' => 'Success store product grosirs',
             ]);
-        } else {
-            return response()->json([
+		}
+		catch (\Exception $e) {
+			return response()->json([
                 'success' => false,
                 'process' => 'store',
                 'data' => [],
                 'message' => 'Failed store product grosirs',
             ]);
-        }
+			DB::rollback();
+		}
     }
+
+    public function show($id, CommonRequest $request)
+	{
+		return $request->show($id, $this->model, $this->transformer);
+	}
+
+    public function update(CommonRequest $request, $id)
+	{
+        // relationships
+        
+        $productId = MainHasher::decode(request('id_product'));
+        request()->request->add(['id_product' => $productId]);
+        $params = request()->except(['relationships','data','id_grosir','current_min', 'updated_at', 'created_at']);
+
+		return $request->update($id, $this->model, $this->transformer, $params);
+	}
+
+    public function destroy($id,CommonRequest $request)
+	{
+		return $request->destroy($this->model, $id);
+	}
 }
