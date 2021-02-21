@@ -9,6 +9,7 @@ class Promo extends Model
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [
-        'promo_time'
+        'promo_time',
+        'is_active'
     ];
 }

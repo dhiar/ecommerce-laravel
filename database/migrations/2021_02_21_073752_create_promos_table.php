@@ -16,6 +16,7 @@ class CreatePromosTable extends Migration
         Schema::create('promos', function (Blueprint $table) {
             $table->id();
             $table->date('promo_time');
+            $table->enum('is_active', ['0', '1'])->default('0');
             $table->timestamps();
         });
     }
