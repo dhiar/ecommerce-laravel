@@ -28,15 +28,20 @@ class CreateProductsTable extends Migration
                 ->on('admins');
 
             $table->string('name', 100)->unique();
+            $table->string('slug', 100)->unique();
             $table->string('image', 100)->unique();
             $table->integer('price')->default(0);
             $table->integer('weight')->default(0);
             $table->integer('stock')->default(0);
             $table->enum('condition', ['New', 'Second'])->default('New');
             $table->text('description');
+
             // 1 is publish, 0 is draft
             $table->enum('is_published', ['0', '1'])->default('1');
-            $table->string('slug', 100)->unique();
+
+            // 0 tampilkan harga normal pada front-end
+            $table->enum('is_promo', ['0', '1'])->default('0');
+            
             $table->integer('transaction')->default(0);
             $table->integer('promo_price')->default(0);
             $table->integer('viewer')->default(0);
