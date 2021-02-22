@@ -37,9 +37,10 @@ class ProductController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        if (request('is_promo')) {
+        if (request('is_promo') == "0" || request('is_promo') == "1") {
             $model = $this->model::whereIsPromo(request('is_promo'));
-        } else {
+        } 
+        else {
             $model = $this->model;
         }
 
@@ -121,7 +122,9 @@ class ProductController extends Controller
             $params = request()->except(['image']);
         }
 
-        $params['id_product_category'] = MainHasher::decode(request('id_product_category'));
+        if (request('id_product_category')) {
+            $params['id_product_category'] = MainHasher::decode(request('id_product_category'));
+        }
         unset($params['id_admin']);
 
 		return $request->update($id, $this->model, $this->transformer, $params);

@@ -168,6 +168,13 @@
                   @click="pageDetailProduct(item.id)"
                   ><i class="fa fa-eye text-gray-100"></i
                 ></a>
+
+                <a
+                  class="btn btn-sm btn-primary"
+                  href="#"
+                  @click="addProductPromo(item.id)"
+                  ><i class="fa fa-plus-circle text-gray-100"></i
+                ></a>
               </td>
             </tr>
           </tbody>
@@ -259,27 +266,75 @@ export default {
     },
     setActivation() {
       alert("setActivation");
-      // if (id) {
-      //   this.$router.push({ path: `/admin/product/` + id });
-      // } else {
-      //   this.$router.push({ path: `/admin/product/create` });
-      // }
     },
     setTime() {
-      alert("setTime");
+      
     },
     pageDetailProduct(id) {
       this.$router.push({ path: `/admin/product/detail/` + id });
     },
-    deleteProductPromo() {
-      alert("deleteProductPromo");
+    deleteProductPromo(id) {
+      axios
+        .put(this.endpoint + "/" + id, {
+          is_promo: "0",
+        })
+        .then(({ data }) => {
+          if (data.success) {
+            Swal.fire(
+              "Success !",
+              data.message + " " + data.data.name,
+              "success"
+            );
+          } else {
+            Swal.fire("Failed !", data.message, "error");
+          }
+          this.fetchData();
+          this.fetchDataPromo();
+        })
+        .catch((error) => {
+          let errMsg = "";
+          if (typeof error.response.data === "object") {
+            errMsg = _.flatten(_.toArray(error.response.data.errors));
+          } else {
+            errMsg = ["Something went wrong. Please try again."];
+          }
+          Swal.fire("Failed save data !", errMsg.join(""), "error");
+        });
+    },
+    addProductPromo(id) {
+      axios
+        .put(this.endpoint + "/" + id, {
+          is_promo: "1",
+        })
+        .then(({ data }) => {
+          if (data.success) {
+            Swal.fire(
+              "Success !",
+              data.message + " " + data.data.name,
+              "success"
+            );
+          } else {
+            Swal.fire("Failed !", data.message, "error");
+          }
+          this.fetchData();
+          this.fetchDataPromo();
+        })
+        .catch((error) => {
+          let errMsg = "";
+          if (typeof error.response.data === "object") {
+            errMsg = _.flatten(_.toArray(error.response.data.errors));
+          } else {
+            errMsg = ["Something went wrong. Please try again."];
+          }
+          Swal.fire("Failed save data !", errMsg.join(""), "error");
+        });
     },
     async fetchData(page = 1) {
       const self = this;
       await axios
         .get(self.endpoint + "?page=" + page, {
           params: {
-            is_promo: 0,
+            is_promo: "0",
           },
         })
         .then(({ data }) => {
@@ -294,7 +349,7 @@ export default {
       await axios
         .get(self.endpoint + "?page=" + page, {
           params: {
-            is_promo: 1,
+            is_promo: "1",
           },
         })
         .then(({ data }) => {
@@ -312,7 +367,7 @@ export default {
       axios
         .get(self.endpoint + "?q=" + query, {
           params: {
-            is_promo: 1,
+            is_promo: "0",
           },
         })
         .then(({ data }) => {
@@ -333,7 +388,7 @@ export default {
       axios
         .get(self.endpoint + "?q=" + query, {
           params: {
-            is_promo: 0,
+            is_promo: "0",
           },
         })
         .then(({ data }) => {
