@@ -140,7 +140,10 @@ let routes = [
 		path: "/admin/product/grosir/:id",
 		component: require(cmpAdmin + "products/grosir").default,
 	},
-
+	{
+		path: "/admin/promo",
+		component: require(cmpAdmin + "Promo").default,
+	},
 	{ path: "/admin/page", component: require(cmpAdmin + "Page").default },
 	{ path: "/admin/profile", component: require(cmpAdmin + "Profile").default },
 ];

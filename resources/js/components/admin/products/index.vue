@@ -41,13 +41,20 @@
                   class="img-fluid"
                   style="max-height: 100px !important"
                 />
-                <a @click="addImages(item.id)" class="badge badge-success text-gray-100 btn">Add Images</a>
+                <a
+                  @click="addImages(item.id)"
+                  class="badge badge-success text-gray-100 btn"
+                  >Add Images</a
+                >
               </td>
               <td>{{ item.name }}</td>
               <td>
                 {{ formatCurrency(item.price) }}
-                <a @click="addGrosir(item.id)" class="badge badge-success text-gray-100 btn">Add Grosir</a>
-
+                <a
+                  @click="addGrosir(item.id)"
+                  class="badge badge-success text-gray-100 btn"
+                  >Add Grosir</a
+                >
               </td>
               <td>{{ item.stock }}</td>
               <td>{{ item.relationships.category.name }}</td>
@@ -57,7 +64,7 @@
                 <a
                   class="btn btn-sm btn-success"
                   href="#"
-                  @click="pageEditProduct(item.id)"
+                  @click="pageDetailProduct(item.id)"
                   ><i class="fa fa-eye text-gray-100"></i
                 ></a>
                 <a
@@ -78,14 +85,32 @@
           </tbody>
         </table>
       </div>
+      <div class="card-footer">
+        <!-- pagination -->
+        <div class="overflow-auto">
+          <b-pagination
+            size="md"
+            first-text="First"
+            prev-text="Prev"
+            next-text="Next"
+            last-text="Last"
+            :total-rows="totalItems"
+            v-model="currentPage"
+            :per-page="perPage"
+            align="center"
+          ></b-pagination>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import GoBack from "../GoBack.vue";
+import { BPagination } from "bootstrap-vue";
 export default {
   components: {
+    "b-pagination": BPagination,
     GoBack,
   },
   data() {
@@ -108,7 +133,7 @@ export default {
     addGrosir(id) {
       this.$router.push({ path: `/admin/product/grosir/` + id });
     },
-    pageEditProduct(id) {
+    pageDetailProduct(id) {
       this.$router.push({ path: `/admin/product/detail/` + id });
     },
     pageNewProduct(id) {
@@ -162,6 +187,25 @@ export default {
       });
     },
   },
+  	created() {
+			const self = this
+			Fire.$on('searching', () => {
+				let query = this.$parent.search;
+				axios.get(self.endpoint + '?q=' + query).then( ({data}) => {
+          self.currentPage = data.current_page;
+          self.perPage = data.per_page;
+          self.totalItems = data.total;
+					self.results = data
+        })
+				.catch(() => {
+					this.$Progress.fail();
+					Toast.fire({
+						icon: 'error',
+						title: 'User not found.'
+					});
+				});
+			})
+		},
   watch: {
     currentPage: {
       handler: function (value) {

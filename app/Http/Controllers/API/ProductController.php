@@ -9,6 +9,7 @@ use App\Transformers\{ProductTransformer, ProductImageTransformer, GrosirTransfo
 use App\{Admin, Product, ProductImage, Grosir};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
+use Illuminate\Support\Facades\Schema;
 use Auth;
 
 class ProductController extends Controller
@@ -23,6 +24,7 @@ class ProductController extends Controller
 	{
         $this->middleware('auth:admin-api', ['store', 'update', 'destroy']);
         $this->model = new Product();
+        $this->table = $this->model->getTable();
         $this->transformer = new ProductTransformer();
         $this->transformer_images = new ProductImageTransformer();
         $this->transformer_grosirs = new GrosirTransformer();
@@ -35,7 +37,13 @@ class ProductController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        return $request->index($this->model, $this->transformer);
+        if (request('is_promo')) {
+            $model = $this->model::whereIsPromo(request('is_promo'));
+        } else {
+            $model = $this->model;
+        }
+
+        return $request->index($model, $this->transformer, 'id', 'ASC', 10, $this->table);
     }
 
     /**
@@ -113,6 +121,7 @@ class ProductController extends Controller
             $params = request()->except(['image']);
         }
 
+        $params['id_product_category'] = MainHasher::decode(request('id_product_category'));
         unset($params['id_admin']);
 
 		return $request->update($id, $this->model, $this->transformer, $params);

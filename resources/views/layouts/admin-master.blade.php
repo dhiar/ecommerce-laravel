@@ -93,11 +93,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Category</p>
                 </router-link>
               </li>
-
               <li class="nav-item">
                 <router-link to="/admin/product" class="nav-link">
                   <i class="fas fa-fw fa-box-open nav-icon"></i>
                   <p>Product</p>
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link to="/admin/promo" class="nav-link">
+                  <i class="fas fa-fw fa-fire nav-icon"></i>
+                  <p>Promo</p>
                 </router-link>
               </li>
               <li class="nav-item">

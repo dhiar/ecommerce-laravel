@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\Schema;
 
 class CommonRequest extends FormRequest
 {
@@ -34,20 +35,26 @@ class CommonRequest extends FormRequest
         ];
     }
 
-    public function index($model, $transformer, $fieldOrder = null, $sort = null, $limit = 10)
+    public function index($model, $transformer, $fieldOrder = null, $sort = null, $limit = 10, $table = null)
     {
         if ($this->q) {
+            if ($table == null) {
+                $table = $model->getTable();
+            }
+            $columns = Schema::getColumnListing($table); 
             $search = $this->q;
-            $paginator = $model::where(function ($query) use ($search) {
-                $query
-                    ->where('name', 'LIKE', "%$search%")
-                    ->where('rekening', 'LIKE', "%$search%")
-                    ->where('number', 'LIKE', "%$search%")
-                    ->orWhere('address', 'LIKE', "%$search%");
+
+            $paginator = $model->where(function ($query) use ($search, $columns) {
+                foreach ($columns as $i => $column) {
+                    if ($i == 0) {
+                        $query->where($column, 'LIKE', "%$search%");
+                    } else {
+                        $query->orWhere($column, 'LIKE', "%$search%");
+                    }
+                }
             })->paginate($limit);
         } else {
             if ($fieldOrder && $sort) {
-                // ->orderBy('created_at', 'desc')
                 $paginator = $model->orderBy($fieldOrder, $sort)->paginate($limit);
             } else {
                 $paginator = $model::latest()->paginate($limit);
@@ -98,11 +105,13 @@ class CommonRequest extends FormRequest
     {
         if (!$params) {
             $params = \request()->all();
-        }
-        
-        unset($params['id']);
-        unset($params['created_at_human']);
-        unset($params['created_at']);
+        }    
+
+        $table = $model->getTable();
+        $columns = Schema::getColumnListing($table);
+        $params = collect($params)->only($columns);
+        $params = collect($params)->except(['id', 'created_at', 'updated_at', 'deleted_at', 'created_at_human', ]);
+        $params = $params->toArray();
 
         $className = $this->getClassName($model);
 
