@@ -10,17 +10,45 @@
             <h2 class="lead text-dark mb-0">Promo of Products</h2>
           </div>
           <div class="col-md-8 align-self-center float-right text-right">
-            <small class="form-text text-muted"
-              >Batas Promo: <b>20-20-2020 20:20:20 </b> &bull;
-              <span class="text-danger">Promo Time is Over </span> &bull;
-              <span class="text-success">Promo Time is Active </span>
-            </small>
+            <div class="form-text text-muted">
+              Batas Promo:
+              <b>
+                <a
+                  v-if="formPromo.promo_time"
+                  class="badge badge-success text-gray-100"
+                >
+                  {{ formPromo.promo_time }}
+                </a>
+                <a v-else class="badge badge-warning text-gray-100">
+                  Empty Date
+                </a>
+              </b>
+              &bull;
+              <a
+                v-if="formPromo.is_available_time == 0"
+                class="badge badge-danger text-gray-100"
+              >
+                {{ formPromo.msg_time }}
+              </a>
+              <a v-else class="badge badge-success text-gray-100">
+                {{ formPromo.msg_time }}
+              </a>
+              &bull;
+              <a
+                v-if="formPromo.is_active == 1"
+                class="badge badge-success text-gray-100"
+              >
+                {{ formPromo.msg_active }}
+              </a>
+              <a v-else class="badge badge-danger text-gray-100">
+                {{ formPromo.msg_active }}
+              </a>
+            </div>
             <br />
-
             <span class="text-dark mb-0">Promo Time &nbsp;&nbsp;</span>
             <span>
               <el-date-picker
-                v-model="formDate.end_at"
+                v-model="formPromo.promo_time"
                 type="datetime"
                 :picker-options="endDatePickerOptions"
                 default-time="09:00:00"
@@ -29,16 +57,23 @@
               >
               </el-date-picker>
             </span>
-
             <span>
               <button @click="setTime()" class="btn btn-primary btn-sm">
                 <i class="fa fa-clock"></i> Set Time
               </button>
               <button
-                @click="setActivation()"
+                v-if="formPromo.is_active == 1"
+                @click="setActivation('0')"
+                class="btn btn-warning btn-sm btn-setting-promo text-gray-dark"
+              >
+                <i class="fa fa-check-circle"></i> Disable Promo
+              </button>
+              <button
+                v-else
+                @click="setActivation('1')"
                 class="btn btn-primary btn-sm btn-setting-promo"
               >
-                <i class="fa fa-check-circle"></i> Aktifkan
+                <i class="fa fa-check-circle"></i> Enable Promo
               </button>
             </span>
           </div>
@@ -219,10 +254,11 @@ export default {
       resultsPromo: {},
       page: "product",
       endpoint: "/api/products",
-      formDate: new Form({
-        end_at: "",
+      endpoint_promo: "/api/promos",
+      formPromo: new Form({
+        promo_time: "",
+        is_active: "0",
       }),
-
       pickerOptions: {
         shortcuts: [
           {
@@ -264,11 +300,30 @@ export default {
     pageEditProduct(id) {
       this.$router.push({ path: `/admin/product/detail/` + id });
     },
-    setActivation() {
-      alert("setActivation");
+    async setActivation(val) {
+      this.formPromo.is_active = val;
+      this.setTime();
     },
-    setTime() {
-      
+    async setTime() {
+      await axios
+        .post(this.endpoint_promo, this.formPromo)
+        .then(({ data }) => {
+          if (data.success) {
+            Swal.fire("Success !", data.message, "success");
+          } else {
+            Swal.fire("Failed !", data.message, "error");
+          }
+          this.fetchData();
+        })
+        .catch((error) => {
+          let errMsg = "";
+          if (typeof error.response.data === "object") {
+            errMsg = _.flatten(_.toArray(error.response.data.errors));
+          } else {
+            errMsg = ["Something went wrong. Please try again."];
+          }
+          Swal.fire("Failed save data !", errMsg.join(""), "error");
+        });
     },
     pageDetailProduct(id) {
       this.$router.push({ path: `/admin/product/detail/` + id });
@@ -343,6 +398,21 @@ export default {
           this.totalItems = data.total;
           this.results = data;
         });
+
+      // get promo-date
+      const promo = await axios.get(this.endpoint_promo).catch((error) => {
+        let errMsg = "";
+        if (typeof error.response.data === "object") {
+          errMsg = _.flatten(_.toArray(error.response.data.errors));
+        } else {
+          errMsg = ["Something went wrong. Please try again."];
+        }
+        Swal.fire("Failed load data !", errMsg.join(""), "error");
+      });
+
+      if (promo.data) {
+        this.formPromo = promo.data;
+      }
     },
     async fetchDataPromo(page = 1) {
       const self = this;
