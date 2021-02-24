@@ -62,44 +62,6 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
-    // protected function create(array $data)
-    // {
-    //     DB::beginTransaction();
-    //     try {
-    //         $address = new Address();
-    //         $address->name = $data['address'];
-    //         $address->save();
-
-    //         if ($address->id) {
-    //             $user = new User();
-    //             $user->name = $data['name'];
-    //             $user->email = $data['email'];
-    //             $user->password = bcrypt($data['password']);
-    //             $user->id_user_type = 3;
-    //             $user->id_address = $address->id;
-    //             $user->phone = $data['phone'];
-    //             $user->save();
-    //         }
-
-    //         DB::commit();
-    //         return $user;
-    //     }
-    //     catch (\Exception $e) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'data' => [],
-    //             'message' => 'Failed create user',
-    //         ]);
-    //         DB::rollback();
-    //     }
-    // }
-
     public function register(Request $request)
     {
         DB::beginTransaction();
@@ -113,7 +75,7 @@ class RegisterController extends Controller
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->password = bcrypt($request->password);
-                $user->id_user_type = 3;
+                $user->id_user_type = 4;
                 $user->id_address = $address->id;
                 $user->phone = $request->phone;
                 $user->verification_code = sha1(time());
@@ -131,8 +93,7 @@ class RegisterController extends Controller
             MailController::sendSignupEmail($user->name, $user->email, $user->verification_code);
 
             // Show Message
-            return redirect()->back()->with(session()->flash('alert-success', 'Akun anda sudah ter-create. Silakan check email link verifikasi! Pendaftaran berhasil.
-                Harap periksa juga folder spam, promotions, all inbox atau semisalnya di email Anda.'));
+            return redirect()->back()->with(session()->flash('alert-success', 'Registrasi customer berhasil. Silakan check email link verifikasi! Harap periksa juga folder spam, all inbox atau semisalnya di email Anda.'));
         } else {
             return redirect()->back()->with(session()->flash('alert-danger', 'Terjadi kesalahan. Silakan hubungi admin!'));
         }
