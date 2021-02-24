@@ -40,6 +40,24 @@ class LoginController extends Controller
         $this->middleware('guest')->except(['logout', 'userLogout']);
     }
 
+    public function login(Request $request)
+	{
+		// Validate the form data
+		$this->validate($request, [
+			'email' => 'required|email',
+			'password' => 'required|min:8',
+		]);
+
+		// Attemp to log the user in
+		if(Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) 
+		{
+            return redirect()->route('home');
+		}
+
+		// If unsuccessful, then redirect back to the login with the form data
+		return redirect()->back()->withInput($request->only('email', 'remember'));
+	}
+
     public function logout()
     {
         Auth::guard('web')->logout();

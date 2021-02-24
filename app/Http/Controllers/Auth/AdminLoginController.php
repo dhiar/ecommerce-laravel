@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Providers\RouteServiceProvider;
 
 class AdminLoginController extends Controller
 {
@@ -16,7 +17,7 @@ class AdminLoginController extends Controller
 	 *
 	 * @var string
 	 */
-	protected $redirectTo = '/admin';
+	protected $redirectTo = RouteServiceProvider::HOME_ADMIN;
 
 	public function __construct()
 	{
