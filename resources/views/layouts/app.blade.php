@@ -228,23 +228,40 @@
             </header>
             <section class="hero-section">
                 <div class="hero-items owl-carousel">
-                    <div class="single-hero-items set-bg" data-setbg="img/hero-1.jpg">
+                    {{-- pohon-kayuputih-ntt-amfoang.jpeg --}}
+                    <div class="single-hero-items set-bg" data-setbg="img/slides/pohon-kayuputih-ntt-amfoang.PNG" style="width:auto;">
                         <div class="container">
                             <div class="row">
                                 <div class="col-lg-5">
-                                    <span>Bag,kids</span>
-                                    <h1>Black friday</h1>
+                                    <span>Madu, Kesehatan</span>
+                                    <h1>Madu Hutan NTT</h1>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
                                         incididunt ut labore et dolore</p>
                                     <a href="#" class="primary-btn">Shop Now</a>
                                 </div>
                             </div>
                             <div class="off-card">
-                                <h2>Sale <span>50%</span></h2>
+                                <h2>Ongkir Free 30% <span></span></h2>
                             </div>
                         </div>
                     </div>
-                    <div class="single-hero-items set-bg" data-setbg="img/hero-2.jpg">
+                    <div class="single-hero-items set-bg" data-setbg="img/slides/madu-randu.png">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <span>Madu, Kesehatan</span>
+                                    <h1>Madu Randu, Jepara</h1>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                        incididunt ut labore et dolore</p>
+                                    <a href="#" class="primary-btn">Shop Now</a>
+                                </div>
+                            </div>
+                            <div class="off-card">
+                                <h2>Ongkir Free 30% <span></span></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single-hero-items set-bg" data-setbg="img/slides/all_mini.png">
                         <div class="container">
                             <div class="row">
                                 <div class="col-lg-5">

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Product;
 
 class Slide extends Model
 {
@@ -11,7 +12,13 @@ class Slide extends Model
     protected $fillable = [
         'title',
         'url',
+        'description',
         'image',
-        'active'
+        'active',
+        'id_product'
     ];
+
+    public function product(){
+        return $this->belongsTo(Product::class,'id_product','id');
+    }
 }

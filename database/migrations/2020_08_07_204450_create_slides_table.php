@@ -16,9 +16,16 @@ class CreateSlidesTable extends Migration
         Schema::create('slides', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title', 30)->unique();
-            $table->string('url', 50);
-            $table->string('image', 100)->unique();
+            $table->string('url', 50)->nullable();
+            $table->text('description');
+            $table->string('image', 150)->unique();
             $table->enum('active', ['0', '1'])->default('1');
+
+            $table->unsignedBigInteger('id_product');
+            $table->foreign('id_product')
+                ->references('id')
+                ->on('products');
+            
             $table->timestamps();
         });
     }

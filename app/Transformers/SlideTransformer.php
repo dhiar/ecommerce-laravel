@@ -38,9 +38,13 @@ class SlideTransformer extends TransformerAbstract
             'id' => MainHasher::encode($model->id),
             'title' => $model->title,
             'url' => $model->url,
+            'description' => $model->description,
             'image' => \env('APP_URL').Storage::url($model->image) ,
             // storage_path('app/'.$model->image),
             'active' => $model->active,
+            "relationships" => [
+                'product' => $model->product,
+            ]
         ];
     }
 }
