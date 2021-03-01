@@ -88,7 +88,7 @@
               <div class="form-group">
                 <label for="image">Icon</label>
                 <el-upload
-                  :action="baseURL + '/api/upload'"
+                  :action="baseURL + '/api/upload-category'"
                   style="
                     border-style: dashed;
                     border-width: 1px;

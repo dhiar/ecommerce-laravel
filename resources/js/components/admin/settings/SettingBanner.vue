@@ -13,7 +13,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <div class="h5 text-gray-800 line-height-222">
-              {{ form.id ? 'Update ' : 'Tambah' }} Banner Slide
+              {{ form.id ? "Update " : "Tambah" }} Banner Slide
             </div>
             <button
               type="button"
@@ -31,7 +31,7 @@
               <div class="form-group">
                 <label for="image">Banner</label>
                 <el-upload
-                  :action="baseURL + '/api/upload'"
+                  :action="baseURL + '/api/upload-slide'"
                   style="
                     border-style: dashed;
                     border-width: 1px;
@@ -103,6 +103,41 @@
                 >
                   Title terlalu pendek ( maks :
                   {{ $v.form.title.$params.minLength.min }} karakter )
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="id_product">Product</label>
+                <multiselect
+                  v-model="product"
+                  :options="products"
+                  placeholder="Select one"
+                  label="name"
+                  track-by="id"
+                  :searchable="true"
+                  :hide-selected="true"
+                  :max-height="150"
+                  :max="7"
+                  @search-change="asyncFind"
+                ></multiselect>
+              </div>
+
+              <div class="form-group">
+                <label for="description">Description</label>
+                <editor
+                  ref="tuiEditor"
+                  :class="{
+                    'is-invalid': submitted && $v.form.description.$error,
+
+                    'is-valid': !$v.form.description.$invalid,
+                  }"
+                />
+                <div class="valid-feedback">Description is valid.</div>
+                <div
+                  v-if="submitted && !$v.form.description.required"
+                  class="invalid-feedback"
+                >
+                  Description harus diisi
                 </div>
               </div>
               <div class="form-group">
@@ -205,10 +240,10 @@
               <tr>
                 <th class="text-center" style="width: 8% !important">No</th>
                 <th style="width: 20% !important">Title</th>
-                <th style="width: 25% !important">Image</th>
+                <th style="width: 23% !important">Image</th>
                 <th style="width: 20% !important">Url</th>
-                <th style="width: 13% !important">Active</th>
-                <th>Aksi</th>
+                <th class="text-center" style="width: 10% !important">Active</th>
+                <th class="text-center">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -269,10 +304,14 @@ export default {
         id: "",
         title: "",
         url: "#",
+        description: "",
         image: "", // path image
         storage_path_image: "",
         active: "1",
+        id_product: "",
       }),
+      product: { id: "", name: "" },
+      products: [],
     };
   },
   validations: {
@@ -283,6 +322,14 @@ export default {
         maxLength: maxLength(30),
       },
       image: {
+        required,
+      },
+      description: {
+        required,
+        minLength: minLength(5),
+        maxLength: maxLength(300),
+      },
+      id_product: {
         required,
       },
       url: {
@@ -298,9 +345,30 @@ export default {
   methods: {
     async showModalBanner(id) {
       this.submitted = false;
-      $("#modalBanner").modal("show");
       const self = this;
       this.form.id = id;
+      // list of products
+      const products = await axios
+        .get("/api/products", {
+          params: {
+            fieldOrder: "name",
+            sort: "ASC",
+          },
+        })
+        .catch((error) => {
+          let errMsg = "";
+          if (typeof error.response.data === "object") {
+            errMsg = _.flatten(_.toArray(error.response.data.errors));
+          } else {
+            errMsg = ["Something went wrong. Please try again."];
+          }
+          Swal.fire("Failed load data !", errMsg.join(""), "error");
+        });
+
+      self.products = products.data.data;
+
+      $("#modalBanner").modal("show");
+
       if (id) {
         const result = await axios
           .get(self.endpoint + "/" + id)
@@ -315,12 +383,39 @@ export default {
           });
 
         this.form = result.data;
+        this.form.id_product = result.data.relationships.product.id;
+        this.product = {
+          id: result.data.relationships.product.id,
+          name: result.data.relationships.product.name,
+        };
+
+        this.$refs.tuiEditor.invoke("setHtml", this.form.description);
       } else {
         // clear form
         if (!this.submitted) {
-          self.clearForm(self.form)
+          this.$refs.tuiEditor.invoke("setHtml", null);
         }
       }
+    },
+    async asyncFind(query) {
+      // list of products
+      const products = await axios
+        .get("/api/products?q=" + query, {
+          params: {
+            fieldOrder: "name",
+            sort: "ASC",
+          },
+        })
+        .catch((error) => {
+          let errMsg = "";
+          if (typeof error.response.data === "object") {
+            errMsg = _.flatten(_.toArray(error.response.data.errors));
+          } else {
+            errMsg = ["Something went wrong. Please try again."];
+          }
+          Swal.fire("Failed load data !", errMsg.join(""), "error");
+        });
+      this.products = products.data.data;
     },
     handleBannerSuccess(res, file) {
       this.form.storage_path_image = res.result;
@@ -347,13 +442,24 @@ export default {
       this.submitted = true;
       const self = this;
 
+      this.form.id_product = self.product.id ? self.product.id : null;
+
       this.$v.$touch();
       if (this.$v.$error) {
         return;
       } else {
+        // return error if empty content
+        let description = this.$refs.tuiEditor.invoke("getHtml");
+
+        if (!description) {
+          Swal.fire("Failed !", "Description must be filled", "error");
+        } else {
+          self.form.description = description;
+        }
         if (id) {
-          axios
-            .put(self.endpoint + "/" + id, this.form)
+          this.form.relationships = [];
+          await axios
+            .put(self.endpoint + "/" + id, self.form)
             .then(({ data }) => {
               if (data.success) {
                 Swal.fire("Success !", data.message, "success");
@@ -396,6 +502,7 @@ export default {
         }
       }
       this.submitted = false;
+      this.clearForm(this.form);
     },
     deleteBanner(id, name) {
       const self = this;

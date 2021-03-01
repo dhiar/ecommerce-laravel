@@ -10,7 +10,6 @@ use App\Footer;
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
 
-
 class FooterController extends Controller
 {
     /**

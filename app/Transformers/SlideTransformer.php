@@ -6,6 +6,7 @@ use League\Fractal\TransformerAbstract;
 use App\Slide;
 use App\Hashers\MainHasher;
 use Illuminate\Support\Facades\Storage;
+use App\Transformers\ProductTransformer;
 
 class SlideTransformer extends TransformerAbstract
 {
@@ -43,7 +44,7 @@ class SlideTransformer extends TransformerAbstract
             // storage_path('app/'.$model->image),
             'active' => $model->active,
             "relationships" => [
-                'product' => $model->product,
+                'product' => fractal($model->product, new ProductTransformer())->toArray()['data']
             ]
         ];
     }

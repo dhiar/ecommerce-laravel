@@ -12,4 +12,19 @@ class FileController extends Controller
         $result = $request->file('file')->store('public/images');
         return ['result' => $result];
     }
+
+    public function uploadProduct(Request $request) {
+        $result = $request->file('file')->store('public/products');
+        return ['result' => $result];
+    }
+
+    public function uploadSlide(Request $request) {
+        $result = $request->file('file')->store('public/slides');
+        return ['result' => $result];
+    }
+
+    public function uploadCategory(Request $request) {
+        $result = $request->file('file')->store('public/categories');
+        return ['result' => $result];
+    }
 }

@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
 use App\Transformers\SlideTransformer;
 use App\Slide;
-
+use App\Hashers\MainHasher;
 
 class BaseSlideController extends Controller
 {
@@ -55,8 +55,14 @@ class BaseSlideController extends Controller
         $validated = $request->validate([
             'title' => "required|min:5|max:30|unique:slides,title,{$this->model->id}",
             'url' => 'required|min:1|max:50',
+            'description' => 'required|min:1|max:300',
             'image' => "required|min:5|max:200|unique:slides,image,{$this->model->id}",
+            'id_product' => 'required',
         ]);
+
+        if(request('id_product')) {
+            request()->request->add(['id_product' => MainHasher::decode(request('id_product'))]);
+        }
 
         return $request->store($this->model, request()->all(), $this->transformer);
     }
@@ -93,6 +99,10 @@ class BaseSlideController extends Controller
     public function update(CommonRequest $request, $id)
 	{
         $params = [];
+
+        if(request('id_product')) {
+            request()->request->add(['id_product' => MainHasher::decode(request('id_product'))]);
+        }
         if (request('storage_path_image')) {
             $obj = $this->model->find($id);
             $pathCurrentImage = storage_path('app/'.$obj->image);
@@ -105,8 +115,9 @@ class BaseSlideController extends Controller
             $params = request()->except(['storage_path_image']);
         } else {
             $params = request()->except(['image']);
-            
         }
+
+        unset($params['relationships']);
 
 		return $request->update($id, $this->model, $this->transformer, $params);
 	}

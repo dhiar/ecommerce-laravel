@@ -235,7 +235,9 @@ Vue.mixin({
 					key !== "busy" &&
 					key !== "successful" &&
 					key !== "errors" &&
-					key !== "originalData"
+					key !== "originalData" &&
+					key !== "products" && 
+					key !== "active"
 				) {
 					form[key] = "";
 				}

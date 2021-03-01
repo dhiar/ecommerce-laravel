@@ -88,6 +88,9 @@ Route::get('list-city/{province}', 'API\ShippingController@listCity');
 Route::get('list-district/{city}', 'API\ShippingController@listDistrict');
 
 Route::post('upload', [FileController::class, 'upload']);
+Route::post('upload-product', [FileController::class, 'uploadProduct']);
+Route::post('upload-slide', [FileController::class, 'uploadSlide']);
+Route::post('upload-category', [FileController::class, 'uploadCategory']);
 
 /**
  * Router Binding
@@ -145,6 +148,10 @@ Route::bind('product_images', function (string $id) {
 });
 
 Route::bind('product', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('id_product', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

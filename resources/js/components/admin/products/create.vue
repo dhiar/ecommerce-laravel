@@ -158,7 +158,7 @@
                   <div class="form-group">
                     <label for="image">Main Image</label>
                     <el-upload
-                      :action="baseURL + '/api/upload'"
+                      :action="baseURL + '/api/upload-product'"
                       style="
                         border-style: dashed;
                         border-width: 1px;
