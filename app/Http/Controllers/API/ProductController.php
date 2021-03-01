@@ -44,7 +44,10 @@ class ProductController extends Controller
             $model = $this->model;
         }
 
-        return $request->index($model, $this->transformer, 'id', 'ASC', 10, $this->table);
+        $fieldOrder = $request->fieldOrder ?? "id";
+        $sort = $request->sort ?? "ASC";
+
+        return $request->index($model, $this->transformer, $fieldOrder, $sort, 10, $this->table);
     }
 
     /**

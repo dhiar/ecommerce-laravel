@@ -17,7 +17,7 @@ class ProductSeeder extends Seeder
             Product::create([
                 'id_product_category'  => '4',
                 'id_admin'  => '2',
-                'name'  => 'Madu Hutan NTT (Bunga Kayu Putih) - '.$i,
+                'name'  => $i <= 15 ? 'Madu Hutan NTT (Bunga Kayu Putih) - '.$i : 'Madu Randu - '.$i,
                 'image'  => $i == 1 ? 'public/images/InAftoNK3bFuCcGRAUoz98cCD07ieHZgRX2U36tx.jpeg' : "empty-$i.png" ,
                 'price'  => '130000',
                 'promo_price'  => '125000',
@@ -27,7 +27,7 @@ class ProductSeeder extends Seeder
                 'description'  => '<p><strong>Description</strong></p>',
                 'is_published'  => '1',
                 'is_promo'  => $i <= 15 ? '0' : '1',
-                'slug'  => 'madu-hutan-ntt-(bunga-kayu-putih) - '.$i,
+                'slug'  => $i <= 15 ? 'madu-hutan-ntt-(bunga-kayu-putih) - '.$i : 'madu-randu - '.$i,
                 'transaction'  => '123',
                 'viewer'  => '321'
             ]);
