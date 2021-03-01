@@ -39,6 +39,7 @@ Route::apiResource('base/rekenings', 'API\BaseRekeningController')->names([
 Route::apiResource('base/slides', 'API\BaseSlideController')->names([
     'store' => 'slide.store'
 ]);
+Route::put('base/clone-slide/{slide}', 'API\BaseSlideController@cloneSlide');
 
 Route::apiResource('base/socmeds', 'API\BaseSocmedController')->names([
     'store' => 'socmed.store'

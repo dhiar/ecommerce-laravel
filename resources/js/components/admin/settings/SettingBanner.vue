@@ -120,25 +120,32 @@
                   :max="7"
                   @search-change="asyncFind"
                 ></multiselect>
+                <input
+                  v-model="form.id_product"
+                  type="hidden"
+                  id="id_product"
+                  name="id_product"
+                  class="form-control"
+                  :class="{
+                    'is-invalid': submitted && $v.form.id_product.$error,
+
+                    'is-valid': !$v.form.id_product.$invalid,
+                  }"
+                />
+                <div class="valid-feedback">Product is valid.</div>
+                <div
+                  v-if="submitted && !$v.form.id_product.required"
+                  class="invalid-feedback"
+                >
+                  Product harus dipilih
+                </div>
               </div>
 
               <div class="form-group">
                 <label for="description">Description</label>
                 <editor
                   ref="tuiEditor"
-                  :class="{
-                    'is-invalid': submitted && $v.form.description.$error,
-
-                    'is-valid': !$v.form.description.$invalid,
-                  }"
                 />
-                <div class="valid-feedback">Description is valid.</div>
-                <div
-                  v-if="submitted && !$v.form.description.required"
-                  class="invalid-feedback"
-                >
-                  Description harus diisi
-                </div>
               </div>
               <div class="form-group">
                 <label for="url">URL (opsional - defaut is '#')</label>
@@ -240,7 +247,7 @@
               <tr>
                 <th class="text-center" style="width: 8% !important">No</th>
                 <th style="width: 20% !important">Title</th>
-                <th style="width: 23% !important">Image</th>
+                <th class="text-center" style="width: 23% !important">Image</th>
                 <th style="width: 20% !important">Url</th>
                 <th class="text-center" style="width: 10% !important">Active</th>
                 <th class="text-center">Aksi</th>
@@ -249,7 +256,13 @@
             <tbody>
               <tr v-for="(item, idx) in results.data" :key="item.id">
                 <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-                <td>{{ item.title }}</td>
+                <td>{{ item.title }}
+                  <a
+                  @click="cloneBanner(item.id)"
+                  class="badge badge-success text-gray-100 btn"
+                  >clone</a
+                >
+                </td>
                 <td>
                   <img
                     :src="item.image"
@@ -259,8 +272,8 @@
                   />
                 </td>
                 <td>{{ item.url }}</td>
-                <td>{{ item.active | yesNo }}</td>
-                <td>
+                <td class="text-center">{{ item.active | yesNo }}</td>
+                <td class="text-center">
                   <a
                     class="btn btn-sm btn-info"
                     href="#"
@@ -300,6 +313,7 @@ export default {
       submitted: false,
       page: "banner",
       endpoint: "/api/base/slides",
+      endpoint_clone: "/api/base/clone-slide",
       form: new Form({
         id: "",
         title: "",
@@ -324,11 +338,6 @@ export default {
       image: {
         required,
       },
-      description: {
-        required,
-        minLength: minLength(5),
-        maxLength: maxLength(300),
-      },
       id_product: {
         required,
       },
@@ -343,6 +352,29 @@ export default {
     this.fetchData(1);
   },
   methods: {
+    async cloneBanner(id) {
+      await axios
+            .put(this.endpoint_clone + "/" + id)
+            .then(({ data }) => {
+              if (data.success) {
+                Swal.fire("Success !", data.message, "success");
+              } else {
+                Swal.fire("Failed !", data.message, "error");
+              }
+              this.fetchData();
+              $("#modalBanner").modal("hide");
+            })
+            .catch((error) => {
+              let errMsg = "";
+              if (typeof error.response.data === "object") {
+                errMsg = _.flatten(_.toArray(error.response.data.errors));
+              } else {
+                errMsg = ["Something went wrong. Please try again."];
+              }
+              Swal.fire("Failed save data !", errMsg.join(""), "error");
+            });
+        
+    },
     async showModalBanner(id) {
       this.submitted = false;
       const self = this;

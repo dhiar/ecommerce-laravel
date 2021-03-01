@@ -29,7 +29,7 @@ class CreateProductsTable extends Migration
 
             $table->string('name', 100)->unique();
             $table->string('slug', 100)->unique();
-            $table->string('image', 100)->unique();
+            $table->string('image', 100);
             $table->integer('price')->default(0);
             $table->integer('weight')->default(0);
             $table->integer('stock')->default(0);

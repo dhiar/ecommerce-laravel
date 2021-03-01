@@ -18,7 +18,7 @@ class CreateSlidesTable extends Migration
             $table->string('title', 30)->unique();
             $table->string('url', 50)->nullable();
             $table->text('description');
-            $table->string('image', 150)->unique();
+            $table->string('image', 150);
             $table->enum('active', ['0', '1'])->default('1');
 
             $table->unsignedBigInteger('id_product');

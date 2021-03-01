@@ -34,16 +34,6 @@ class BaseSlideController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -79,17 +69,6 @@ class BaseSlideController extends Controller
 	}
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        dd('edit');
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -121,6 +100,22 @@ class BaseSlideController extends Controller
 
 		return $request->update($id, $this->model, $this->transformer, $params);
 	}
+
+    public function cloneSlide(CommonRequest $request, $id){
+        $model = $this->model->find($id);
+        $newModel = $model->replicate();
+        $newModel->title = $model->title.' - copy';
+
+        $newModel->save();
+
+        return response()->json([
+            'success' => true,
+            'process' => 'clone',
+            'data' => fractal($newModel, $this->transformer)->toArray()['data'],
+            'message' => "Success clone slide",
+        ]);
+    }
+
 
     /**
      * Remove the specified resource from storage.
