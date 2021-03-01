@@ -174,7 +174,13 @@
           <tbody>
             <tr v-for="(item, idx) in results.data" :key="item.id">
               <td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-              <td>{{ item.name }}</td>
+              <td>{{ item.name }} <br>
+                <a
+                  @click="cloneCategory(item.id)"
+                  class="badge badge-primary text-gray-100 btn"
+                  >clone</a
+                >
+              </td>
               <td>{{ item.slug }}</td>
               <td class="text-center">
                 <img
@@ -224,6 +230,7 @@ export default {
       submitted: false,
       page: "category",
       endpoint: "/api/product_category",
+      endpoint_clone: "/api/clone-category",
       form: new Form({
         id: "",
         name: "",
@@ -399,6 +406,27 @@ export default {
         this.totalItems = data.total;
         this.results = data;
       });
+    },
+    async cloneCategory(id) {
+      await axios
+        .put(this.endpoint_clone + "/" + id)
+        .then(({ data }) => {
+          if (data.success) {
+            Swal.fire("Success !", data.message, "success");
+          } else {
+            Swal.fire("Failed !", data.message, "error");
+          }
+          this.fetchData();
+        })
+        .catch((error) => {
+          let errMsg = "";
+          if (typeof error.response.data === "object") {
+            errMsg = _.flatten(_.toArray(error.response.data.errors));
+          } else {
+            errMsg = ["Something went wrong. Please try again."];
+          }
+          Swal.fire("Failed save data !", errMsg.join(""), "error");
+        });
     },
   },
   watch: {

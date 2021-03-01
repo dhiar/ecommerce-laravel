@@ -43,8 +43,15 @@
                 />
                 <a
                   @click="addImages(item.id)"
-                  class="badge badge-success text-gray-100 btn"
+                  class="badge badge-success text-gray-100 btn img-fluid"
+                  style="width: 100% !important"
                   >Add Images</a
+                >
+                <a
+                  @click="cloneProduct(item.id)"
+                  class="badge badge-primary text-gray-100 btn"
+                  style="width: 100% !important"
+                  >clone</a
                 >
               </td>
               <td>{{ item.name }}</td>
@@ -121,6 +128,7 @@ export default {
       results: {},
       page: "product",
       endpoint: "/api/products",
+      endpoint_clone: "/api/clone-product",
     };
   },
   mounted() {
@@ -186,26 +194,49 @@ export default {
         this.results = data;
       });
     },
+    async cloneProduct(id) {
+      await axios
+        .put(this.endpoint_clone + "/" + id)
+        .then(({ data }) => {
+          if (data.success) {
+            Swal.fire("Success !", data.message, "success");
+          } else {
+            Swal.fire("Failed !", data.message, "error");
+          }
+          this.fetchData();
+        })
+        .catch((error) => {
+          let errMsg = "";
+          if (typeof error.response.data === "object") {
+            errMsg = _.flatten(_.toArray(error.response.data.errors));
+          } else {
+            errMsg = ["Something went wrong. Please try again."];
+          }
+          Swal.fire("Failed save data !", errMsg.join(""), "error");
+        });
+    },
   },
-  	created() {
-			const self = this
-			Fire.$on('searching', () => {
-				let query = this.$parent.search;
-				axios.get(self.endpoint + '?q=' + query).then( ({data}) => {
+  created() {
+    const self = this;
+    Fire.$on("searching", () => {
+      let query = this.$parent.search;
+      axios
+        .get(self.endpoint + "?q=" + query)
+        .then(({ data }) => {
           self.currentPage = data.current_page;
           self.perPage = data.per_page;
           self.totalItems = data.total;
-					self.results = data
+          self.results = data;
         })
-				.catch(() => {
-					this.$Progress.fail();
-					Toast.fire({
-						icon: 'error',
-						title: 'User not found.'
-					});
-				});
-			})
-		},
+        .catch(() => {
+          this.$Progress.fail();
+          Toast.fire({
+            icon: "error",
+            title: "Product not found.",
+          });
+        });
+    });
+  },
   watch: {
     currentPage: {
       handler: function (value) {

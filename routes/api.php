@@ -68,11 +68,15 @@ Route::apiResource('testimony', 'API\TestimonyController')->names([
 Route::apiResource('product_category', 'API\ProductCategoryController')->names([
 	'store' => 'product_category.store'
 ]);
+Route::put('clone-category/{product_category}', 'API\ProductCategoryController@cloneCategory');
+
 Route::apiResource('products', 'API\ProductController')->names([
 	'store' => 'product.store'
 ]);
 Route::get('products/{product}/images', 'API\ProductController@listImages');
 Route::get('products/{product}/grosirs', 'API\ProductController@listGrosirs');
+Route::put('clone-product/{product}', 'API\ProductController@cloneProduct');
+
 Route::apiResource('grosirs', 'API\GrosirController')->names([
 	'store' => 'grosir.store'
 ]);

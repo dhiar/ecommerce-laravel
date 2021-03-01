@@ -37,16 +37,6 @@ class ProductCategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        dd('create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -111,4 +101,20 @@ class ProductCategoryController extends Controller
 	{
 		return $request->destroy($this->model, $id);
 	}
+
+    public function cloneCategory(CommonRequest $request, $id){
+        $model = $this->model->find($id);
+        $newModel = $model->replicate();
+        $newModel->name = $model->name.' - copy';
+        $newModel->slug = $model->slug.'-copy';
+
+        $newModel->save();
+
+        return response()->json([
+            'success' => true,
+            'process' => 'clone',
+            'data' => fractal($newModel, $this->transformer)->toArray()['data'],
+            'message' => "Success clone category product",
+        ]);
+    }
 }

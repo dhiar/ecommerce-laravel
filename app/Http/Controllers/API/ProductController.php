@@ -165,4 +165,20 @@ class ProductController extends Controller
             'message' => 'Success show list product grosir prices',
         ]);
 	}
+
+    public function cloneProduct(CommonRequest $request, $id){
+        $model = $this->model->find($id);
+        $newModel = $model->replicate();
+        $newModel->name = $model->name.' - copy';
+        $newModel->slug = $model->slug.'-copy';
+
+        $newModel->save();
+
+        return response()->json([
+            'success' => true,
+            'process' => 'clone',
+            'data' => fractal($newModel, $this->transformer)->toArray()['data'],
+            'message' => "Success clone product",
+        ]);
+    }
 }
