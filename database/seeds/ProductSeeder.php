@@ -27,7 +27,7 @@ class ProductSeeder extends Seeder
                 'description'  => '<p><strong>Description</strong></p>',
                 'is_published'  => '1',
                 'is_promo'  => $i <= 15 ? '0' : '1',
-                'slug'  => $i <= 15 ? 'madu-hutan-ntt-(bunga-kayu-putih) - '.$i : 'madu-randu - '.$i,
+                'slug'  => $i <= 15 ? 'madu-hutan-ntt-(bunga-kayu-putih)-'.$i : 'madu-randu-'.$i,
                 'transaction'  => '123',
                 'viewer'  => '321'
             ]);

@@ -18,6 +18,7 @@ Route::get('/', 'HomeController@index')->name('index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@home')->name('home');
+Route::get('/product/{slug}', 'HomeController@productDetail')->name('product.detail')->where('slug', '([A-z\d-\/_.]+)?');
 Route::get('/verify', 'Auth\RegisterController@verifyUser')->name('verify.user');
 Route::get('/user/logout', 'Auth\LoginController@userLogout')->name('user.logout');
 

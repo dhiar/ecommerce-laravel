@@ -179,6 +179,20 @@ ol {
 
 /* buttons */
 
+.success-btn {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 700;
+	padding: 12px 30px;
+	color: #ffffff;
+	background: #e7ab3c;
+	background-color:#28a745;
+}
+
+.success-btn:hover {
+	background-color:#218838;
+}
+
 .primary-btn {
 	display: inline-block;
 	font-size: 14px;
@@ -186,7 +200,7 @@ ol {
 	padding: 12px 30px;
 	color: #ffffff;
 	background: #e7ab3c;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 }
 
 .site-btn {
@@ -850,7 +864,8 @@ ol {
 	opacity: 0;
 }
 
-.hero-items .single-hero-items .primary-btn {
+.hero-items .single-hero-items .primary-btn,
+.hero-items .single-hero-items .success-btn {
 	position: relative;
 	top: 100px;
 	opacity: 0;
@@ -905,7 +920,8 @@ ol {
 .hero-items .owl-item.active .single-hero-items span,
 .hero-items .owl-item.active .single-hero-items h1,
 .hero-items .owl-item.active .single-hero-items p,
-.hero-items .owl-item.active .single-hero-items .primary-btn {
+.hero-items .owl-item.active .single-hero-items .primary-btn ,
+.hero-items .owl-item.active .single-hero-items .success-btn {
 	top: 0;
 	opacity: 1;
 }
@@ -928,7 +944,8 @@ ol {
 	transition: all 0.6s ease 0.6s;
 }
 
-.hero-items .owl-item.active .single-hero-items .primary-btn {
+.hero-items .owl-item.active .single-hero-items .primary-btn,
+.hero-items .owl-item.active .single-hero-items .success-btn {
 	-webkit-transition: all 0.8s ease 0.8s;
 	-o-transition: all 0.8s ease 0.8s;
 	transition: all 0.8s ease 0.8s;
@@ -2281,10 +2298,10 @@ ol {
 	margin-bottom: 33px;
 }
 
-.product-details .quantity .pro-qty {
+.product-details .quantity .pro-qty,
+.product-details .quantity .pro-qty-none {
 	width: 123px;
 	height: 46px;
-	border: 2px solid #ebebeb;
 	padding: 0 15px;
 	float: left;
 	margin-right: 14px;
@@ -2314,7 +2331,8 @@ ol {
 	float: left;
 }
 
-.product-details .quantity .primary-btn.pd-cart {
+.product-details .quantity .primary-btn.pd-cart,
+.product-details .quantity .success-btn.pd-cart {
 	padding: 14px 70px 10px;
 }
 
@@ -3928,7 +3946,8 @@ ol {
 	.countdown-timer .cd-item {
 		margin-right: 26px;
 	}
-	.product-details .quantity .primary-btn.pd-cart {
+	.product-details .quantity .primary-btn.pd-cart,
+	.product-details .quantity .success-btn.pd-cart {
 		padding: 14px 30px 10px;
 	}
 	.tab-item ul li a {
@@ -4255,7 +4274,8 @@ ol {
 	.product-show-option .select-option .sorting.nice-select {
 		margin-bottom: 10px;
 	}
-	.product-details .quantity .primary-btn.pd-cart {
+	.product-details .quantity .primary-btn.pd-cart,
+	.product-details .quantity .success-btn.pd-cart {
 		padding: 14px 20px 10px;
 	}
 	.tab-item ul li a {
