@@ -64,6 +64,7 @@ Vue.use(VueProgressBar, {
 Vue.use(Vuelidate);
 
 let cmpAdmin = "./components/admin/";
+let cmpGuest = "./components/guest/";
 let routes = [
 	{ path: "/admin", component: require(cmpAdmin + "Dashboard").default },
 	{
@@ -146,6 +147,8 @@ let routes = [
 	},
 	{ path: "/admin/page", component: require(cmpAdmin + "Page").default },
 	{ path: "/admin/profile", component: require(cmpAdmin + "Profile").default },
+
+	{ path: "/product/:slug", component: require(cmpGuest + "Product").default },
 ];
 
 const router = new VueRouter({

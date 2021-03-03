@@ -22,7 +22,14 @@ class ProductController extends Controller
 	 */
 	public function __construct()
 	{
-        $this->middleware('auth:admin-api', ['store', 'update', 'destroy']);
+        $this->middleware('auth:admin-api', ['only' => [
+            'store',
+            'update',
+            'destroy'
+        ]]);
+        $this->middleware('guest', ['only' => [
+            'index'
+        ]]);
         $this->model = new Product();
         $this->table = $this->model->getTable();
         $this->transformer = new ProductTransformer();
@@ -39,7 +46,9 @@ class ProductController extends Controller
     {
         if (request('is_promo') == "0" || request('is_promo') == "1") {
             $model = $this->model::whereIsPromo(request('is_promo'));
-        } 
+        } else if (request('slug')) {
+            $model = $this->model::whereSlug(request('slug'));
+        }
         else {
             $model = $this->model;
         }

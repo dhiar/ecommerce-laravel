@@ -3,12 +3,11 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Product;
+use App\ProductImage;
 use App\Hashers\MainHasher;
-use App\Transformers\ProductImageOnlyTransformer;
 use Illuminate\Support\Facades\Storage;
 
-class ProductTransformer extends TransformerAbstract
+class ProductImageOnlyTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -33,18 +32,12 @@ class ProductTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(Product $model)
+    public function transform(ProductImage $model)
     {
         $result = $model->toArray();
         $result["id"] = MainHasher::encode($result["id"]);
-        $result["id_product_category"] = MainHasher::encode($result["id_product_category"]);
-        $result["id_admin"] = MainHasher::encode($result["id_admin"]);
         $result["image"] = \env('APP_URL').Storage::url($model->image);
-        $result["relationships"] = [
-            'category' => $model->category,
-            'admin' => $model->admin,
-            'images' => fractal($model->images, new ProductImageOnlyTransformer())->toArray()['data'],
-        ];
+        $result["storage_path_image"] = $model->image;
         return $result;
     }
 }

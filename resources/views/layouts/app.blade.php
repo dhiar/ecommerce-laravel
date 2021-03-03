@@ -32,11 +32,11 @@
 </head>
 
 <body>
-     <!-- Page Preloder -->
-     <div id="preloder">
+    <!-- Page Preloder -->
+    {{-- <div id="preloder">
         <div class="loader"></div>
-    </div>
-    <div id="app">
+    </div> --}}
+    <div class="wrapper" id="app">
         <?php
             $routeName = Route::current()->getName();
             $baseUrl = env('APP_URL');
@@ -467,9 +467,10 @@
     </div>
 
     <!-- REQUIRED SCRIPTS -->
-    <script src="/js/app.js"></script>
+    <script src="/js/app.js"></script>    
 
     <!-- Js Plugins -->
+
     <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
@@ -478,7 +479,9 @@
     <script src="{{ asset('js/jquery.zoom.min.js') }}"></script>
     <script src="{{ asset('js/jquery.dd.min.js') }}"></script>
     <script src="{{ asset('js/jquery.slicknav.js') }}"></script>
+    
     <script src="{{ asset('js/owl.carousel.min.js') }}"></script>
+    
     <script src="{{ asset('js/main.js') }}"></script>
 </body>
 </html>

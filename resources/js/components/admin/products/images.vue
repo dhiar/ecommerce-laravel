@@ -54,7 +54,7 @@
                     </div>
                     <div class="card-body">
                       <div v-for="(image, idx) in form.images" :key="idx">
-                        <div class="row">
+                        <div class="row" style="margin-bottom:20px;">
                           <div
                             class="col-9 col-md-9 col-sm-9 themed-grid-col text-center"
                           >
@@ -158,6 +158,8 @@ export default {
         
         let productImages = result.data.data
         if (productImages.length > 0) {
+          this.form.images = []
+          this.form.storage_path_images = []
           productImages.forEach(data => {
             this.form.images.push(data.image)
             this.form.storage_path_images.push(data.storage_path_image)
@@ -192,8 +194,6 @@ export default {
     },
     async save(e, idProduct = false) {
       const self = this;
-
-      alert("idProduct = " + idProduct);
 
       await axios
         .post(self.endpoint, this.form)
