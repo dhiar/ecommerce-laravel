@@ -13,7 +13,7 @@
 				</div>
 			</div>
 		</div>
-		<section class="product-shop spad page-details">
+		<section class="product-shop spad page-details" style="padding-top:50px;">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-3">
@@ -37,23 +37,6 @@
 							</div>
 						</div>
 						<div class="filter-widget">
-							<h4 class="fw-title">Size</h4>
-							<div class="fw-size-choose">
-								<div class="sc-item">
-									<input type="radio" id="s-size" />
-									<label for="s-size">s</label>
-								</div>
-								<div class="sc-item">
-									<input type="radio" id="m-size" />
-									<label for="m-size">m</label>
-								</div>
-								<div class="sc-item">
-									<input type="radio" id="l-size" />
-									<label for="l-size">l</label>
-								</div>
-							</div>
-						</div>
-						<div class="filter-widget">
 							<h4 class="fw-title">Tags</h4>
 							<div class="fw-tags">
 								<a href="#">Tag A</a>
@@ -66,7 +49,7 @@
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="card">
-									<div class="card-content" style="padding: 20px;">
+									<div class="card-content" style="padding: 10px;">
 										<carousel
 											:starting-image="2"
 											:images="images"
@@ -80,8 +63,8 @@
 								<div class="product-details">
 									<div class="pd-title">
                     <!-- {{product}} -->
-										<span style="color:#212529; text-transform: none;">Product By : {{ product.relationships.admin.name }} ,
-                      Location : {{ product.relationships.admin.relationships.address }}
+										<span style="color:#212529; text-transform: none;">Owner Produk : {{ product.relationships.admin.name }} ,
+											Location : {{ product.relationships.admin.relationships.address }}
                     </span>
 										<h3>{{product.name}}</h3>
 										<a href="#" class="heart-icon"
@@ -240,10 +223,18 @@ export default {
 			endpoint: "/api/products",
 			dataImgBigUrl: "",
 			images: [],
-			product: {},
+			product: {
+				relationships: {
+					admin: {
+						relationships : {
+
+						}
+					}
+				}
+			},
 		};
 	},
-	async mounted() {
+	async created() {
 		let productSlug = this.$route.params.slug;
 		const self = this;
 
