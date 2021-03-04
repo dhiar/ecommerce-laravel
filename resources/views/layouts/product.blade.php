@@ -23,10 +23,11 @@
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/themify-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('css/elegant-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/owl.carousel.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/nice-select.css') }}" rel="stylesheet">
     <link href="{{ asset('css/jquery-ui.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/slicknav.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-
 </head>
 
 <body>
@@ -89,7 +90,7 @@
                             <div class="col-lg-2 col-md-2">
                                 <div class="logo">
                                     <a href="<?= $baseUrl; ?>">
-                                        <img src="<?= $baseUrl.'/img/fashi.png'; ?>" alt="">
+                                        <img src="<?= $baseUrl.'/img/green-store.png'; ?>" alt="">
                                     </a>
                                 </div>
                             </div>
@@ -199,8 +200,22 @@
 
     <!-- Js Plugins -->
 
+    {{-- <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-ui.min.js') }}"></script> --}}
+
+
     <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.countdown.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.zoom.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.dd.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.slicknav.js') }}"></script>
+    
+    <script src="{{ asset('js/owl.carousel.min.js') }}"></script>
+    
+    <script src="{{ asset('js/main.js') }}"></script>
 </body>
 </html>

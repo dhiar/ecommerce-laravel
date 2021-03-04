@@ -41,6 +41,9 @@ class AdminTransformer extends TransformerAbstract
                 'job_title' => $admin->job_title,
 				'photo' => $admin->photo,
 				'created_at' => $admin->created_at,
+                'relationships' => [
+                    'address' => ''
+                ]  
 			];
     }
 }

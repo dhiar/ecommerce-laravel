@@ -33,9 +33,9 @@
 
 <body>
     <!-- Page Preloder -->
-    {{-- <div id="preloder">
+    <div id="preloder">
         <div class="loader"></div>
-    </div> --}}
+    </div>
     <div class="wrapper" id="app">
         <?php
             $routeName = Route::current()->getName();
@@ -133,7 +133,7 @@
                                 <div class="col-lg-2 col-md-2">
                                     <div class="logo">
                                         <a href="<?= $baseUrl; ?>">
-                                            <img src="<?= $baseUrl.'/img/fashi.png'; ?>" alt="">
+                                            <img src="<?= $baseUrl.'/img/green-store.png'; ?>" alt="">
                                         </a>
                                     </div>
                                 </div>
@@ -281,7 +281,7 @@
                             <div class="col-lg-2 col-md-2">
                                 <div class="logo">
                                     <a href="./">
-                                        <img src="img/fashi.png" alt="">
+                                        <img src="img/green-store.png" alt="">
                                     </a>
                                 </div>
                             </div>
