@@ -81,9 +81,14 @@
 												<td>{{ form.transaction }}</td>
 											</tr>
 											<tr>
-												<td>Count Viewer</td>
+												<td>Count View</td>
 												<td>:</td>
-												<td>{{ form.viewer }}</td>
+												<td>{{ form.count_view }}</td>
+											</tr>
+											<tr>
+												<td>Count Like</td>
+												<td>:</td>
+												<td>{{ form.count_like }}</td>
 											</tr>
 										</tbody>
 									</table>
@@ -136,7 +141,8 @@ export default {
 				slug: "",
 				transaction: "0",
 				promo_price: "0",
-				viewer: "0",
+				count_view: "0",
+				count_like: "0",
 				relationships: {
 					category: {},
 					admin: {},

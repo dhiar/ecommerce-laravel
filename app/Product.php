@@ -24,7 +24,8 @@ class Product extends Model
         'slug',
         'transaction',
         'promo_price',
-        'viewer',
+        'count_view',
+        'count_like',
     ];
 
     public function category(){

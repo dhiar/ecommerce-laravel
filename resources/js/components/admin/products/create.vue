@@ -415,7 +415,8 @@ export default {
         slug: "",
         transaction: "0",
         promo_price: "0",
-        viewer: "0",
+        count_view: "0",
+        count_like: "0",
       }),
     };
   },

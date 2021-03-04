@@ -20,6 +20,12 @@ class CreateAdminsTable extends Migration
 				$table->foreign('id_user_type')
 						->references('id')
 						->on('user_types');
+
+				$table->unsignedBigInteger('id_address')->nullable();
+				$table->foreign('id_address')
+                ->references('id')
+                ->on('address');
+
 				$table->string('email')->unique();
 				$table->string('job_title')->default("Manage & monitoring app.");
 				$table->string('password');

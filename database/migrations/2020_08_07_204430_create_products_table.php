@@ -44,7 +44,8 @@ class CreateProductsTable extends Migration
             
             $table->integer('transaction')->default(0);
             $table->integer('promo_price')->default(0);
-            $table->integer('viewer')->default(0);
+            $table->integer('count_view')->default(0);
+            $table->integer('count_like')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

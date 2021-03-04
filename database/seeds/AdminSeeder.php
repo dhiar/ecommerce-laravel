@@ -15,6 +15,7 @@ class AdminSeeder extends Seeder
         Admin::create([
             'name'  => 'super-admin',
             'id_user_type' => 1,
+            'id_address' => 1,
             'email' => 'dhiar.praditya@yahoo.co.id',
             'password' => bcrypt('manager247'),
             'job_title' => 'Manage & monitor app.',
@@ -25,6 +26,7 @@ class AdminSeeder extends Seeder
         Admin::create([
             'name'  => 'admin',
             'id_user_type' => 2,
+            'id_address' => 1,
             'email' => 'darrenzie@gmail.com',
             'password' => bcrypt('manager247'),
             'job_title' => 'Manage & monitor app.',
@@ -35,6 +37,7 @@ class AdminSeeder extends Seeder
         Admin::create([
             'name'  => 'owner-product',
             'id_user_type' => 3,
+            'id_address' => 1,
             'email' => 'owner-product@gmail.com',
             'password' => bcrypt('manager247'),
             'job_title' => 'Manage & monitor owner product.',

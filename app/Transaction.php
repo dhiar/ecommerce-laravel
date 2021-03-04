@@ -22,7 +22,7 @@ class Transaction extends Model
     ];
 
     public function address(){
-        return $this->belongsTo(Address::class);
+        return $this->belongsTo(Address::class, 'id_address', 'id');
     }
 
     public function user(){

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\{UserTypes, Testimony};
+use App\{Address, UserTypes, Testimony};
 
 class Admin extends Authenticatable
 {
@@ -46,6 +46,10 @@ class Admin extends Authenticatable
 
     public function usertype(){
         return $this->belongsTo(UserTypes::class,'id_user_type');
+    }
+
+    public function address(){
+        return $this->belongsTo(Address::class, 'id_address', 'id');
     }
 
     /**
