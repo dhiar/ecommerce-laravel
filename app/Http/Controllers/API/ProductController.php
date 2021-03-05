@@ -82,8 +82,8 @@ class ProductController extends Controller
         request()->request->add(['image' => request('storage_path_image')]);
         request()->request->add(['id_admin' => $adminId]);
 
-        $categoryId = MainHasher::decode(request('id_product_category'));
-        request()->request->add(['id_product_category' => $categoryId]);
+        $categoryBrandId = MainHasher::decode(request('id_category_brand'));
+        request()->request->add(['id_category_brand' => $categoryBrandId]);
 
         return $request->store($this->model, request()->all(), $this->transformer);
     }
@@ -134,8 +134,8 @@ class ProductController extends Controller
             $params = request()->except(['image']);
         }
 
-        if (request('id_product_category')) {
-            $params['id_product_category'] = MainHasher::decode(request('id_product_category'));
+        if (request('id_category_brand')) {
+            $params['id_category_brand'] = MainHasher::decode(request('id_category_brand'));
         }
         unset($params['id_admin']);
 

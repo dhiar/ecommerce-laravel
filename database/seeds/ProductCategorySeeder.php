@@ -13,11 +13,6 @@ class ProductCategorySeeder extends Seeder
     public function run()
     {
         ProductCategory::create([
-            'name'  => 'Komputer',
-            'slug'  => 'komputer'
-        ]);
-
-        ProductCategory::create([
             'name'  => 'Laptop',
             'slug'  => 'laptop'
         ]);
@@ -28,8 +23,8 @@ class ProductCategorySeeder extends Seeder
         ]);
 
         ProductCategory::create([
-            'name'  => 'Madu Hutan',
-            'slug'  => 'madu-hutan'
+            'name'  => 'Kesehatan (Madu)',
+            'slug'  => 'Kesehatan-(madu)'
         ]);
 
         ProductCategory::create([

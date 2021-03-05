@@ -16,10 +16,10 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedBigInteger('id_product_category');
-            $table->foreign('id_product_category')
+            $table->unsignedBigInteger('id_category_brand');
+            $table->foreign('id_category_brand')
                 ->references('id')
-                ->on('product_categories');
+                ->on('category_brand');
 
             // Untuk ditampilkan no HP setiap product
             $table->unsignedBigInteger('id_admin');
@@ -59,8 +59,8 @@ class CreateProductsTable extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropForeign(['id_product_category']);
-            $table->dropColumn('id_product_category');
+            $table->dropForeign(['id_category_brand']);
+            $table->dropColumn('id_category_brand');
         });
         Schema::dropIfExists('products');
     }

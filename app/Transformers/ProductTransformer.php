@@ -37,11 +37,11 @@ class ProductTransformer extends TransformerAbstract
     {
         $result = $model->toArray();
         $result["id"] = MainHasher::encode($result["id"]);
-        $result["id_product_category"] = MainHasher::encode($result["id_product_category"]);
+        $result["id_category_brand"] = MainHasher::encode($result["id_category_brand"]);
         $result["id_admin"] = MainHasher::encode($result["id_admin"]);
         $result["image"] = \env('APP_URL').Storage::url($model->image);
         $result["relationships"] = [
-            'category' => $model->category,
+            'category_brand' => $model->category_brand,
             'admin' => fractal($model->admin, new AdminTransformer())->toArray()['data'],
             'images' => fractal($model->images, new ProductImageOnlyTransformer())->toArray()['data'],
         ];

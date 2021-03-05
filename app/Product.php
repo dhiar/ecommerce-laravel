@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{ProductCategory, ProductImage, Grosir, Admin};
+use App\{CategoryBrand, ProductImage, Grosir, Admin};
 use Spatie\Tags\HasTags;
 
 class Product extends Model
@@ -13,7 +13,7 @@ class Product extends Model
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [
-        'id_product_category',
+        'id_category_brand',
         'id_admin',
         'name',
         'image',
@@ -31,8 +31,8 @@ class Product extends Model
         'count_like',
     ];
 
-    public function category(){
-        return $this->belongsTo(ProductCategory::class, 'id_product_category', 'id');
+    public function category_brand(){
+        return $this->belongsTo(ProductCategory::class, 'id_category_brand', 'id');
     }
 
     public function admin(){

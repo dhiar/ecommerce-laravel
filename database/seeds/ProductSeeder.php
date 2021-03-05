@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
     {
         for ($i=1; $i <= 30; $i++) {
             Product::create([
-                'id_product_category'  => '4',
+                'id_category_brand'  => '1',
                 'id_admin'  => '2',
                 'name'  => $i <= 15 ? 'Madu Hutan NTT (Bunga Kayu Putih) - '.$i : 'Madu Randu - '.$i,
                 'image'  => $i == 1 ? 'public/images/InAftoNK3bFuCcGRAUoz98cCD07ieHZgRX2U36tx.jpeg' : $i == 16 ? "public/products/WZ0JP5OAOA7wZgAZZADSjBZNZzTWy6ZcWdYFX64j.jpeg" : "empty-$i.png",

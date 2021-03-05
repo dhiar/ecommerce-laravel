@@ -5,17 +5,16 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\{Product, CategoryBrand};
 
-class ProductCategory extends Model
+class ProductBrand extends Model
 {
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [
         'name',
-        'slug',
-        'icon'
+        'slug'
     ];
 
     public function category_brands(){
-        return $this->hasMany(CategoryBrand::class, 'id_category', 'id');
+        return $this->hasMany(CategoryBrand::class, 'id_brand', 'id');
     }
 }
