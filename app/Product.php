@@ -4,9 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\{ProductCategory, ProductImage, Grosir, Admin};
+use Spatie\Tags\HasTags;
 
 class Product extends Model
 {
+    use HasTags;
+
     public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [

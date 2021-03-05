@@ -42,7 +42,7 @@ class AdminTransformer extends TransformerAbstract
 				'photo' => $admin->photo,
 				'created_at' => $admin->created_at,
                 'relationships' => [
-                    'address' => ''
+                    'address' => $admin->address->name
                 ]  
 			];
     }

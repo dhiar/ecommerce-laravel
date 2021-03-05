@@ -20,6 +20,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.1",
         "spatie/laravel-fractal": "^5.7",
+        "spatie/laravel-tags": "^2.7",
         "vinkla/hashids": "^8.1"
     },
     "require-dev": {
