@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{Product, CategoryBrand};
+use App\{ProductCategory, ProductBrand, CategoryBrand};
 
 class ProductCategory extends Model
 {
@@ -17,5 +17,11 @@ class ProductCategory extends Model
 
     public function category_brands(){
         return $this->hasMany(CategoryBrand::class, 'id_category', 'id');
+    }
+
+    public function brands()
+    {
+        // return $this->belongsToMany(ProductCategory::class)->withTimestamps()->withPivot(['name', 'slug']);
+        return $this->belongsToMany(ProductBrand::class, 'category_brand', 'id_category', 'id_brand')->withTimestamps();
     }
 }

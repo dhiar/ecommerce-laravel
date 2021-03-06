@@ -88,16 +88,27 @@
 							<div class="form-group">
 								<label for="id_category">Category</label>
 								<multiselect
-                  v-model="category"
-                  :options="categories"
-                  placeholder="Select one"
-                  label="name"
-                  track-by="id"
-                  :searchable="true"
-                  :max-height="200"
-                  :max="10"
-                  @search-change="asyncFindCategory"
-                ></multiselect>
+									v-model="category"
+									:options="categories"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="200"
+									:max="10"
+									@search-change="asyncFindCategory"
+									:class="{
+										'is-invalid': submitted && $v.form.id_category.$error,
+										'is-valid': !$v.form.id_category.$invalid,
+									}"
+								></multiselect>
+								<div class="valid-feedback">Category is valid.</div>
+								<div
+									v-if="submitted && !$v.form.id_category.required"
+									class="invalid-feedback"
+								>
+									Category harus diisi
+								</div>
 							</div>
 						</div>
 						<!--modal body-->
@@ -120,113 +131,70 @@
 		</div>
 
 		<go-back></go-back><br />
-		<nav class="mt-2">
-			<ul class="nav nav-tabs justify-content-center">
-				<li class="nav-item">
-					<a
-						class="nav-link active"
-						id="brand-tab"
-						data-toggle="pill"
-						href="#brand"
-						role="tab"
-						aria-controls="brand"
-						aria-selected="true"
-						><b>BRANDS</b></a
-					>
-				</li>
-				<li class="nav-item">
-					<a
-						class="nav-link"
-						id="category-brand-tab"
-						data-toggle="pill"
-						href="#category-brand"
-						role="tab"
-						aria-controls="category-brand"
-						aria-selected="false"
-						><b>CATEGORY BRANDS</b></a
-					>
-				</li>
-			</ul>
-		</nav>
-
-		<div class="tab-content" id="pills-tabContent">
-			<div
-				class="tab-pane fade show active"
-				id="brand"
-				role="tabpanel"
-				aria-labelledby="brand-tab"
-			>
-				<br>
-				<!-- Page Heading -->
-				<div class="card shadow">
-					<div class="card-header">
-						<div class="row">
-							<div class="col-md-8 align-self-center">
-								<h2 class="lead text-dark mb-0">Brand</h2>
-							</div>
-							<div class="col-md-4 float-right text-right">
-								<button @click="showModalBrand()" class="btn btn-primary">
-									Tambah Brand
-								</button>
-							</div>
-						</div>
+		<!-- Page Heading -->
+		<div class="card shadow">
+			<div class="card-header">
+				<div class="row">
+					<div class="col-md-8 align-self-center">
+						<h2 class="lead text-dark mb-0">Brand</h2>
 					</div>
-					<div class="card-body table-responsive">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th class="text-center" style="width: 8% !important;">No</th>
-									<th style="width: 25% !important;">Brand</th>
-									<th style="width: 25% !important;">Slug</th>
-									<th style="width: 20% !important;">
-										Category
-									</th>
-									<th class="text-center">Aksi</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="(item, idx) in resultsBrand.data" :key="item.id">
-									<td class="text-center">{{ getNumber(currentPageBrand, idx) }}</td>
-									<td>
-										{{ item.name }} <br />
-										<a
-											@click="cloneBrand(item.id)"
-											class="badge badge-primary text-gray-100 btn"
-											>clone</a
-										>
-									</td>
-									<td>{{ item.slug }}</td>
-									<td>
-										{{item.relationships.category_brand.relationships.category.name }}
-									</td>
-									<td class="text-center">
-										<a
-											class="btn btn-sm btn-info"
-											href="#"
-											@click="showModalBrand(item.id)"
-											><i class="fa fa-pen text-gray-100"></i
-										></a>
-
-										<a
-											class="btn btn-sm btn-danger"
-											href="#"
-											@click="deleteBrand(item.id, item.name)"
-											><i class="fa fa-trash-alt text-gray-100"></i
-										></a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="col-md-4 float-right text-right">
+						<button @click="showModalBrand()" class="btn btn-primary">
+							Tambah Brand
+						</button>
 					</div>
 				</div>
 			</div>
-			<div
-				class="tab-pane fade"
-				id="category-brand"
-				role="tabpanel"
-				aria-labelledby="category-brand-tab"
-			>
-				Past Event
+			<div class="card-body table-responsive">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-center" style="width: 8% !important;">No</th>
+							<th style="width: 25% !important;">Brand</th>
+							<th style="width: 25% !important;">Slug</th>
+							<th style="width: 20% !important;">
+								Category
+							</th>
+							<th class="text-center">Aksi</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(item, idx) in resultsBrand.data" :key="item.id">
+							<td class="text-center">
+								{{ getNumber(currentPageBrand, idx) }}
+							</td>
+							<td>
+								{{ item.name }} <br />
+								<a
+									@click="cloneBrand(item.id)"
+									class="badge badge-primary text-gray-100 btn"
+									>clone</a
+								>
+							</td>
+							<td>{{ item.slug }}</td>
+							<td>
+								{{
+									item.relationships.category_brand.relationships.category.name
+								}}
+							</td>
+							<td class="text-center">
+								<a
+									class="btn btn-sm btn-info"
+									href="#"
+									@click="showModalBrand(item.id)"
+									><i class="fa fa-pen text-gray-100"></i
+								></a>
+
+								<a
+									class="btn btn-sm btn-danger"
+									href="#"
+									@click="deleteBrand(item.id, item.name)"
+									><i class="fa fa-trash-alt text-gray-100"></i
+								></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
@@ -258,12 +226,8 @@ export default {
 				slug: "",
 				id_category: "",
 			}),
-			formCategoryBrand: new Form({
-				id_category: "",
-				id_brand: "",
-			}),
-			category: { id: "", name: "", slug: "", icon : "" },
-      categories: [],
+			category: { id: "", name: "", slug: "", icon: "" },
+			categories: [],
 		};
 	},
 	validations: {
@@ -279,8 +243,8 @@ export default {
 				maxLength: maxLength(30),
 			},
 			id_category: {
-        required,
-      },
+				required,
+			},
 		},
 	},
 	mounted() {
@@ -288,25 +252,25 @@ export default {
 	},
 	methods: {
 		async asyncFindCategory(query) {
-      // list of products
-      const categories = await axios
-        .get("/api/product_category?q=" + query, {
-          params: {
-            fieldOrder: "name",
-            sort: "ASC",
-          },
-        })
-        .catch((error) => {
-          let errMsg = "";
-          if (typeof error.response.data === "object") {
-            errMsg = _.flatten(_.toArray(error.response.data.errors));
-          } else {
-            errMsg = ["Something went wrong. Please try again."];
-          }
-          Swal.fire("Failed load data !", errMsg.join(""), "error");
-        });
-      this.categories = categories.data.data;
-    },
+			// list of products
+			const categories = await axios
+				.get("/api/product_category?q=" + query, {
+					params: {
+						fieldOrder: "name",
+						sort: "ASC",
+					},
+				})
+				.catch((error) => {
+					let errMsg = "";
+					if (typeof error.response.data === "object") {
+						errMsg = _.flatten(_.toArray(error.response.data.errors));
+					} else {
+						errMsg = ["Something went wrong. Please try again."];
+					}
+					Swal.fire("Failed load data !", errMsg.join(""), "error");
+				});
+			this.categories = categories.data.data;
+		},
 		inputSlug() {
 			const self = this;
 			self.form.slug = self.sanitizeTitle(self.form.name);
@@ -330,8 +294,10 @@ export default {
 					});
 
 				self.form = result.data;
-				self.form.id_category = result.data.relationships.category_brand.id_category
-				self.category = result.data.relationships.category_brand.relationships.category
+				self.form.id_category =
+					result.data.relationships.category_brand.id_category;
+				self.category =
+					result.data.relationships.category_brand.relationships.category;
 				// console.log('result.data.relationships.category_brand ' + JSON.stringify(result.data.relationships.category_brand))
 			} else {
 				// clear form
@@ -342,30 +308,31 @@ export default {
 
 			// get list of category
 			const categories = await axios
-        .get(self.endpointCategory, {
-          params: {
-            fieldOrder: "name",
-            sort: "ASC",
+				.get(self.endpointCategory, {
+					params: {
+						fieldOrder: "name",
+						sort: "ASC",
 						withId: self.form.id_category,
-          },
-        })
-        .catch((error) => {
-          let errMsg = "";
-          if (typeof error.response.data === "object") {
-            errMsg = _.flatten(_.toArray(error.response.data.errors));
-          } else {
-            errMsg = ["Something went wrong. Please try again."];
-          }
-          Swal.fire("Failed load data !", errMsg.join(""), "error");
-        });
+					},
+				})
+				.catch((error) => {
+					let errMsg = "";
+					if (typeof error.response.data === "object") {
+						errMsg = _.flatten(_.toArray(error.response.data.errors));
+					} else {
+						errMsg = ["Something went wrong. Please try again."];
+					}
+					Swal.fire("Failed load data !", errMsg.join(""), "error");
+				});
 
-      self.categories = categories.data.data;
+			self.categories = categories.data.data;
 
 			$("#modalBrand").modal("show");
 		},
 		async createAdminBrand(id) {
 			this.submitted = true;
 			const self = this;
+			self.form.id_category = self.category.id;
 
 			this.$v.$touch();
 			if (this.$v.$error) {

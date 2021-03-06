@@ -170,6 +170,14 @@ Route::bind('id_product', function (string $id) {
 	return  MainHasher::decode($id);
 });
 
+Route::bind('id_category', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('id_brand', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
 Route::bind('promo', function (string $id) {
 	return  MainHasher::decode($id);
 });

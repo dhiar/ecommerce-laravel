@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
 use App\Transformers\ProductBrandTransformer;
-use App\ProductBrand;
+use App\{ProductBrand, ProductCategory, CategoryBrand};
 use Illuminate\Support\Facades\DB;
+use App\Hashers\MainHasher;
 use Auth;
 
 class ProductBrandController extends Controller
@@ -52,8 +53,30 @@ class ProductBrandController extends Controller
             'name' => "required|min:5|max:30|unique:product_brands,name,{$this->model->id}",
             'slug' => "required|min:5|max:30|unique:product_brands,slug,{$this->model->id}",
         ]);
+        
+        DB::beginTransaction();
+        try {
+            $brand = ProductBrand::create(request()->except(['id_category']));
+            $category = ProductCategory::find(MainHasher::decode(request('id_category')));
+            $category->brands()->attach($brand->id);
 
-        return $request->store($this->model, request()->all(), $this->transformer);
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'process' => 'Create',
+                'data' => $brand,
+                'message' => 'Success create Brand',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'process' => 'Create',
+                'data' => [],
+                'message' => 'Failed create Brand',
+            ]);
+            DB::rollback();
+        }
     }
 
     /**
@@ -76,7 +99,36 @@ class ProductBrandController extends Controller
      */
     public function update(CommonRequest $request, $id)
 	{
-		return $request->update($id, $this->model, $this->transformer, request()->all());
+        $brand = ProductBrand::find($id);
+
+        DB::beginTransaction();
+        try {
+            $brand->update(request()->except(['id_category']));
+
+            $categoryBrand = CategoryBrand::where('id_brand',$id)->first();
+            $category = ProductCategory::find($categoryBrand->id_category);
+            $category->brands()->detach($id);
+
+            $category = ProductCategory::find(MainHasher::decode(request('id_category')));
+            $category->brands()->attach($id);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'process' => 'Update',
+                'data' => $brand,
+                'message' => 'Success update Brand',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'process' => 'Update',
+                'data' => [],
+                'message' => 'Failed update Brand',
+            ]);
+            DB::rollback();
+        }
 	}
 
     /**
