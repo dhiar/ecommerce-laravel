@@ -14,7 +14,7 @@ class ProductBrand extends Model
         'slug'
     ];
 
-    public function category_brands(){
-        return $this->hasMany(CategoryBrand::class, 'id_brand', 'id');
+    public function category_brand(){
+        return $this->hasOne(CategoryBrand::class, 'id_brand', 'id');
     }
 }

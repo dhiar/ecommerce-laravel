@@ -27,7 +27,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- SEARCH FORM -->
     <div class="form-inline ml-3">
-      <div class="input-group input-group-sm">
+      <div class="input-group">
         <input class="form-control form-control-navbar" @keyup.enter="searchit" v-model="search" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
           <button class="btn btn-navbar" @click="searchit">
@@ -93,6 +93,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Category</p>
                 </router-link>
               </li>
+              <li class="nav-item">
+                <router-link to="/admin/brand" class="nav-link">
+                  <i class="fas fa-fw fa-award nav-icon"></i>
+                  <p>Brand</p>
+                </router-link>
+              </li>
+              {{-- <i class="fad fa-box-check"></i> --}}
               <li class="nav-item">
                 <router-link to="/admin/product" class="nav-link">
                   <i class="fas fa-fw fa-box-open nav-icon"></i>

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Schema;
+use App\Hashers\MainHasher;
 
 class CommonRequest extends FormRequest
 {
@@ -37,6 +38,11 @@ class CommonRequest extends FormRequest
 
     public function index($model, $transformer, $fieldOrder = null, $sort = null, $limit = 10, $table = null)
     {
+        if (isset($this->withId) && $this->withId != "") {
+            $withId = is_numeric($this->withId) ? $this->withId : MainHasher::decode($this->withId);
+            $model = $model->where('id', '>', '0')->orWhere('id',$withId);
+        }
+
         if ($this->q) {
             if ($table == null) {
                 $table = $model->getTable();

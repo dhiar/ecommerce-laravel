@@ -65,6 +65,11 @@ Route::apiResource('testimony', 'API\TestimonyController')->names([
 	'store' => 'testimony.store'
 ]);
 
+Route::apiResource('product_brand', 'API\ProductBrandController')->names([
+	'store' => 'product_brand.store'
+]);
+Route::put('clone-brand/{product_brand}', 'API\ProductBrandController@cloneBrand');
+
 Route::apiResource('product_category', 'API\ProductCategoryController')->names([
 	'store' => 'product_category.store'
 ]);
@@ -96,6 +101,7 @@ Route::post('upload', [FileController::class, 'upload']);
 Route::post('upload-product', [FileController::class, 'uploadProduct']);
 Route::post('upload-slide', [FileController::class, 'uploadSlide']);
 Route::post('upload-category', [FileController::class, 'uploadCategory']);
+Route::post('upload-brand', [FileController::class, 'uploadBrand']);
 
 /**
  * Router Binding
@@ -145,6 +151,10 @@ Route::bind('testimony', function (string $id) {
 });
 
 Route::bind('product_category', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('product_brand', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

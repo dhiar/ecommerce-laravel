@@ -118,6 +118,10 @@ let routes = [
 		component: require(cmpAdmin + "Category").default,
 	},
 	{
+		path: "/admin/brand",
+		component: require(cmpAdmin + "Brand").default,
+	},
+	{
 		path: "/admin/product",
 		component: require(cmpAdmin + "products/index").default,
 	},

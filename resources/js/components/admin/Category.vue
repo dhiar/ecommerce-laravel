@@ -429,6 +429,27 @@ export default {
         });
     },
   },
+  created() {
+    const self = this;
+    Fire.$on("searching", () => {
+      let query = this.$parent.search;
+      axios
+        .get(self.endpoint + "?q=" + query)
+        .then(({ data }) => {
+          self.currentPage = data.current_page;
+          self.perPage = data.per_page;
+          self.totalItems = data.total;
+          self.results = data;
+        })
+        .catch(() => {
+          this.$Progress.fail();
+          Toast.fire({
+            icon: "error",
+            title: "Category not found.",
+          });
+        });
+    });
+  },
   watch: {
     currentPage: {
       handler: function (value) {

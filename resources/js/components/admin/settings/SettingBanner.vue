@@ -115,7 +115,6 @@
                   label="name"
                   track-by="id"
                   :searchable="true"
-                  :hide-selected="true"
                   :max-height="150"
                   :max="7"
                   @search-change="asyncFind"

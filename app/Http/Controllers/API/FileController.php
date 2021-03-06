@@ -27,4 +27,9 @@ class FileController extends Controller
         $result = $request->file('file')->store('public/categories');
         return ['result' => $result];
     }
+
+    public function uploadBrand(Request $request) {
+        $result = $request->file('file')->store('public/brands');
+        return ['result' => $result];
+    }
 }

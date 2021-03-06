@@ -17,7 +17,7 @@ class CategoryBrandTable extends Migration
 		{
 			$table->id();
 			$table->unsignedBigInteger('id_category')->index();
-            $table->unsignedBigInteger('id_brand')->index();
+            $table->unsignedBigInteger('id_brand')->index()->unique();
             $table->foreign('id_category')->references('id')->on('product_categories');
 			$table->foreign('id_brand')->references('id')->on('product_brands');
 			$table->timestamps();
