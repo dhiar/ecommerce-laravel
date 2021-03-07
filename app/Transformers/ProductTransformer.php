@@ -42,6 +42,8 @@ class ProductTransformer extends TransformerAbstract
         $result["image"] = \env('APP_URL').Storage::url($model->image);
         $result["relationships"] = [
             'category_brand' => $model->category_brand,
+            'category' => $model->category_brand->category,
+            'brand' => $model->category_brand->brand,
             'admin' => fractal($model->admin, new AdminTransformer())->toArray()['data'],
             'images' => fractal($model->images, new ProductImageOnlyTransformer())->toArray()['data'],
         ];

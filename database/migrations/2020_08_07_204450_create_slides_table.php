@@ -15,10 +15,10 @@ class CreateSlidesTable extends Migration
     {
         Schema::create('slides', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title', 30)->unique();
+            $table->string('title', 50)->unique();
             $table->string('url', 50)->nullable();
             $table->text('description');
-            $table->string('image', 150);
+            $table->string('image', 150)->nullable();
             $table->enum('active', ['0', '1'])->default('1');
 
             $table->unsignedBigInteger('id_product');

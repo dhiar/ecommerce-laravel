@@ -383,23 +383,20 @@
 
             <section class="hero-section">
                 <div class="hero-items owl-carousel">
-                    <??>
-
                     @foreach ($slides as $key => $slide)
-                    {{-- {{ print_r($slide) }} --}}
                         <div class="single-hero-items set-bg" data-setbg="<?= $slide->image ?>">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-5">
                                         <span>
-                                            <?= $slide->relationships->product->relationships->category->name; ?>
+                                            <?= $slide->relationships->product->relationships->category->name.' - Brand : '.$slide->relationships->product->relationships->brand->name; ?>
                                         </span>
                                         <a href="<?= $slide->url; ?>">
                                             <h1> <?= $slide->title; ?></h1>
                                             <p> <?= $slide->description; ?></p>
                                         </a>
                                         <?php // urlencode();?>
-                                        <a href="<?= "./product/".htmlentities($slide->relationships->product->slug); ?>" class="primary-btn">Shop Now</a>
+                                        <a href="<?= "./product/".htmlentities($slide->relationships->product->slug); ?>" class="primary-btn">SHOP NOW</a>
                                     </div>
                                 </div>
                                 <div class="off-card">
@@ -408,56 +405,6 @@
                             </div>
                         </div>
                     @endforeach
-                        
-                    {{-- pohon-kayuputih-ntt-amfoang.jpeg --}}
-                    {{-- <div class="single-hero-items set-bg" data-setbg="img/slides/pohon-kayuputih-ntt-amfoang.PNG" style="width:auto;">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <span>Madu, Kesehatan</span>
-                                    <h1>Madu Hutan NTT</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore</p>
-                                    <a href="#" class="primary-btn">Shop Now</a>
-                                </div>
-                            </div>
-                            <div class="off-card">
-                                <h2>Ongkir Free 30% <span></span></h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="single-hero-items set-bg" data-setbg="img/slides/madu-randu.png">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <span>Madu, Kesehatan</span>
-                                    <h1>Madu Randu, Jepara</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore</p>
-                                    <a href="#" class="primary-btn">Shop Now</a>
-                                </div>
-                            </div>
-                            <div class="off-card">
-                                <h2>Ongkir Free 30% <span></span></h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="single-hero-items set-bg" data-setbg="img/slides/all_mini.png">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <span>Bag,kids</span>
-                                    <h1>Black friday</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore</p>
-                                    <a href="#" class="primary-btn">Shop Now</a>
-                                </div>
-                            </div>
-                            <div class="off-card">
-                                <h2>Sale <span>50%</span></h2>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
             </section>
         @endif

@@ -43,7 +43,7 @@ class BaseSlideController extends Controller
     {
         request()->request->add(['image' => request('storage_path_image')]);
         $validated = $request->validate([
-            'title' => "required|min:5|max:30|unique:slides,title,{$this->model->id}",
+            'title' => "required|min:5|max:50|unique:slides,title,{$this->model->id}",
             'url' => 'required|min:1|max:50',
             'description' => 'required|min:1|max:300',
             'image' => "required|min:5|max:200|unique:slides,image,{$this->model->id}",
@@ -105,6 +105,7 @@ class BaseSlideController extends Controller
         $model = $this->model->find($id);
         $newModel = $model->replicate();
         $newModel->title = $model->title.' - copy';
+        $newModel->image = null;
 
         $newModel->save();
 
