@@ -5,7 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Product;
 use App\Hashers\MainHasher;
-use App\Transformers\{AdminTransformer, ProductImageOnlyTransformer};
+use App\Transformers\{AdminTransformer, ProductImageOnlyTransformer, ProductCategoryTransformer, ProductBrandOnlyTransformer};
 use Illuminate\Support\Facades\Storage;
 
 class ProductTransformer extends TransformerAbstract
@@ -42,8 +42,8 @@ class ProductTransformer extends TransformerAbstract
         $result["image"] = \env('APP_URL').Storage::url($model->image);
         $result["relationships"] = [
             'category_brand' => $model->category_brand,
-            'category' => $model->category_brand->category,
-            'brand' => $model->category_brand->brand,
+            'category' => fractal($model->category_brand->category, new ProductCategoryTransformer())->toArray()['data'],
+            'brand' => fractal($model->category_brand->brand, new ProductBrandOnlyTransformer())->toArray()['data'],
             'admin' => fractal($model->admin, new AdminTransformer())->toArray()['data'],
             'images' => fractal($model->images, new ProductImageOnlyTransformer())->toArray()['data'],
         ];

@@ -127,7 +127,6 @@ export default {
 			endpoint_category: "/api/product_category",
 			form: new Form({
 				id: "",
-				id_product_category: "",
 				id_admin: "",
 				name: "",
 				image: "",

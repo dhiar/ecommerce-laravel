@@ -162,7 +162,6 @@
 				</div>
 			</div>
 			<div class="card-body table-responsive">
-				{{searchCategories}}
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -247,32 +246,6 @@ export default {
 			categories: [],
 			searchCategory: { id: "0", name: "All Category", slug: "", icon: "" },
 			searchCategories: []
-			// searchCategories: [
-			// 	{
-			// 		id: "Je",
-			// 		name: "Gadget",
-			// 		slug: "gadget",
-			// 		icon: "http://localhost:3000/storage/",
-			// 	},
-			// 	{
-			// 		id: "Dk",
-			// 		name: "Kesehatan (Madu)",
-			// 		slug: "kesehatan-(madu)",
-			// 		icon: "http://localhost:3000/storage/",
-			// 	},
-			// 	{
-			// 		id: "ND",
-			// 		name: "Laptop",
-			// 		slug: "laptop",
-			// 		icon: "http://localhost:3000/storage/",
-			// 	},
-			// 	{
-			// 		id: "1n",
-			// 		name: "Pakaian Pria",
-			// 		slug: "pakaian-pria",
-			// 		icon: "http://localhost:3000/storage/",
-			// 	},
-			// ],
 		};
 	},
 	validations: {
