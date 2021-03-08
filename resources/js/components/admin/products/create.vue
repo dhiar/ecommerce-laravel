@@ -255,7 +255,18 @@
                       :max="10"
                       @search-change="asyncFindCategory"
                       @select="onSelectCategory"
+											:class="{
+												'is-invalid': submitted && $v.form.id_category.$error,
+												'is-valid': !$v.form.id_category.$invalid,
+											}"
                     ></multiselect>
+										<div class="valid-feedback">Category is valid.</div>
+										<div
+											v-if="submitted && !$v.form.id_category.required"
+											class="invalid-feedback"
+										>
+											Category harus diisi
+										</div>
 									</div>
 									<div class="form-group">
 										<label>Brand</label><br />
@@ -268,7 +279,18 @@
                       :searchable="true"
                       :max-height="200"
                       :max="10"
+											:class="{
+												'is-invalid': submitted && $v.form.id_brand.$error,
+												'is-valid': !$v.form.id_brand.$invalid,
+											}"
                     ></multiselect>
+										<div class="valid-feedback">Brand is valid.</div>
+										<div
+											v-if="submitted && !$v.form.id_brand.required"
+											class="invalid-feedback"
+										>
+											Brand harus diisi
+										</div>
 									</div>
 									<div class="form-group">
 										<label for="weight">Weight</label>
@@ -402,6 +424,9 @@ export default {
 			brands: [],
 			form: new Form({
 				id_admin: "",
+				id_category_brand: "",
+				id_brand: "",
+				id_category: "",
 				name: "",
 				image: "",
 				storage_path_image: "",
@@ -421,6 +446,12 @@ export default {
 	},
 	validations: {
 		form: {
+			id_brand: {
+				required,
+			},
+			id_category: {
+				required,
+			},
 			condition: {
 				required,
 			},
@@ -624,6 +655,10 @@ export default {
 			this.submitted = true;
 			const self = this;
 
+			// brand_id
+			self.form.id_brand = self.brand.id
+			self.form.id_category = self.category.id
+
 			// return error if empty content
 			let description = this.$refs.tuiEditor.invoke("getHtml");
 
@@ -649,6 +684,7 @@ export default {
 						.then(({ data }) => {
 							if (data.success) {
 								Swal.fire("Success !", data.message, "success");
+								window.location.href = self.baseURL + "/admin/product";
 							} else {
 								Swal.fire("Failed !", data.message, "error");
 							}
@@ -670,6 +706,7 @@ export default {
 						.then(({ data }) => {
 							if (data.success) {
 								Swal.fire("Success !", data.message, "success");
+								window.location.href = self.baseURL + "/admin/product";
 							} else {
 								Swal.fire("Failed !", data.message, "error");
 							}

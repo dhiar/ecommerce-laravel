@@ -35,15 +35,20 @@ class ProductTransformer extends TransformerAbstract
      */
     public function transform(Product $model)
     {
+        $category = fractal($model->category_brand->category, new ProductCategoryTransformer())->toArray()['data'];
+        $brand = fractal($model->category_brand->brand, new ProductBrandOnlyTransformer())->toArray()['data'];
+
         $result = $model->toArray();
         $result["id"] = MainHasher::encode($result["id"]);
         $result["id_category_brand"] = MainHasher::encode($result["id_category_brand"]);
         $result["id_admin"] = MainHasher::encode($result["id_admin"]);
+        $result["id_category"] = $category["id"];
+        $result["id_brand"] = $brand["id"];
         $result["image"] = \env('APP_URL').Storage::url($model->image);
         $result["relationships"] = [
             'category_brand' => $model->category_brand,
-            'category' => fractal($model->category_brand->category, new ProductCategoryTransformer())->toArray()['data'],
-            'brand' => fractal($model->category_brand->brand, new ProductBrandOnlyTransformer())->toArray()['data'],
+            'category' => $category,
+            'brand' => $brand,
             'admin' => fractal($model->admin, new AdminTransformer())->toArray()['data'],
             'images' => fractal($model->images, new ProductImageOnlyTransformer())->toArray()['data'],
         ];

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
 use App\Transformers\{ProductTransformer, ProductImageTransformer, GrosirTransformer};
-use App\{Admin, Product, ProductImage, Grosir};
+use App\{Admin, Product, ProductImage, Grosir, CategoryBrand};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
 use Illuminate\Support\Facades\Schema;
@@ -82,8 +82,9 @@ class ProductController extends Controller
         request()->request->add(['image' => request('storage_path_image')]);
         request()->request->add(['id_admin' => $adminId]);
 
-        $categoryBrandId = MainHasher::decode(request('id_category_brand'));
-        request()->request->add(['id_category_brand' => $categoryBrandId]);
+        $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
+        $categoryBrand = CategoryBrand::where('id_brand', $brandId)->first();
+        request()->request->add(['id_category_brand' => $categoryBrand->id]);
 
         return $request->store($this->model, request()->all(), $this->transformer);
     }
@@ -134,9 +135,10 @@ class ProductController extends Controller
             $params = request()->except(['image']);
         }
 
-        if (request('id_category_brand')) {
-            $params['id_category_brand'] = MainHasher::decode(request('id_category_brand'));
-        }
+        $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
+        $categoryBrand = CategoryBrand::where('id_brand', $brandId)->first();
+        $params['id_category_brand'] = $categoryBrand->id;
+
         unset($params['id_admin']);
 
 		return $request->update($id, $this->model, $this->transformer, $params);
