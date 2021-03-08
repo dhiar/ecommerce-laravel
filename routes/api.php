@@ -68,6 +68,9 @@ Route::apiResource('testimony', 'API\TestimonyController')->names([
 Route::apiResource('product_brand', 'API\ProductBrandController')->names([
 	'store' => 'product_brand.store'
 ]);
+
+Route::get('product_brand/category/{category}', 'API\ProductBrandController@listBrandsCategory');
+
 Route::put('clone-brand/{product_brand}', 'API\ProductBrandController@cloneBrand');
 
 Route::apiResource('product_category', 'API\ProductCategoryController')->names([
@@ -170,7 +173,15 @@ Route::bind('id_product', function (string $id) {
 	return  MainHasher::decode($id);
 });
 
+Route::bind('category', function (string $id) {
+	return is_numeric($id) ? $id : MainHasher::decode($id);
+});
+
 Route::bind('id_category', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('brand', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

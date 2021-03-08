@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{Product, CategoryBrand};
+use App\{Product, ProductCategory, CategoryBrand};
 
 class ProductBrand extends Model
 {
@@ -16,5 +16,10 @@ class ProductBrand extends Model
 
     public function category_brand(){
         return $this->hasOne(CategoryBrand::class, 'id_brand', 'id');
+    }
+
+    public function category()
+    {
+        return $this->belongsToMany(ProductCategory::class, 'category_brand', 'id_brand', 'id_category' );
     }
 }

@@ -134,11 +134,27 @@
 		<!-- Page Heading -->
 		<div class="card shadow">
 			<div class="card-header">
-				<div class="row">
-					<div class="col-md-8 align-self-center">
+				<div class="row no-gutters">
+					<div class="col-md-7 align-self-center">
 						<h2 class="lead text-dark mb-0">Brand</h2>
 					</div>
-					<div class="col-md-4 float-right text-right">
+					<div class="col-md-3 float-right text-right">
+						<span>
+							<multiselect
+								v-model="searchCategory"
+								:options="searchCategories"
+								placeholder="Search Category"
+								label="name"
+								track-by="id"
+								:searchable="true"
+								:max-height="200"
+								:max="10"
+								@select="onSelectCategory"
+								@search-change="asyncSearchCategory"
+							></multiselect>
+						</span>
+					</div>
+					<div class="col-md-2 float-right text-right">
 						<button @click="showModalBrand()" class="btn btn-primary">
 							Tambah Brand
 						</button>
@@ -146,6 +162,7 @@
 				</div>
 			</div>
 			<div class="card-body table-responsive">
+				{{searchCategories}}
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -228,6 +245,34 @@ export default {
 			}),
 			category: { id: "", name: "", slug: "", icon: "" },
 			categories: [],
+			searchCategory: { id: "0", name: "All Category", slug: "", icon: "" },
+			searchCategories: []
+			// searchCategories: [
+			// 	{
+			// 		id: "Je",
+			// 		name: "Gadget",
+			// 		slug: "gadget",
+			// 		icon: "http://localhost:3000/storage/",
+			// 	},
+			// 	{
+			// 		id: "Dk",
+			// 		name: "Kesehatan (Madu)",
+			// 		slug: "kesehatan-(madu)",
+			// 		icon: "http://localhost:3000/storage/",
+			// 	},
+			// 	{
+			// 		id: "ND",
+			// 		name: "Laptop",
+			// 		slug: "laptop",
+			// 		icon: "http://localhost:3000/storage/",
+			// 	},
+			// 	{
+			// 		id: "1n",
+			// 		name: "Pakaian Pria",
+			// 		slug: "pakaian-pria",
+			// 		icon: "http://localhost:3000/storage/",
+			// 	},
+			// ],
 		};
 	},
 	validations: {
@@ -251,6 +296,23 @@ export default {
 		this.fetchData(1);
 	},
 	methods: {
+		async onSelectCategory(option){
+			await axios.get('/api/product_brand/category/'+option.id).then(({ data }) => {
+				this.currentPageBrand = data.current_page;
+				this.perPageBrand = data.per_page;
+				this.totalItemsBrand = data.total;
+				this.resultsBrand = data;
+			})
+			.catch((error) => {
+					let errMsg = "";
+					if (typeof error.response.data === "object") {
+						errMsg = _.flatten(_.toArray(error.response.data.errors));
+					} else {
+						errMsg = ["Something went wrong. Please try again."];
+					}
+					Swal.fire("Failed load data !", errMsg.join(""), "error");
+				});
+		},
 		async asyncFindCategory(query) {
 			// list of products
 			const categories = await axios
@@ -270,6 +332,27 @@ export default {
 					Swal.fire("Failed load data !", errMsg.join(""), "error");
 				});
 			this.categories = categories.data.data;
+		},
+		async asyncSearchCategory(query) {
+			// list of products
+			const searchCategories = await axios
+				.get("/api/product_category?q=" + query, {
+					params: {
+						fieldOrder: "name",
+						sort: "ASC",
+					},
+				})
+				.catch((error) => {
+					let errMsg = "";
+					if (typeof error.response.data === "object") {
+						errMsg = _.flatten(_.toArray(error.response.data.errors));
+					} else {
+						errMsg = ["Something went wrong. Please try again."];
+					}
+					Swal.fire("Failed load data !", errMsg.join(""), "error");
+				});
+			this.searchCategories = searchCategories.data.data;
+			self.searchCategories.unshift( { id: "0", name: "All Category", slug: "", icon: "" })
 		},
 		inputSlug() {
 			const self = this;
@@ -421,6 +504,7 @@ export default {
 		},
 		async fetchData(page = 1) {
 			const self = this;
+
 			await axios.get(self.endpointBrand + "?page=" + page).then(({ data }) => {
 				this.currentPageBrand = data.current_page;
 				this.perPageBrand = data.per_page;
@@ -450,6 +534,29 @@ export default {
 				});
 		},
 	},
+	async created() {
+			const self = this;
+			// get list of category
+			const searchCategories = await axios
+				.get(self.endpointCategory, {
+					params: {
+						fieldOrder: "name",
+						sort: "ASC",
+					},
+				})
+				.catch((error) => {
+					let errMsg = "";
+					if (typeof error.response.data === "object") {
+						errMsg = _.flatten(_.toArray(error.response.data.errors));
+					} else {
+						errMsg = ["Something went wrong. Please try again."];
+					}
+					Swal.fire("Failed load data !", errMsg.join(""), "error");
+				});
+
+			self.searchCategories = searchCategories.data.data;
+			self.searchCategories.unshift( { id: "0", name: "All Category", slug: "", icon: "" })
+		},
 	watch: {
 		currentPageBrand: {
 			handler: function (value) {

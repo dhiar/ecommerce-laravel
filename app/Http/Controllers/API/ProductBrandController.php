@@ -9,6 +9,8 @@ use App\Transformers\ProductBrandTransformer;
 use App\{ProductBrand, ProductCategory, CategoryBrand};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
+use App\Helpers\PaginationFormat;
+use App\Http\Transformers\IlluminatePaginatorAdapter;
 use Auth;
 
 class ProductBrandController extends Controller
@@ -156,5 +158,24 @@ class ProductBrandController extends Controller
             'data' => fractal($newModel, $this->transformer)->toArray()['data'],
             'message' => "Success clone category product",
         ]);
+    }
+    
+    public function listBrandsCategory(CommonRequest $request, $id){
+        if ((int)$id > 0) {
+            $paginator = ProductBrand::whereHas('category', function($query) use($id) { 
+                $query->where('id_category', $id); 
+            })->latest()->paginate(10);
+        } else {
+            $paginator = ProductBrand::latest()->paginate(10);
+        }
+
+        $result = $paginator->getCollection();
+        
+        $response = fractal()
+            ->collection($result, $this->transformer)
+            ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+            ->toArray();
+
+        return PaginationFormat::commit($paginator, $response);
     }
 }

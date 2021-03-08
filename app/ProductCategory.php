@@ -21,7 +21,6 @@ class ProductCategory extends Model
 
     public function brands()
     {
-        // return $this->belongsToMany(ProductCategory::class)->withTimestamps()->withPivot(['name', 'slug']);
         return $this->belongsToMany(ProductBrand::class, 'category_brand', 'id_category', 'id_brand')->withTimestamps();
     }
 }
