@@ -48,6 +48,18 @@ class ProductController extends Controller
             $model = $this->model::whereIsPromo(request('is_promo'));
         } else if (request('slug')) {
             $model = $this->model::whereSlug(request('slug'));
+        } else if (request('id_brand') || request('id_category')  )  {
+            $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
+            $categoryId = is_numeric(request('id_category')) ? request('id_category') : MainHasher::decode(request('id_category'));
+            if (request('id_category') && request('id_brand')) {
+                $model = Product::whereHas('category_brand', function($query) use($categoryId) { 
+                    $query->where('id_category', $categoryId)->where('id_brand', $brandId); 
+                });
+            } else {
+                $model = Product::whereHas('category_brand', function($query) use($categoryId) { 
+                    $query->where('id_category', $categoryId); 
+                });
+            }
         }
         else {
             $model = $this->model;
