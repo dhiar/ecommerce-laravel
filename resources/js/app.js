@@ -236,6 +236,15 @@ Vue.mixin({
 		};
 	},
 	methods: {
+		showErrorMessage(error) {
+			let errMsg = ""
+			if (typeof error.response.data === "object") {
+				errMsg = _.flatten(_.toArray(error.response.data.errors));
+			} else {
+				errMsg = ["Something went wrong. Please try again."];
+			}
+			Swal.fire("Failed load data !", errMsg.join(""), "error");
+		},
 		clearForm(form) {
 			Object.keys(form).forEach(function (key, index) {
 				if (

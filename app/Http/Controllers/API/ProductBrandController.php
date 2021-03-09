@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
 use App\Helpers\PaginationFormat;
 use App\Http\Transformers\IlluminatePaginatorAdapter;
+use Illuminate\Support\Facades\Schema;
 use Auth;
 
 class ProductBrandController extends Controller
@@ -40,7 +41,40 @@ class ProductBrandController extends Controller
      */
     public function index(CommonRequest $request)
     {
-        return $request->index($this->model, $this->transformer, 'name', 'ASC', 100);
+        if (\request('id_category')) {
+            $categoryId = is_numeric(request('id_category')) ? request('id_category') : MainHasher::decode(request('id_category'));
+
+            $model = $this->model->whereHas('category', function($query) use($categoryId) { 
+                $query->where('id_category', $categoryId); 
+            });
+
+            $table = $this->model->getTable();
+            $columns = Schema::getColumnListing($table);
+
+            $search = \request('q');
+
+            $paginator = $this->model->where(function ($query) use ($search, $columns) {
+                foreach ($columns as $i => $column) {
+                    if ($i == 0) {
+                        $query->where($column, 'LIKE', "%$search%");
+                    } else {
+                        $query->orWhere($column, 'LIKE', "%$search%");
+                    }
+                }
+            })->whereHas('category', function($query) use($categoryId) { 
+                $query->where('id_category', $categoryId); 
+            })->paginate(30);
+
+            $result = $paginator->getCollection();
+            $response = fractal()
+            ->collection($result, $this->transformer)
+            ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+            ->toArray();
+
+            return PaginationFormat::commit($paginator, $response);
+        } else {
+            return $request->index($this->model, $this->transformer, 'name', 'ASC', 100);
+        }
     }
 
     /**

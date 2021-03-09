@@ -20,13 +20,11 @@
 							:max-height="200"
 							:max="10"
 							style="width: 100%;"
-              @search-change="asyncFindCategory"
-              @select="onSelectCategory"
+							@search-change="asyncFindCategory"
+							@select="onSelectCategory"
 						></multiselect>
 					</div>
 					<div class="col-sm-3 float-right text-right">
-            brand = {{brand}} <br>
-            brands = {{brands}} <br>
 						<multiselect
 							v-model="brand"
 							:options="brands"
@@ -37,6 +35,7 @@
 							:max-height="200"
 							:max="10"
 							style="width: 100%;"
+							@search-change="asyncFindBrand"
 						></multiselect>
 					</div>
 					<div class="col-sm-auto float-right text-right">
@@ -170,29 +169,44 @@ export default {
 		this.fetchData(1);
 	},
 	methods: {
-    async onSelectCategory(option){
-			await axios.get('/api/product_brand/category/'+option.id).then(({ data }) => {
-        let brands = data.data
-        brands.unshift({
-          id: "0", name: "All Brand"
-        })
-        this.brands = brands
-        this.brand = {id: "0", name: "All Brand"}
-			})
-			.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+		async onSelectCategory(option) {
+			await axios
+				.get("/api/product_brand/category/" + option.id)
+				.then(({ data }) => {
+					let brands = data.data;
+					brands.unshift({
+						id: "0",
+						name: "All Brand",
+					});
+					this.brands = brands;
+					this.brand = { id: "0", name: "All Brand" };
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
 				});
 
-        this.fetchData(1);
+			this.fetchData(1);
 		},
-    async asyncFindCategory(query) {
-			// list of products
+		async asyncFindBrand(query) {
+			const brands = await axios
+				.get("/api/product_brand?q=" + query, {
+					params: {
+						fieldOrder: "name",
+						sort: "ASC",
+						id_category: this.category.id,
+					},
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+			this.brands = brands.data.data;
+
+			if (this.brands.length == 0) {
+				this.brands = [{ id: "0", name: "All Brand", slug: "" }];
+			}
+		},
+		async asyncFindCategory(query) {
+			// list of category
 			const categories = await axios
 				.get("/api/product_category?q=" + query, {
 					params: {
@@ -201,13 +215,7 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 			this.categories = categories.data.data;
 		},
@@ -250,13 +258,7 @@ export default {
 							this.fetchData();
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				}
 			});
@@ -287,13 +289,7 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					self.showErrorMessage(error);
 				});
 
 			this.categories = resultCategory.data.data;
@@ -316,13 +312,7 @@ export default {
 					this.fetchData();
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed save data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 		},
 	},

@@ -245,21 +245,21 @@
 									<div class="form-group">
 										<label>Category</label><br />
 										<multiselect
-                      v-model="category"
-                      :options="categories"
-                      placeholder="Select one"
-                      label="name"
-                      track-by="id"
-                      :searchable="true"
-                      :max-height="200"
-                      :max="10"
-                      @search-change="asyncFindCategory"
-                      @select="onSelectCategory"
+											v-model="category"
+											:options="categories"
+											placeholder="Select one"
+											label="name"
+											track-by="id"
+											:searchable="true"
+											:max-height="200"
+											:max="10"
+											@search-change="asyncFindCategory"
+											@select="onSelectCategory"
 											:class="{
 												'is-invalid': submitted && $v.form.id_category.$error,
 												'is-valid': !$v.form.id_category.$invalid,
 											}"
-                    ></multiselect>
+										></multiselect>
 										<div class="valid-feedback">Category is valid.</div>
 										<div
 											v-if="submitted && !$v.form.id_category.required"
@@ -270,20 +270,20 @@
 									</div>
 									<div class="form-group">
 										<label>Brand</label><br />
-                    <multiselect
-                      v-model="brand"
-                      :options="brands"
-                      placeholder="Select one"
-                      label="name"
-                      track-by="id"
-                      :searchable="true"
-                      :max-height="200"
-                      :max="10"
+										<multiselect
+											v-model="brand"
+											:options="brands"
+											placeholder="Select one"
+											label="name"
+											track-by="id"
+											:searchable="true"
+											:max-height="200"
+											:max="10"
 											:class="{
 												'is-invalid': submitted && $v.form.id_brand.$error,
 												'is-valid': !$v.form.id_brand.$invalid,
 											}"
-                    ></multiselect>
+										></multiselect>
 										<div class="valid-feedback">Brand is valid.</div>
 										<div
 											v-if="submitted && !$v.form.id_brand.required"
@@ -514,28 +514,24 @@ export default {
 		},
 	},
 	methods: {
-    async onSelectCategory(option){
-			await axios.get('/api/product_brand/category/'+option.id).then(({ data }) => {
-        this.brands = data.data
+		async onSelectCategory(option) {
+			await axios
+				.get("/api/product_brand/category/" + option.id)
+				.then(({ data }) => {
+					this.brands = data.data;
 
-        if(this.brands.length > 0) {
-          this.brand = this.brands[0]
-        } else {
-          this.brand = {id: "", name: ""}
-          this.brands = []
-        }
-			})
-			.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
+					if (this.brands.length > 0) {
+						this.brand = this.brands[0];
 					} else {
-						errMsg = ["Something went wrong. Please try again."];
+						this.brand = { id: "", name: "" };
+						this.brands = [];
 					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
 				});
 		},
-    async asyncFindCategory(query) {
+		async asyncFindCategory(query) {
 			// list of products
 			const categories = await axios
 				.get("/api/product_category?q=" + query, {
@@ -545,13 +541,7 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 			this.categories = categories.data.data;
 		},
@@ -569,13 +559,7 @@ export default {
 				const result = await axios
 					.get(self.endpoint + "/" + productId)
 					.catch((error) => {
-						let errMsg = "";
-						if (typeof error.response.data === "object") {
-							errMsg = _.flatten(_.toArray(error.response.data.errors));
-						} else {
-							errMsg = ["Something went wrong. Please try again."];
-						}
-						Swal.fire("Failed load data !", errMsg.join(""), "error");
+						this.showErrorMessage(error);
 					});
 
 				this.form = result.data;
@@ -596,13 +580,7 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 
 			this.categories = resultCategory.data.data;
@@ -615,24 +593,18 @@ export default {
 
 			let categoryId = this.category.id == "" ? "0" : this.category.id;
 
-      if (productId) {
-        // get brand by categoryId
-			await axios
-				.get("/api/product_brand/category/" + categoryId)
-				.then(({ data }) => {
-					this.brands = data.data;
-				})
-				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
-				});
-      }
-    },
+			if (productId) {
+				// get brand by categoryId
+				await axios
+					.get("/api/product_brand/category/" + categoryId)
+					.then(({ data }) => {
+						this.brands = data.data;
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+			}
+		},
 		handleImageSuccess(res, file) {
 			this.form.storage_path_image = res.result;
 			this.form.image = URL.createObjectURL(file.raw);
@@ -656,8 +628,8 @@ export default {
 			const self = this;
 
 			// brand_id
-			self.form.id_brand = self.brand.id
-			self.form.id_category = self.category.id
+			self.form.id_brand = self.brand.id;
+			self.form.id_category = self.category.id;
 
 			// return error if empty content
 			let description = this.$refs.tuiEditor.invoke("getHtml");
@@ -691,13 +663,7 @@ export default {
 							this.fetchData();
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				} else {
 					// Create
@@ -713,13 +679,7 @@ export default {
 							this.fetchData();
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				}
 			}

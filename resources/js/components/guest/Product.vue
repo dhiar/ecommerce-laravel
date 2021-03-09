@@ -245,13 +245,7 @@ export default {
 				},
 			})
 			.catch((error) => {
-				let errMsg = "";
-				if (typeof error.response.data === "object") {
-					errMsg = _.flatten(_.toArray(error.response.data.errors));
-				} else {
-					errMsg = ["Something went wrong. Please try again."];
-				}
-				Swal.fire("Failed load data !", errMsg.join(""), "error");
+				this.showErrorMessage(error);
 			});
 
 		this.product = result.data.data[0];

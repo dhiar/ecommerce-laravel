@@ -7,7 +7,7 @@
 					<div class="card-header">
 						<div class="row">
 							<div class="col-md-10 align-self-center">
-                <h2 class="lead text-dark mb-0">{{ form.name}}</h2>
+								<h2 class="lead text-dark mb-0">{{ form.name }}</h2>
 							</div>
 							<div class="col-md-2 float-right text-right">
 								<button
@@ -182,13 +182,7 @@ export default {
 				const result = await axios
 					.get(self.endpoint + "/" + productId)
 					.catch((error) => {
-						let errMsg = "";
-						if (typeof error.response.data === "object") {
-							errMsg = _.flatten(_.toArray(error.response.data.errors));
-						} else {
-							errMsg = ["Something went wrong. Please try again."];
-						}
-						Swal.fire("Failed load data !", errMsg.join(""), "error");
+						this.showErrorMessage(error);
 					});
 
 				this.form = result.data;

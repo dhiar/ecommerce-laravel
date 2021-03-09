@@ -175,9 +175,9 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(item, idx) in resultsBrand.data" :key="item.id">
+						<tr v-for="(item, idx) in results.data" :key="item.id">
 							<td class="text-center">
-								{{ getNumber(currentPageBrand, idx) }}
+								{{ getNumber(currentPage, idx) }}
 							</td>
 							<td>
 								{{ item.name }} <br />
@@ -212,24 +212,41 @@
 					</tbody>
 				</table>
 			</div>
+			<div class="card-footer">
+				<div class="overflow-auto">
+					<b-pagination
+						size="md"
+						first-text="First"
+						prev-text="Prev"
+						next-text="Next"
+						last-text="Last"
+						:total-rows="totalItems"
+						v-model="currentPage"
+						:per-page="perPage"
+						align="center"
+					></b-pagination>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
 import GoBack from "./GoBack.vue";
+import { BPagination } from "bootstrap-vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
 	components: {
 		GoBack,
+		"b-pagination": BPagination,
 	},
 	data() {
 		return {
-			currentPageBrand: 1,
-			perPageBrand: 10,
-			totalItemsBrand: 50,
-			resultsBrand: {},
+			currentPage: 1,
+			perPage: 10,
+			totalItems: 50,
+			results: {},
 			submitted: false,
 			page: "Brand",
 			endpointBrand: "/api/product_brand",
@@ -245,7 +262,7 @@ export default {
 			category: { id: "", name: "", slug: "", icon: "" },
 			categories: [],
 			searchCategory: { id: "0", name: "All Category", slug: "", icon: "" },
-			searchCategories: []
+			searchCategories: [],
 		};
 	},
 	validations: {
@@ -269,21 +286,17 @@ export default {
 		this.fetchData(1);
 	},
 	methods: {
-		async onSelectCategory(option){
-			await axios.get('/api/product_brand/category/'+option.id).then(({ data }) => {
-				this.currentPageBrand = data.current_page;
-				this.perPageBrand = data.per_page;
-				this.totalItemsBrand = data.total;
-				this.resultsBrand = data;
-			})
-			.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+		async onSelectCategory(option) {
+			await axios
+				.get("/api/product_brand/category/" + option.id)
+				.then(({ data }) => {
+					this.currentPage = data.current_page;
+					this.perPage = data.per_page;
+					this.totalItems = data.total;
+					this.results = data;
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
 				});
 		},
 		async asyncFindCategory(query) {
@@ -296,13 +309,7 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 			this.categories = categories.data.data;
 		},
@@ -316,16 +323,15 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 			this.searchCategories = searchCategories.data.data;
-			self.searchCategories.unshift( { id: "0", name: "All Category", slug: "", icon: "" })
+			self.searchCategories.unshift({
+				id: "0",
+				name: "All Category",
+				slug: "",
+				icon: "",
+			});
 		},
 		inputSlug() {
 			const self = this;
@@ -340,13 +346,7 @@ export default {
 				const result = await axios
 					.get(self.endpointBrand + "/" + id)
 					.catch((error) => {
-						let errMsg = "";
-						if (typeof error.response.data === "object") {
-							errMsg = _.flatten(_.toArray(error.response.data.errors));
-						} else {
-							errMsg = ["Something went wrong. Please try again."];
-						}
-						Swal.fire("Failed load data !", errMsg.join(""), "error");
+						this.showErrorMessage(error);
 					});
 
 				self.form = result.data;
@@ -354,7 +354,6 @@ export default {
 					result.data.relationships.category_brand.id_category;
 				self.category =
 					result.data.relationships.category_brand.relationships.category;
-				// console.log('result.data.relationships.category_brand ' + JSON.stringify(result.data.relationships.category_brand))
 			} else {
 				// clear form
 				if (!this.submitted) {
@@ -372,13 +371,7 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 
 			self.categories = categories.data.data;
@@ -407,13 +400,7 @@ export default {
 							this.fetchData();
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				} else {
 					await axios
@@ -428,13 +415,7 @@ export default {
 							this.fetchData();
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				}
 			}
@@ -464,13 +445,7 @@ export default {
 							this.fetchData();
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				}
 			});
@@ -479,10 +454,10 @@ export default {
 			const self = this;
 
 			await axios.get(self.endpointBrand + "?page=" + page).then(({ data }) => {
-				this.currentPageBrand = data.current_page;
-				this.perPageBrand = data.per_page;
-				this.totalItemsBrand = data.total;
-				this.resultsBrand = data;
+				this.currentPage = data.current_page;
+				this.perPage = data.per_page;
+				this.totalItems = data.total;
+				this.results = data;
 			});
 		},
 		async cloneBrand(id) {
@@ -497,41 +472,34 @@ export default {
 					this.fetchData();
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed save data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 		},
 	},
 	async created() {
-			const self = this;
-			// get list of category
-			const searchCategories = await axios
-				.get(self.endpointCategory, {
-					params: {
-						fieldOrder: "name",
-						sort: "ASC",
-					},
-				})
-				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
-				});
+		const self = this;
+		// get list of category
+		const searchCategories = await axios
+			.get(self.endpointCategory, {
+				params: {
+					fieldOrder: "name",
+					sort: "ASC",
+				},
+			})
+			.catch((error) => {
+				this.showErrorMessage(error);
+			});
 
-			self.searchCategories = searchCategories.data.data;
-			self.searchCategories.unshift( { id: "0", name: "All Category", slug: "", icon: "" })
-		},
+		self.searchCategories = searchCategories.data.data;
+		self.searchCategories.unshift({
+			id: "0",
+			name: "All Category",
+			slug: "",
+			icon: "",
+		});
+	},
 	watch: {
-		currentPageBrand: {
+		currentPage: {
 			handler: function (value) {
 				this.fetchData(value);
 			},

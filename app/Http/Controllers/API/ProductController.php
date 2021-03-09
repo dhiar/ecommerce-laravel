@@ -72,16 +72,6 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        dd('create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -111,17 +101,6 @@ class ProductController extends Controller
 	{
 		return $request->show($id, $this->model, $this->transformer);
 	}
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        dd('edit');
-    }
 
     /**
      * Update the specified resource in storage.
@@ -178,15 +157,17 @@ class ProductController extends Controller
         ]);
 	}
 
-    public function listGrosirs(Product $product)
+    public function listGrosirs(CommonRequest $request, Product $product)
 	{
-        $productGrosirs = Grosir::whereIdProduct($product->id)->get();
-        return response()->json([
-            'success' => true,
-            'process' => 'list',
-            'data' => fractal($productGrosirs, $this->transformer_grosirs)->toArray()['data'],
-            'message' => 'Success show list product grosir prices',
-        ]);
+        $model = Grosir::whereIdProduct($product->id);
+
+        $fieldOrder = $request->fieldOrder ?? "id";
+        $sort = $request->sort ?? "ASC";
+
+        $grosir = new Grosir();
+        $table = $grosir->getTable();
+
+        return $request->index($model, $this->transformer_grosirs, $fieldOrder, $sort, 10, $table);
 	}
 
     public function cloneProduct(CommonRequest $request, $id){

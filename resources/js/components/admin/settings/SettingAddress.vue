@@ -223,13 +223,7 @@ export default {
           }
         })
         .catch((error) => {
-          let errMsg = "";
-          if (typeof error.response.data === "object") {
-            errMsg = _.flatten(_.toArray(error.response.data.errors));
-          } else {
-            errMsg = ["Something went wrong. Please try again."];
-          }
-          Swal.fire("Failed show data !", errMsg.join(""), "error");
+          this.showErrorMessage(error);
         });
     },
     async getDataCity () {
@@ -248,13 +242,7 @@ export default {
           }
         })
         .catch((error) => {
-          let errMsg = "";
-          if (typeof error.response.data === "object") {
-            errMsg = _.flatten(_.toArray(error.response.data.errors));
-          } else {
-            errMsg = ["Something went wrong. Please try again."];
-          }
-          Swal.fire("Failed show data !", errMsg.join(""), "error");
+          this.showErrorMessage(error);
         });
     },
 
@@ -274,13 +262,7 @@ export default {
           }
         })
         .catch((error) => {
-          let errMsg = "";
-          if (typeof error.response.data === "object") {
-            errMsg = _.flatten(_.toArray(error.response.data.errors));
-          } else {
-            errMsg = ["Something went wrong. Please try again."];
-          }
-          Swal.fire("Failed show data !", errMsg.join(""), "error");
+          this.showErrorMessage(error);
         });
     },
     async onSelectProvince(option) {
@@ -307,13 +289,7 @@ export default {
           }
         })
         .catch((error) => {
-          let errMsg = "";
-          if (typeof error.response.data === "object") {
-            errMsg = _.flatten(_.toArray(error.response.data.errors));
-          } else {
-            errMsg = ["Something went wrong. Please try again."];
-          }
-          Swal.fire("Failed show data !", errMsg.join(""), "error");
+          this.showErrorMessage(error);
         });
     },
     async onSelectCity(option) {
@@ -336,13 +312,7 @@ export default {
           }
         })
         .catch((error) => {
-          let errMsg = "";
-          if (typeof error.response.data === "object") {
-            errMsg = _.flatten(_.toArray(error.response.data.errors));
-          } else {
-            errMsg = ["Something went wrong. Please try again."];
-          }
-          Swal.fire("Failed show data !", errMsg.join(""), "error");
+          this.showErrorMessage(error);
         });
     },
     async onSelectDistrict(option) {
@@ -366,13 +336,7 @@ export default {
             }
           })
           .catch((error) => {
-            let errMsg = "";
-            if (typeof error.response.data === "object") {
-              errMsg = _.flatten(_.toArray(error.response.data.errors));
-            } else {
-              errMsg = ["Something went wrong. Please try again."];
-            }
-            Swal.fire("Failed load data !", errMsg.join(""), "error");
+            this.showErrorMessage(error);
           });
       }
     },

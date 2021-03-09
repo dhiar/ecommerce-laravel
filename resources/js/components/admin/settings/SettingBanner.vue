@@ -232,66 +232,87 @@
 			<div class="col-md-9">
 				<div class="card shadow">
 					<div class="card-header">
-						<h2 class="lead text-dark mb-0">Banner Slide</h2>
+						<div class="row">
+							<div class="col-md-4 align-self-center">
+								<h2 class="lead text-dark mb-0">Banner Slide</h2>
+							</div>
+							<div class="col-sm-8 float-right text-right">
+								<button @click="showModalBanner()" class="btn btn-primary">
+									Tambah Banner
+								</button>
+							</div>
+						</div>
 					</div>
 					<div class="card-body table-responsive">
-						<button @click="showModalBanner()" class="btn btn-primary">
-							Tambah Banner
-						</button>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th class="text-center" style="width: 8% !important;">No</th>
+									<th style="width: 20% !important;">Title</th>
+									<th class="text-center" style="width: 23% !important;">
+										Image
+									</th>
+									<th style="width: 20% !important;">Url</th>
+									<th class="text-center" style="width: 10% !important;">
+										Active
+									</th>
+									<th class="text-center">Aksi</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(item, idx) in results.data" :key="item.id">
+									<td class="text-center">{{ getNumber(currentPage, idx) }}</td>
+									<td>
+										{{ item.title }} <br />
+										<a
+											@click="cloneBanner(item.id)"
+											class="badge badge-success text-gray-100 btn"
+											>clone</a
+										>
+									</td>
+									<td>
+										<img
+											:src="item.image"
+											@error="imgErrorCondition"
+											class="img-fluid"
+											style="max-height: 100px !important;"
+										/>
+									</td>
+									<td>{{ item.url }}</td>
+									<td class="text-center">{{ item.active | yesNo }}</td>
+									<td class="text-center">
+										<a
+											class="btn btn-sm btn-info"
+											href="#"
+											@click="showModalBanner(item.id)"
+											><i class="fa fa-pen text-gray-100"></i
+										></a>
+										<a
+											class="btn btn-sm btn-danger"
+											href="#"
+											@click="deleteBanner(item.id, item.title)"
+											><i class="fa fa-trash-alt text-gray-100"></i
+										></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th class="text-center" style="width: 8% !important;">No</th>
-								<th style="width: 20% !important;">Title</th>
-								<th class="text-center" style="width: 23% !important;">
-									Image
-								</th>
-								<th style="width: 20% !important;">Url</th>
-								<th class="text-center" style="width: 10% !important;">
-									Active
-								</th>
-								<th class="text-center">Aksi</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="(item, idx) in results.data" :key="item.id">
-								<td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-								<td>
-									{{ item.title }} <br />
-									<a
-										@click="cloneBanner(item.id)"
-										class="badge badge-success text-gray-100 btn"
-										>clone</a
-									>
-								</td>
-								<td>
-									<img
-										:src="item.image"
-										@error="imgErrorCondition"
-										class="img-fluid"
-										style="max-height: 100px !important;"
-									/>
-								</td>
-								<td>{{ item.url }}</td>
-								<td class="text-center">{{ item.active | yesNo }}</td>
-								<td class="text-center">
-									<a
-										class="btn btn-sm btn-info"
-										href="#"
-										@click="showModalBanner(item.id)"
-										><i class="fa fa-pen text-gray-100"></i
-									></a>
-									<a
-										class="btn btn-sm btn-danger"
-										href="#"
-										@click="deleteBanner(item.id, item.title)"
-										><i class="fa fa-trash-alt text-gray-100"></i
-									></a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					<div class="card-footer">
+						<div class="overflow-auto">
+							<b-pagination
+								size="md"
+								first-text="First"
+								prev-text="Prev"
+								next-text="Next"
+								last-text="Last"
+								:total-rows="totalItems"
+								v-model="currentPage"
+								:per-page="perPage"
+								align="center"
+							></b-pagination>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -300,11 +321,13 @@
 
 <script>
 import GoBack from "../GoBack.vue";
+import { BPagination } from "bootstrap-vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
 	components: {
 		GoBack,
+		"b-pagination": BPagination,
 	},
 	data() {
 		return {
@@ -367,13 +390,7 @@ export default {
 					$("#modalBanner").modal("hide");
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed save data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 		},
 		async showModalBanner(id) {
@@ -389,13 +406,7 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 
 			self.products = products.data.data;
@@ -406,13 +417,7 @@ export default {
 				const result = await axios
 					.get(self.endpoint + "/" + id)
 					.catch((error) => {
-						let errMsg = "";
-						if (typeof error.response.data === "object") {
-							errMsg = _.flatten(_.toArray(error.response.data.errors));
-						} else {
-							errMsg = ["Something went wrong. Please try again."];
-						}
-						Swal.fire("Failed load data !", errMsg.join(""), "error");
+						this.showErrorMessage(error);
 					});
 
 				this.form = result.data;
@@ -440,13 +445,7 @@ export default {
 					},
 				})
 				.catch((error) => {
-					let errMsg = "";
-					if (typeof error.response.data === "object") {
-						errMsg = _.flatten(_.toArray(error.response.data.errors));
-					} else {
-						errMsg = ["Something went wrong. Please try again."];
-					}
-					Swal.fire("Failed load data !", errMsg.join(""), "error");
+					this.showErrorMessage(error);
 				});
 			this.products = products.data.data;
 		},
@@ -500,13 +499,7 @@ export default {
 							$("#modalBanner").modal("hide");
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				} else {
 					await axios
@@ -521,13 +514,7 @@ export default {
 							$("#modalBanner").modal("hide");
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				}
 			}
@@ -558,13 +545,7 @@ export default {
 							this.fetchData();
 						})
 						.catch((error) => {
-							let errMsg = "";
-							if (typeof error.response.data === "object") {
-								errMsg = _.flatten(_.toArray(error.response.data.errors));
-							} else {
-								errMsg = ["Something went wrong. Please try again."];
-							}
-							Swal.fire("Failed save data !", errMsg.join(""), "error");
+							this.showErrorMessage(error);
 						});
 				}
 			});

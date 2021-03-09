@@ -179,6 +179,21 @@
           </tbody>
         </table>
       </div>
+      <div class="card-footer">
+				<div class="overflow-auto">
+					<b-pagination
+						size="md"
+						first-text="First"
+						prev-text="Prev"
+						next-text="Next"
+						last-text="Last"
+						:total-rows="totalItems"
+						v-model="currentPage"
+						:per-page="perPage"
+						align="center"
+					></b-pagination>
+				</div>
+			</div>
     </div>
   </div>
 </template>
@@ -186,11 +201,13 @@
 <script>
 
 import GoBack from "./GoBack.vue";
+import { BPagination } from "bootstrap-vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
   components: {
-    GoBack
+    GoBack,
+    "b-pagination": BPagination,
   },
   data() {
     return {
@@ -241,13 +258,7 @@ export default {
         const result = await axios
           .get(self.endpoint + "/" + id)
           .catch((error) => {
-            let errMsg = "";
-            if (typeof error.response.data === "object") {
-              errMsg = _.flatten(_.toArray(error.response.data.errors));
-            } else {
-              errMsg = ["Something went wrong. Please try again."];
-            }
-            Swal.fire("Failed load data !", errMsg.join(""), "error");
+            this.showErrorMessage(error);
           });
 
         this.form = result.data;
@@ -290,13 +301,7 @@ export default {
               this.fetchData();
             })
             .catch((error) => {
-              let errMsg = "";
-              if (typeof error.response.data === "object") {
-                errMsg = _.flatten(_.toArray(error.response.data.errors));
-              } else {
-                errMsg = ["Something went wrong. Please try again."];
-              }
-              Swal.fire("Failed save data !", errMsg.join(""), "error");
+              this.showErrorMessage(error);
             });
         } else {
           await axios
@@ -311,13 +316,7 @@ export default {
               this.fetchData();
             })
             .catch((error) => {
-              let errMsg = "";
-              if (typeof error.response.data === "object") {
-                errMsg = _.flatten(_.toArray(error.response.data.errors));
-              } else {
-                errMsg = ["Something went wrong. Please try again."];
-              }
-              Swal.fire("Failed save data !", errMsg.join(""), "error");
+              this.showErrorMessage(error);
             });
         }
 
@@ -348,13 +347,7 @@ export default {
               this.fetchData();
             })
             .catch((error) => {
-              let errMsg = "";
-              if (typeof error.response.data === "object") {
-                errMsg = _.flatten(_.toArray(error.response.data.errors));
-              } else {
-                errMsg = ["Something went wrong. Please try again."];
-              }
-              Swal.fire("Failed save data !", errMsg.join(""), "error");
+              this.showErrorMessage(error);
             });
         }
       });
