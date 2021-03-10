@@ -131,9 +131,97 @@
 							</div>
 						</div>
 					</div>
-					<div class="card-body table-responsive">
+					<div class="card card-primary card-outline card-outline-tabs">
+						<div class="card-header p-0 border-bottom-0">
+							<ul class="nav nav-tabs" role="tablist">
+								<!-- <li class="nav-item">
+								<a
+									class="nav-link active"
+									data-toggle="pill"
+									href="#custom-tabs-Je"
+									role="tab"
+									aria-selected="true"
+									>Home</a
+								>
+							</li>
+							<li class="nav-item">
+								<a
+									class="nav-link"
+									data-toggle="pill"
+									href="#custom-tabs-ND"
+									role="tab"
+									aria-selected="true"
+									>Home</a
+								>
+							</li> -->
+								<li
+									v-for="(result, idx) in results"
+									:key="result.navigation.id"
+									class="nav-item"
+								>
+									<a
+										v-if="idx == 0"
+										class="nav-link active"
+										data-toggle="pill"
+										:href="'#custom-tabs-' + result.navigation.id"
+										role="tab"
+										aria-selected="true"
+										>{{ result.navigation.name }}</a
+									>
+									<a
+										v-else
+										class="nav-link"
+										data-toggle="pill"
+										:href="'#custom-tabs-' + result.navigation.id"
+										role="tab"
+										aria-selected="true"
+										>{{ result.navigation.name }}</a
+									>
+								</li>
+							</ul>
+						</div>
+
+						<div class="card-body">
+							<div class="tab-content">
+								<!-- tab-pane fade -->
+								<div
+									v-for="(result, idx) in results"
+									:key="result.navigation.id"
+									:class="
+										idx == 0 ? 'tab-pane fade active show' : 'tab-pane fade'
+									"
+									:id="'custom-tabs-' + result.navigation.id"
+									role="tabpanel"
+								>
+									<table class="table table-hover">
+										<tbody v-for="page in result.pages" :key="page.id">
+											<tr>
+												<td style="width: 80% !important;" class="m-2">
+													{{ page.title }}
+												</td>
+												<td class="text-center">
+													<a
+														class="btn btn-sm btn-info"
+														href="#"
+														@click="showModalFooter(page.footer.id)"
+														><i class="fa fa-pen text-gray-100"></i
+													></a>
+													<a
+														class="btn btn-sm btn-danger"
+														href="#"
+														@click="deleteFooter(page.footer.id, page.title)"
+														><i class="fa fa-trash-alt text-gray-100"></i
+													></a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="card-body table-responsive">
 						<div v-for="result in results" :key="result.navigation.id">
-							<!-- {{results}} -->
 							<table class="table table-hover ml-2">
 								<thead>
 									<tr>
@@ -166,7 +254,7 @@
 							</table>
 							<hr />
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
@@ -244,8 +332,6 @@ export default {
 					.catch((error) => {
 						this.showErrorMessage(error);
 					});
-
-				alert("result.data = " + JSON.stringify(result.data));
 				this.form = result.data;
 			} else {
 				// clear form
