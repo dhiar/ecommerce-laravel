@@ -430,3 +430,10 @@ export default {
 	},
 };
 </script>
+<style scoped>
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+	color: #003cff;
+	font-weight: 700 !important;
+}
+</style>

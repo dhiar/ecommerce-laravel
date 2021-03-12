@@ -10,7 +10,7 @@ use App\Transformers\TagsTransformer;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Tags\Tag;
 
-class ProductTransformer extends TransformerAbstract
+class ProductTagTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -37,24 +37,37 @@ class ProductTransformer extends TransformerAbstract
      */
     public function transform(Product $model)
     {
+        $product = new Product();
+        $productHasTags = $product->whereHas('tags', function ($query) {
+            $query->where('tags.id', ">", 0);
+        })->orWhere('id',$model->id)->limit(100)->get()->toArray();
+
+
+        $allTags = [];
+        foreach($productHasTags as $product) {
+            $rez = Product::find($product['id']);
+            $result = $rez->tags()->get();
+            $tags = fractal($result, new TagsTransformer())->toArray()['data'];
+
+            $allTags = array_merge($allTags, $tags);
+        }
+
+        $allTags = array_map("unserialize", array_unique(array_map("serialize", $allTags)));
+
         $category = fractal($model->category_brand->category, new ProductCategoryTransformer())->toArray()['data'];
         $brand = fractal($model->category_brand->brand, new ProductBrandOnlyTransformer())->toArray()['data'];
         $tags = $model->tags()->get();
 
-        $result = $model->toArray();
-        $result["id"] = MainHasher::encode($result["id"]);
-        $result["id_category_brand"] = MainHasher::encode($result["id_category_brand"]);
-        $result["id_admin"] = MainHasher::encode($result["id_admin"]);
+        $result = [];
+        $result["id"] = MainHasher::encode($model["id"]);
+        $result["id_category_brand"] = MainHasher::encode($model["id_category_brand"]);
         $result["id_category"] = $category["id"];
         $result["id_brand"] = $brand["id"];
-        $result["image"] = \env('APP_URL').Storage::url($model->image);
         $result["relationships"] = [
-            'category_brand' => $model->category_brand,
             'category' => $category,
             'brand' => $brand,
-            'admin' => fractal($model->admin, new AdminTransformer())->toArray()['data'],
-            'images' => fractal($model->images, new ProductImageOnlyTransformer())->toArray()['data'],
-            'tags' => fractal($model->tags()->get(), new TagsTransformer())->toArray()['data']
+            'tags' => fractal($model->tags()->get(), new TagsTransformer())->toArray()['data'],
+            'all_tags' => $allTags,
         ];
         return $result;
     }

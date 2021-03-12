@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
-use App\Transformers\{ProductTransformer, ProductImageTransformer, GrosirTransformer};
+use App\Transformers\{ProductTransformer, ProductImageTransformer, GrosirTransformer, ProductTagTransformer};
 use App\{Admin, Product, ProductImage, Grosir, CategoryBrand};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
@@ -32,6 +32,7 @@ class ProductController extends Controller
         ]]);
         $this->model = new Product();
         $this->table = $this->model->getTable();
+        $this->transformer = new ProductTransformer();
         $this->transformer = new ProductTransformer();
         $this->transformer_images = new ProductImageTransformer();
         $this->transformer_grosirs = new GrosirTransformer();
@@ -99,6 +100,9 @@ class ProductController extends Controller
      */
     public function show($id, CommonRequest $request)
 	{
+        if(request('action') == 'tags') {
+            return $request->show($id, $this->model, new ProductTagTransformer());
+        }
 		return $request->show($id, $this->model, $this->transformer);
 	}
 
@@ -112,9 +116,9 @@ class ProductController extends Controller
     public function update(CommonRequest $request, $id)
 	{
 		$params = [];
+        $product = $this->model->find($id);
         if (request('storage_path_image')) {
-            $obj = $this->model->find($id);
-            $pathCurrentIcon = storage_path('app/'.$obj->image);
+            $pathCurrentIcon = storage_path('app/'.$product->image);
 
 			if (file_exists($pathCurrentIcon)) {
                 @unlink($pathCurrentIcon);
@@ -126,9 +130,19 @@ class ProductController extends Controller
             $params = request()->except(['image']);
         }
 
-        $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
-        $categoryBrand = CategoryBrand::where('id_brand', $brandId)->first();
-        $params['id_category_brand'] = $categoryBrand->id;
+        if(request('id_brand')) {
+            $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
+            $categoryBrand = CategoryBrand::where('id_brand', $brandId)->first();
+            $params['id_category_brand'] = $categoryBrand->id;
+        }
+        
+        if (\request('product_tags')) {
+            $collect_product_tags = collect(request('product_tags'));
+            $plucked_product_tags = $collect_product_tags->pluck('name');
+            $product->syncTagsWithType($plucked_product_tags, 'product'); 
+
+            unset($params['tags'],$params['product_tags'],$params['category'],$params['categories'],$params['brand'],$params['brands']);
+        }
 
         unset($params['id_admin']);
 

@@ -1,6 +1,101 @@
 <template>
 	<!-- Begin Page Content -->
 	<div class="container-fluid mb-5">
+		<div
+			class="modal fade"
+			id="modalTags"
+			tabindex="-1"
+			aria-labelledby="addNewLabel"
+			aria-hidden="true"
+			style="width: 100%;"
+		>
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div class="h5 text-gray-800 line-height-222">
+							Set Category/Brand/Tags
+						</div>
+						<button
+							type="button"
+							class="close"
+							data-dismiss="modal"
+							aria-label="Close"
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form @submit.prevent="createTags(form.id)">
+						<div class="modal-body">
+							<div class="form-group">
+								<label for="category">Category</label>
+								<multiselect
+									v-model="form.category"
+									:options="form.categories"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="200"
+									:max="10"
+									style="width: 100%;"
+									@search-change="asyncFindFormCategory"
+									@select="onSelectFormCategory"
+								></multiselect>
+							</div>
+							<div class="form-group">
+								<label for="brand">Brand</label>
+								<multiselect
+									v-model="form.brand"
+									:options="form.brands"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="200"
+									:max="10"
+									style="width: 100%;"
+									@search-change="asyncFindFormBrand"
+								></multiselect>
+							</div>
+							<div class="form-group">
+								<label class="tags">Tags</label>
+								<!-- <multiselect
+									v-model="value"
+									tag-placeholder="Add this as new tag"
+									placeholder="Search or add a tag"
+									label="name"
+									track-by="id"
+									:options="options"
+									:multiple="true"
+									:taggable="true"
+									@tag="addTag"
+									@search-change="asyncFindTags"
+								></multiselect> -->
+								<multiselect
+									v-model="form.product_tags"
+									tag-placeholder="Add this as new tag"
+									placeholder="Search or add a tag"
+									label="name"
+									track-by="id"
+									:options="form.tags"
+									:multiple="true"
+									:taggable="true"
+									@tag="addTag"
+									@search-change="asyncFindTags"
+								></multiselect>
+							</div>
+						</div>
+						<div class="card-footer text-right">
+							<div class="card-tools">
+								<button class="btn btn-success" type="submit">
+									Save <i class="fas fa-save fa-fw"></i>
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 		<go-back></go-back><br />
 		<!-- Page Heading -->
 		<div class="card shadow">
@@ -87,13 +182,21 @@
 							<td>
 								{{ formatCurrency(item.price) }}
 								<a
-									@click="addGrosir(item.id)"
+									@click="setGrosir(item.id)"
 									class="badge badge-success text-gray-100 btn"
-									>Add Grosir</a
+									>Set Grosir</a
 								>
 							</td>
 							<td>{{ item.stock }}</td>
-							<td>{{ item.relationships.category.name }}</td>
+							<td>
+								{{ item.relationships.category.name }}
+
+								<a
+									@click="showCatBrandTags(item.id)"
+									class="badge badge-primary text-gray-100 btn"
+									>Category/Brand/Tags</a
+								>
+							</td>
 							<!-- <td>{{ item.is_published | isPublished }}</td> -->
 							<td>{{ item.relationships.admin.name | upText }}</td>
 							<td class="text-center">
@@ -151,6 +254,7 @@ export default {
 	},
 	data() {
 		return {
+			submitted: false,
 			currentPage: 1,
 			perPage: 10,
 			totalItems: 50,
@@ -159,16 +263,126 @@ export default {
 			endpoint: "/api/products",
 			endpoint_clone: "/api/clone-product",
 			endpoint_category: "/api/product_category",
+			endpoint_brand: "/api/product_brand",
 			category: { id: "0", name: "All Category", slug: "", icon: "" },
 			categories: [],
 			brand: { id: "0", name: "All Brand", slug: "" },
 			brands: [],
+			form: {
+				id: "",
+				id_brand: "",
+				id_category: "",
+				product_tags: [],
+				tags: [],
+
+				category: { id: "0", name: "All Category", slug: "", icon: "" },
+				categories: [],
+				brand: { id: "0", name: "All Brand", slug: "" },
+				brands: [],
+			},
+
+			value: [
+				// { name: "Javascript", id: "js" }
+			],
+			options: [],
 		};
 	},
 	mounted() {
 		this.fetchData(1);
 	},
 	methods: {
+		asyncFindTags(query) {
+			console.log("query = " + query);
+		},
+		createTags(id) {
+			const self = this;
+
+			self.form.id_brand = self.form.brand.id;
+			self.form.id_category = self.form.category.id;
+
+			if (self.form.product_tags.length > 5) {
+				Swal.fire(
+					"Tags too many!",
+					"Maximum input only 5 tags / product.",
+					"error"
+				);
+				return;
+			}
+
+			axios
+				.put(self.endpoint + "/" + id, this.form)
+				.then(({ data }) => {
+					if (data.success) {
+						Swal.fire("Success !", data.message, "success");
+						window.location.href = self.baseURL + "/admin/product";
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+					this.fetchData();
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		addTag(newTag) {
+			const tag = {
+				name: newTag,
+				id: "",
+			};
+
+			this.form.product_tags.push(tag);
+			this.form.tags.push(tag);
+		},
+		async showCatBrandTags(productId) {
+			const self = this;
+			this.form.id = productId;
+
+			// show product
+			const product = await axios
+				.get(self.endpoint + "/" + productId, {
+					params: {
+						action: "tags",
+					},
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+
+			self.form.category = product.data.relationships.category;
+			self.form.brand = product.data.relationships.brand;
+
+			self.form.product_tags = product.data.relationships.tags;
+			self.form.tags = product.data.relationships.all_tags;
+
+			// start get category
+			const resultCategory = await axios
+				.get(self.endpoint_category, {
+					params: {
+						fieldOrder: "name",
+						sort: "ASC",
+						withId: self.category.id,
+					},
+				})
+				.catch((error) => {
+					self.showErrorMessage(error);
+				});
+			this.form.categories = resultCategory.data.data;
+			// end get category
+
+			// start get brand
+			await axios
+				.get("/api/product_brand/category/" + self.form.category.id)
+				.then(({ data }) => {
+					let brands = data.data;
+					this.form.brands = brands;
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+			// end get brand
+
+			$("#modalTags").modal("show");
+		},
 		async onSelectCategory(option) {
 			await axios
 				.get("/api/product_brand/category/" + option.id)
@@ -219,10 +433,52 @@ export default {
 				});
 			this.categories = categories.data.data;
 		},
+		async onSelectFormCategory(option) {
+			await axios
+				.get("/api/product_brand/category/" + option.id)
+				.then(({ data }) => {
+					let brands = data.data;
+					this.form.brands = brands;
+					this.form.brand = brands[0];
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async asyncFindFormBrand(query) {
+			const brands = await axios
+				.get("/api/product_brand?q=" + query, {
+					params: {
+						fieldOrder: "name",
+						sort: "ASC",
+						id_category: this.form.category.id,
+					},
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+			this.form.brands = brands.data.data;
+		},
+		async asyncFindFormCategory(query) {
+			const self = this;
+
+			// list of category
+			const categories = await axios
+				.get(self.endpoint_category + "?q=" + query, {
+					params: {
+						fieldOrder: "name",
+						sort: "ASC",
+					},
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+			self.form.categories = categories.data.data;
+		},
 		addImages(id) {
 			this.$router.push({ path: `/admin/product/images/` + id });
 		},
-		addGrosir(id) {
+		setGrosir(id) {
 			this.$router.push({ path: `/admin/product/grosir/` + id });
 		},
 		pageDetailProduct(id) {
@@ -278,27 +534,6 @@ export default {
 					this.totalItems = data.total;
 					this.results = data;
 				});
-
-			// get category
-			const resultCategory = await axios
-				.get(self.endpoint_category, {
-					params: {
-						fieldOrder: "name",
-						sort: "ASC",
-						withId: this.category.id,
-					},
-				})
-				.catch((error) => {
-					self.showErrorMessage(error);
-				});
-
-			this.categories = resultCategory.data.data;
-			this.categories.unshift({
-				id: "o",
-				name: "All Category",
-				slug: "",
-				icon: "",
-			});
 		},
 		async cloneProduct(id) {
 			await axios
