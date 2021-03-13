@@ -59,18 +59,6 @@
 							</div>
 							<div class="form-group">
 								<label class="tags">Tags</label>
-								<!-- <multiselect
-									v-model="value"
-									tag-placeholder="Add this as new tag"
-									placeholder="Search or add a tag"
-									label="name"
-									track-by="id"
-									:options="options"
-									:multiple="true"
-									:taggable="true"
-									@tag="addTag"
-									@search-change="asyncFindTags"
-								></multiselect> -->
 								<multiselect
 									v-model="form.product_tags"
 									tag-placeholder="Add this as new tag"
@@ -291,8 +279,18 @@ export default {
 		this.fetchData(1);
 	},
 	methods: {
-		asyncFindTags(query) {
+		async asyncFindTags(query) {
 			console.log("query = " + query);
+
+			const tags = await axios
+				.post("/api/search-tags", {
+					q: query,
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+
+			this.form.tags = tags.data.data;
 		},
 		createTags(id) {
 			const self = this;

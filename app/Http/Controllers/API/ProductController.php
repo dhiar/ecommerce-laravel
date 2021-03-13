@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
 use App\Transformers\{ProductTransformer, ProductImageTransformer, GrosirTransformer, ProductTagTransformer};
+use App\Transformers\TagsTransformer;
 use App\{Admin, Product, ProductImage, Grosir, CategoryBrand};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Tags\Tag;
 use Auth;
 
 class ProductController extends Controller
@@ -197,6 +199,17 @@ class ProductController extends Controller
             'process' => 'clone',
             'data' => fractal($newModel, $this->transformer)->toArray()['data'],
             'message' => "Success clone product",
+        ]);
+    }
+
+    public function searchTags(){
+        $query = request('q');
+        $tags = Tag::where('name', 'LIKE', "%$query%")->limit(100)->get();
+        return response()->json([
+            'success' => true,
+            'process' => 'tags',
+            'data' => fractal($tags, new TagsTransformer())->toArray()['data'],
+            'message' => "Success search tags",
         ]);
     }
 }

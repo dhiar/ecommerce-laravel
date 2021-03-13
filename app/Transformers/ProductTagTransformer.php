@@ -51,8 +51,11 @@ class ProductTagTransformer extends TransformerAbstract
 
             $allTags = array_merge($allTags, $tags);
         }
-
         $allTags = array_map("unserialize", array_unique(array_map("serialize", $allTags)));
+        $resultTags = [];
+        foreach($allTags as $tag) {
+            array_push($resultTags, $tag);
+        }
 
         $category = fractal($model->category_brand->category, new ProductCategoryTransformer())->toArray()['data'];
         $brand = fractal($model->category_brand->brand, new ProductBrandOnlyTransformer())->toArray()['data'];
@@ -67,7 +70,7 @@ class ProductTagTransformer extends TransformerAbstract
             'category' => $category,
             'brand' => $brand,
             'tags' => fractal($model->tags()->get(), new TagsTransformer())->toArray()['data'],
-            'all_tags' => $allTags,
+            'all_tags' => $resultTags,
         ];
         return $result;
     }
