@@ -153,6 +153,7 @@ let routes = [
 	{ path: "/admin/profile", component: require(cmpAdmin + "Profile").default },
 
 	{ path: "/product/:slug", component: require(cmpGuest + "Product").default },
+	{ path: "/products", component: require(cmpGuest + "Products").default },
 ];
 
 const router = new VueRouter({
@@ -219,6 +220,11 @@ Vue.component(
 Vue.component(
 	"setting-menu",
 	require("./components/admin/settings/SettingMenu.vue").default
+);
+
+Vue.component(
+	"filter-product",
+	require(cmpGuest + "FilterProduct.vue").default
 );
 
 /**
@@ -360,6 +366,21 @@ Vue.mixin({
 			slug = slug.replace(/\s*$/g, "");
 			// Change whitespace to "-"
 			slug = slug.replace(/\s+/g, "-");
+
+			slug = slug.replace(/^\s+|\s+$/g, ''); // trim
+			slug = slug.toLowerCase();
+		
+			// remove accents, swap ñ for n, etc
+			var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+			var to   = "aaaaeeeeiiiioooouuuunc------";
+			for (var i=0, l=from.length ; i<l ; i++) {
+				slug = slug.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+			}
+
+			slug = slug.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+					.replace(/\s+/g, '-') // collapse whitespace and replace by -
+					.replace(/-+/g, '-'); // collapse dashes
+
 
 			return slug;
 		},

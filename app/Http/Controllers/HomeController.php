@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\API\CommonRequest;
 use App\Transformers\{ProductCategoryTransformer, SlideTransformer};
 use App\{Product, ProductCategory, Slide};
+use App\Http\Controllers\API\ProductController;
 
 class HomeController extends Controller
 {
@@ -52,6 +53,17 @@ class HomeController extends Controller
         
         return view('home', [
             'categories' => $this->categories
+        ]);
+    }
+
+    public function products(CommonRequest $request){
+        $this->middleware('guest');
+        $cProduct = new ProductController();
+        request()->request->add(['limit' => 9]);
+
+        return view('products', [
+            'products' => $cProduct->index($request),
+            'categories' => $this->categories,
         ]);
     }
 

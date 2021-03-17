@@ -30,7 +30,8 @@ class ProductController extends Controller
             'destroy'
         ]]);
         $this->middleware('guest', ['only' => [
-            'index'
+            'index',
+            'products'
         ]]);
         $this->model = new Product();
         $this->table = $this->model->getTable();
@@ -55,7 +56,7 @@ class ProductController extends Controller
             $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
             $categoryId = is_numeric(request('id_category')) ? request('id_category') : MainHasher::decode(request('id_category'));
             if (request('id_category') && request('id_brand')) {
-                $model = Product::whereHas('category_brand', function($query) use($categoryId) { 
+                $model = Product::whereHas('category_brand', function($query) use($categoryId, $brandId) { 
                     $query->where('id_category', $categoryId)->where('id_brand', $brandId); 
                 });
             } else {
@@ -70,8 +71,9 @@ class ProductController extends Controller
 
         $fieldOrder = $request->fieldOrder ?? "id";
         $sort = $request->sort ?? "ASC";
+        $limit = request('limit') ?? 10;
 
-        return $request->index($model, $this->transformer, $fieldOrder, $sort, 10, $this->table);
+        return $request->index($model, $this->transformer, $fieldOrder, $sort, $limit, $this->table);
     }
 
     /**
@@ -119,6 +121,7 @@ class ProductController extends Controller
 	{
 		$params = [];
         $product = $this->model->find($id);
+
         if (request('storage_path_image')) {
             $pathCurrentIcon = storage_path('app/'.$product->image);
 

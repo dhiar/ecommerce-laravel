@@ -13,39 +13,102 @@
 				</div>
 			</div>
 		</div>
-		<section class="product-shop spad page-details" style="padding-top:50px;">
+		<section class="product-shop spad page-details" style="padding-top: 50px;">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-3">
-						<div class="filter-widget">
-							<h4 class="fw-title">Brand</h4>
-							<div class="fw-brand-check">
-								<div class="bc-item">
-									<label for="bc-calvin">
-										Brand 1
-										<input type="checkbox" id="bc-calvin" />
-										<span class="checkmark"></span>
-									</label>
-								</div>
-								<div class="bc-item">
-									<label for="bc-diesel">
-										Brand 2
-										<input type="checkbox" id="bc-diesel" />
-										<span class="checkmark"></span>
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="filter-widget">
-							<h4 class="fw-title">Tags</h4>
-							<div class="fw-tags">
-								<a href="#">Tag A</a>
-								<a href="#">Tag B</a>
-								<a href="#">Tag C</a>
-							</div>
-						</div>
+						<!-- category, brand dari component -->
+						<filter-product
+							@fromChildSetModal="fromParentSetModal"
+						></filter-product>
 					</div>
 					<div class="col-lg-9">
+						<div class="row" v-if="results.data">
+							<div class="col-lg-12">
+								<div class="product-list">
+									<div class="row">
+										<div
+											class="col-lg-4 col-sm-6"
+											v-for="(item, idx) in results.data"
+											:key="item.id"
+										>
+											<div class="product-item">
+												<div class="pi-pic">
+													<img
+														v-if="item.image"
+														:src="item.image"
+														alt=""
+														@error="imgErrorCondition"
+														class="img-fluid img-thumbnail"
+														style="
+															object-fit: cover !important;
+															height: 270px !important;
+														"
+													/>
+													<div class="sale pp-sale">Sale</div>
+													<div class="icon">
+														<i class="icon_heart_alt"></i>
+													</div>
+													<ul>
+														<li class="w-icon active">
+															<a href="#"><i class="icon_bag_alt"></i></a>
+														</li>
+														<li class="quick-view">
+															<a href="#">+ Quick View</a>
+														</li>
+														<li class="w-icon">
+															<a href="#"><i class="fa fa-random"></i></a>
+														</li>
+													</ul>
+												</div>
+												<div class="pi-text">
+													<div class="catagory-name">
+														{{ item.relationships.category.name }}
+													</div>
+													<a href="#">
+														<h5>{{ item.name }}</h5>
+													</a>
+
+													<div class="product-price">
+														{{ formatCurrency(item.price) }}
+														<span
+															style="
+																color: #252525;
+																text-decoration: none;
+																font-size: 15px;
+															"
+															>/ pcs</span
+														>
+														<!-- <span>$35.00</span> -->
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="overflow-auto">
+									<b-pagination
+										size="md"
+										first-text="First"
+										prev-text="Prev"
+										next-text="Next"
+										last-text="Last"
+										:total-rows="totalItems"
+										v-model="currentPage"
+										:per-page="perPage"
+										align="center"
+									></b-pagination>
+								</div>
+								<!-- 
+								</div> -->
+							</div>
+						</div>
+
+						<div v-if="results.data">
+							<hr />
+						</div>
+
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="card">
@@ -62,11 +125,12 @@
 							<div class="col-lg-6">
 								<div class="product-details">
 									<div class="pd-title">
-                    <!-- {{product}} -->
-										<span style="color:#212529; text-transform: none;">Owner Produk : {{ product.relationships.admin.name }} ,
-											Location : {{ product.relationships.admin.relationships.address }}
-                    </span>
-										<h3>{{product.name}}</h3>
+										<span style="color: #212529; text-transform: none;"
+											>Owner Produk : {{ product.relationships.admin.name }} ,
+											Location :
+											{{ product.relationships.admin.relationships.address }}
+										</span>
+										<h3>{{ product.name }}</h3>
 										<a href="#" class="heart-icon"
 											><i class="icon_heart_alt"></i
 										></a>
@@ -84,7 +148,7 @@
 											Description of product
 										</p>
 										<!-- <h4>harga_promo<span><harga_ori></span></h4> -->
-										<h4>{{formatCurrency(product.price)}}</h4>
+										<h4>{{ formatCurrency(product.price) }}</h4>
 									</div>
 									<div class="pd-size-choose">
 										<div class="sc-item">
@@ -117,9 +181,7 @@
 										<a href="#" class="primary-btn pd-cart">Add To Cart</a>
 									</div>
 									<ul class="pd-tags">
-										<li>
-											<span>CATEGORY</span>: Category 1
-										</li>
+										<li><span>CATEGORY</span>: Category 1</li>
 										<li><span>TAGS</span>: Tag A, Tag B, Tag C</li>
 									</ul>
 									<div class="pd-share">
@@ -210,12 +272,12 @@
 </template>
 
 <script>
-import GoBack from "../admin/GoBack.vue";
 import carousel from "../admin/Carousel.vue";
+import { BPagination } from "bootstrap-vue";
 export default {
 	components: {
-		GoBack,
 		carousel: carousel,
+		"b-pagination": BPagination,
 	},
 	data() {
 		return {
@@ -226,16 +288,21 @@ export default {
 			product: {
 				relationships: {
 					admin: {
-						relationships : {
-
-						}
-					}
-				}
+						relationships: {},
+					},
+				},
 			},
+			categoryId: "",
+			brandId: "",
+			currentPage: 1,
+			perPage: 6,
+			totalItems: 50,
+			results: {},
 		};
 	},
 	async created() {
 		let productSlug = this.$route.params.slug;
+
 		const self = this;
 
 		const result = await axios
@@ -259,13 +326,79 @@ export default {
 		];
 
 		let rawImages = this.product.relationships.images;
-		rawImages.forEach((obj, i) => {
-			this.images.push({
-				id: (i + 1).toString(),
-				big: obj.image,
-				thumb: obj.image,
+
+		if (rawImages.length > 0) {
+			rawImages.forEach((obj, i) => {
+				this.images.push({
+					id: (i + 1).toString(),
+					big: obj.image,
+					thumb: obj.image,
+				});
 			});
-		});
+		} else {
+			this.images.push({
+				id: "1",
+				big: this.images[0].big,
+				thumb: this.images[0].thumb,
+			});
+			this.images.push({
+				id: "2",
+				big: this.images[0].big,
+				thumb: this.images[0].thumb,
+			});
+		}
+	},
+	methods: {
+		fromParentSetModal(val) {
+			const self = this;
+			this.categoryId = val.category_id;
+			this.brandId = val.brand_id;
+
+			axios
+				.get(self.endpoint, {
+					params: {
+						id_category: this.categoryId,
+						id_brand: this.brandId,
+						limit: 6,
+					},
+				})
+				.then(({ data }) => {
+					this.currentPage = data.current_page;
+					this.perPage = data.per_page;
+					this.totalItems = data.total;
+					this.results = data;
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+			// console.log(value) // someValue
+		},
+
+		async fetchProducts(page = 1) {
+			const self = this;
+
+			await axios
+				.get(self.endpoint + "?page=" + page, {
+					params: {
+						id_category: this.categoryId,
+						id_brand: this.brandId,
+						limit: 6,
+					},
+				})
+				.then(({ data }) => {
+					this.currentPage = data.current_page;
+					this.perPage = data.per_page;
+					this.totalItems = data.total;
+					this.results = data;
+				});
+		},
+	},
+	watch: {
+		currentPage: {
+			handler: function (value) {
+				this.fetchProducts(value);
+			},
+		},
 	},
 };
 </script>

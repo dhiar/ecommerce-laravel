@@ -1274,6 +1274,8 @@ ol {
 	color: #e7ab3c;
 	font-size: 20px;
 	font-weight: 700;
+	margin-top: 8px;
+	vertical-align: middle;
 }
 
 .product-item .pi-text .product-price span {

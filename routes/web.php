@@ -21,6 +21,7 @@ Route::get('/home', 'HomeController@home')->name('home');
 Route::get('/product/{slug}', 'HomeController@productDetail')->name('product.detail')->where('slug', '([A-z\d-\/_.]+)?');
 Route::get('/verify', 'Auth\RegisterController@verifyUser')->name('verify.user');
 Route::get('/user/logout', 'Auth\LoginController@userLogout')->name('user.logout');
+Route::get('/products', 'HomeController@products')->name('user.products');
 
 // middlwware guest:admin
 // or middlwware auth:admin

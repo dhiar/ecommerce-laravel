@@ -430,6 +430,9 @@ export default {
 					this.showErrorMessage(error);
 				});
 			this.categories = categories.data.data;
+			this.categories.unshift({
+				id: "0", name: "All Category", slug: ""
+			})
 		},
 		async onSelectFormCategory(option) {
 			await axios
@@ -532,6 +535,8 @@ export default {
 					this.totalItems = data.total;
 					this.results = data;
 				});
+
+			this.asyncFindCategory("")
 		},
 		async cloneProduct(id) {
 			await axios

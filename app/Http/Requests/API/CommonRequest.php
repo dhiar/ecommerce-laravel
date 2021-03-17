@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use App\Hashers\MainHasher;
 
 class CommonRequest extends FormRequest
@@ -82,6 +83,9 @@ class CommonRequest extends FormRequest
         $className = $this->getClassName($model);
         DB::beginTransaction();
         try {
+            if($params['slug']) {
+                $params['slug'] = Str::slug(request('slug'),"-");
+            }
             $object = $model->create($params);
             DB::commit();
             return response()->json([
@@ -111,7 +115,10 @@ class CommonRequest extends FormRequest
     {
         if (!$params) {
             $params = \request()->all();
-        }    
+        }
+        if($params['slug']) {
+            $params['slug'] = Str::slug(request('slug'),"-");
+        }
 
         $table = $model->getTable();
         $columns = Schema::getColumnListing($table);

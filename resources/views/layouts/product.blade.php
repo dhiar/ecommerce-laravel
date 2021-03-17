@@ -141,7 +141,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <div class="select-total">
+                                            <div class="select-total" id="select-total">
                                                 <span>total:</span>
                                                 <h5>Rp. 155.000</h5>
                                             </div>
