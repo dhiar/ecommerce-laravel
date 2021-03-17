@@ -280,8 +280,6 @@ export default {
 	},
 	methods: {
 		async asyncFindTags(query) {
-			console.log("query = " + query);
-
 			const tags = await axios
 				.post("/api/search-tags", {
 					q: query,

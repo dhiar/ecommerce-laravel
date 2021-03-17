@@ -55,6 +55,7 @@ class ProductController extends Controller
         } else if (request('id_brand') || request('id_category')  )  {
             $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
             $categoryId = is_numeric(request('id_category')) ? request('id_category') : MainHasher::decode(request('id_category'));
+
             if (request('id_category') && request('id_brand')) {
                 $model = Product::whereHas('category_brand', function($query) use($categoryId, $brandId) { 
                     $query->where('id_category', $categoryId)->where('id_brand', $brandId); 
@@ -67,6 +68,37 @@ class ProductController extends Controller
         }
         else {
             $model = $this->model;
+        }
+
+        $fieldOrder = $request->fieldOrder ?? "id";
+        $sort = $request->sort ?? "ASC";
+        $limit = request('limit') ?? 10;
+
+        return $request->index($model, $this->transformer, $fieldOrder, $sort, $limit, $this->table);
+    }
+
+    public function filterProducts(CommonRequest $request){
+        if (request('id_brand') || request('id_category')  )  {
+            $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
+            $categoryId = is_numeric(request('id_category')) ? request('id_category') : MainHasher::decode(request('id_category'));
+
+            if (request('id_category') && request('id_brand')) {
+                $model = Product::whereHas('category_brand', function($query) use($categoryId, $brandId) { 
+                    $query->where('id_category', $categoryId)->where('id_brand', $brandId); 
+                });
+            } else {
+                $model = Product::whereHas('category_brand', function($query) use($categoryId) { 
+                    $query->where('id_category', $categoryId); 
+                });
+            }
+        }
+        else {
+            $model = $this->model;
+        }
+
+        if (request('product_tags')) {
+            $tags = collect(request('product_tags'))->pluck('name')->toArray();
+            $model = $model::withAllTags($tags, 'product');
         }
 
         $fieldOrder = $request->fieldOrder ?? "id";
@@ -206,8 +238,12 @@ class ProductController extends Controller
     }
 
     public function searchTags(){
-        $query = request('q');
-        $tags = Tag::where('name', 'LIKE', "%$query%")->limit(100)->get();
+        if (request('q')) {
+            $q = request('q');
+            $tags = Tag::where('name', 'LIKE', "%$q%")->orderBy('name', 'ASC')->limit(100)->get();
+        } else {
+            $tags = Tag::orderBy('name', 'ASC')->limit(100)->get();
+        }
         return response()->json([
             'success' => true,
             'process' => 'tags',

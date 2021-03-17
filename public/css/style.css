@@ -1285,6 +1285,14 @@ ol {
 	text-decoration: line-through;
 }
 
+.font-gray {
+	font-size: 16px !important;
+	color: #636363 !important;
+	line-height: 30px !important;
+	text-transform: none !important;
+	font-weight: normal !important;
+}
+
 /*---------------------
   Deal Of The Week
 -----------------------*/

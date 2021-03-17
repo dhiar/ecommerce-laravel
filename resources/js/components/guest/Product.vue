@@ -54,7 +54,9 @@
 															<a href="#"><i class="icon_bag_alt"></i></a>
 														</li>
 														<li class="quick-view">
-															<a href="#">+ Quick View</a>
+															<a :href="baseURL + '/product/' + item.slug"
+																>+ Quick View</a
+															>
 														</li>
 														<li class="w-icon">
 															<a href="#"><i class="fa fa-random"></i></a>
@@ -143,27 +145,23 @@
 										<i class="fa fa-star-o"></i>
 										<span>(5)</span>
 									</div>
-									<div class="pd-desc">
-										<p>
-											Description of product
-										</p>
-										<!-- <h4>harga_promo<span><harga_ori></span></h4> -->
+									<div class="pd-desc" style="
+																color: #636363;
+																font-size:15px;
+															">
 										<h4>{{ formatCurrency(product.price) }}</h4>
+										<br />
+
+										Weight : {{ product.weight }} gram. Description :
+										<p v-html="product.description"></p>
+										<!-- <h4>harga_promo<span><harga_ori></span></h4> -->
 									</div>
-									<div class="pd-size-choose">
+									<!-- <div class="pd-size-choose">
 										<div class="sc-item">
 											<input type="radio" id="sm-size" />
 											<label for="sm-size">s</label>
 										</div>
-										<div class="sc-item">
-											<input type="radio" id="md-size" />
-											<label for="md-size">m</label>
-										</div>
-										<div class="sc-item">
-											<input type="radio" id="lg-size" />
-											<label for="lg-size">l</label>
-										</div>
-									</div>
+									</div> -->
 									<div class="quantity">
 										<div class="pro-qty">
 											<input type="text" value="1" />
@@ -181,11 +179,28 @@
 										<a href="#" class="primary-btn pd-cart">Add To Cart</a>
 									</div>
 									<ul class="pd-tags">
-										<li><span>CATEGORY</span>: Category 1</li>
-										<li><span>TAGS</span>: Tag A, Tag B, Tag C</li>
+										<li>
+											<span>Category </span> :
+											{{ product.relationships.category.name }}
+										</li>
+										<li>
+											<span>Brand </span> :
+											{{ product.relationships.brand.name }}
+										</li>
+										<li>
+											<span>Tags</span> :
+											<span
+												class="badge badge-primary text-gray-100 btn"
+												style="margin: 2px;"
+												v-for="(tag, idx) in product.relationships.tags"
+												:key="tag.id"
+											>
+												{{ tag.name }}
+											</span>
+										</li>
 									</ul>
 									<div class="pd-share">
-										<div class="p-code">Sku : 00012</div>
+										<!-- <div class="p-code">Sku : 00012</div> -->
 										<div class="pd-social">
 											<a href="#"><i class="ti-facebook"></i></a>
 											<a href="#"><i class="ti-twitter-alt"></i></a>
@@ -283,6 +298,8 @@ export default {
 		return {
 			page: "product",
 			endpoint: "/api/products",
+			endpoint_filter: "/api/filter-products",
+			endpoint_tags: "/api/product_tags",
 			dataImgBigUrl: "",
 			images: [],
 			product: {
@@ -290,10 +307,19 @@ export default {
 					admin: {
 						relationships: {},
 					},
+					category: {
+						id:"",
+						name: ""
+					},
+					brand: {
+						id:"",
+						name: ""
+					},
 				},
 			},
 			categoryId: "",
 			brandId: "",
+			product_tags: [],
 			currentPage: 1,
 			perPage: 6,
 			totalItems: 50,
@@ -304,7 +330,6 @@ export default {
 		let productSlug = this.$route.params.slug;
 
 		const self = this;
-
 		const result = await axios
 			.get(self.endpoint, {
 				params: {
@@ -353,14 +378,16 @@ export default {
 			const self = this;
 			this.categoryId = val.category_id;
 			this.brandId = val.brand_id;
+			this.product_tags = val.product_tags;
+
+			let productTags = this.product_tags;
 
 			axios
-				.get(self.endpoint, {
-					params: {
-						id_category: this.categoryId,
-						id_brand: this.brandId,
-						limit: 6,
-					},
+				.post(self.endpoint_filter, {
+					id_category: this.categoryId,
+					id_brand: this.brandId,
+					product_tags: this.product_tags,
+					limit: 6,
 				})
 				.then(({ data }) => {
 					this.currentPage = data.current_page;
@@ -371,7 +398,6 @@ export default {
 				.catch((error) => {
 					this.showErrorMessage(error);
 				});
-			// console.log(value) // someValue
 		},
 
 		async fetchProducts(page = 1) {
@@ -382,6 +408,7 @@ export default {
 					params: {
 						id_category: this.categoryId,
 						id_brand: this.brandId,
+						product_tags: this.product_tags,
 						limit: 6,
 					},
 				})

@@ -52,12 +52,7 @@ export default {
         // big image getting updated
         currentImage() {
             this.timeLeft = this.autoSlideInterval;
-
-            // console.log('this.timeLeft =' + this.timeLeft)
-
             console.log('this.activeImage = '+ this.activeImage)
-
-            // console.log('this.images = '+ JSON.stringify(this.images))
 
             if(this.images.length > 0) {
                 return this.images[this.activeImage].big;

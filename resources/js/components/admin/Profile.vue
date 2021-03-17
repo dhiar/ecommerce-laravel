@@ -125,9 +125,6 @@
 				})
 			}
 		}
-    ,mounted() {
-        console.log('Component mounted.')
-    }
     ,created() {
       this.backgroundUrl = process.env.MIX_APP_URL + "/img/user-cover.png"
       axios.get('/api/profile').then( ({data}) => (

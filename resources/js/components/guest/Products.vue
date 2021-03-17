@@ -53,7 +53,9 @@
 															<a href="#"><i class="icon_bag_alt"></i></a>
 														</li>
 														<li class="quick-view">
-															<a :href="baseURL+'/product/'+item.slug">+ Quick View</a>
+															<a :href="baseURL + '/product/' + item.slug"
+																>+ Quick View</a
+															>
 														</li>
 														<li class="w-icon">
 															<a href="#"><i class="fa fa-random"></i></a>
@@ -68,7 +70,15 @@
 														<h5>{{ item.name }}</h5>
 													</a>
 													<div class="product-price">
-														{{ formatCurrency(item.price) }} <span style="color: #252525; text-decoration: none;font-size: 15px;">/ pcs</span>
+														{{ formatCurrency(item.price) }}
+														<span
+															style="
+																color: #252525;
+																text-decoration: none;
+																font-size: 15px;
+															"
+															>/ pcs</span
+														>
 													</div>
 												</div>
 											</div>
@@ -125,7 +135,7 @@ export default {
 		};
 	},
 	async created() {
-		this.fetchProducts()
+		this.fetchProducts();
 	},
 	methods: {
 		fromParentSetModal(val) {
@@ -150,7 +160,6 @@ export default {
 				.catch((error) => {
 					this.showErrorMessage(error);
 				});
-			// console.log(value) // someValue
 		},
 
 		async fetchProducts(page = 1) {
