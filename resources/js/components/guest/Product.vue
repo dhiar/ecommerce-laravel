@@ -132,7 +132,9 @@
 											Location :
 											{{ product.relationships.admin.relationships.address }}
 										</span>
-										<h3>{{ product.name }}</h3>
+										<h3>
+											{{ product.name }}
+										</h3>
 										<a href="#" class="heart-icon"
 											><i class="icon_heart_alt"></i
 										></a>
@@ -145,10 +147,7 @@
 										<i class="fa fa-star-o"></i>
 										<span>(5)</span>
 									</div>
-									<div class="pd-desc" style="
-																color: #636363;
-																font-size:15px;
-															">
+									<div class="pd-desc" style="color: #636363; font-size: 15px;">
 										<h4>{{ formatCurrency(product.price) }}</h4>
 										<br />
 
@@ -164,11 +163,37 @@
 									</div> -->
 									<div class="quantity">
 										<div class="pro-qty">
-											<input type="text" value="1" />
+											<span class="dec qtybtn" @click="changeNumber(-1)"
+												>-</span
+											>
+											<input
+												type="text"
+												v-model="count"
+												@input="validNumber()"
+											/>
+											<span class="inc qtybtn" @click="changeNumber(1)">+</span>
 										</div>
 										<a
 											class="success-btn pd-cart bg-green-light"
-											href="https://api.whatsapp.com/send?phone=6281289482090&text=Selamat%20pagi%20bpk%2Fibu%2C%20ingin%20menanyakan%2C%20apakah%20produk%20berikut%20masih%20tersedia%3F%0D%0A%0D%0AProduk%20%3A%20Produk%201%0D%0AJumlah%20%3A10"
+											:href="
+												'https://api.whatsapp.com/send?phone=6281289482090&text=Selamat%20pagi%20bpk%2Fibu%20*' +
+												product.relationships.admin.name +
+												'*%20%2C%20ingin%20menanyakan%2C%20apakah%20produk%20berikut%20masih%20tersedia%3F%0D%0A%0D%0AProduk%20%3A%20' +
+												encodeURIComponent(
+													'Category : ' + product.relationships.category.name
+												) +
+												'%0D%0A' +
+												encodeURIComponent(
+													'Brand : ' + product.relationships.brand.name
+												) +
+												'%0D%0A' +
+												'Name%20:%20*' +
+												encodeURIComponent(product.name) +
+												'*%0D%0A' +
+												'Jumlah%20:%20*' +
+												count +
+												'*'
+											"
 										>
 											<span class="fa fa-whatsapp"></span>
 											Order Via WA
@@ -308,15 +333,16 @@ export default {
 						relationships: {},
 					},
 					category: {
-						id:"",
-						name: ""
+						id: "",
+						name: "",
 					},
 					brand: {
-						id:"",
-						name: ""
+						id: "",
+						name: "",
 					},
 				},
 			},
+			count: 1,
 			categoryId: "",
 			brandId: "",
 			product_tags: [],
@@ -374,6 +400,22 @@ export default {
 		}
 	},
 	methods: {
+		changeNumber(number) {
+			this.count = parseInt(this.count);
+			this.count += number;
+			if (this.count <= 0) {
+				this.count = 1;
+			}
+		},
+		validNumber() {
+			if (isNaN(this.count)) {
+				this.count = 1;
+			}
+			this.count = parseInt(this.count);
+			if (this.count <= 0) {
+				this.count = 1;
+			}
+		},
 		fromParentSetModal(val) {
 			const self = this;
 			this.categoryId = val.category_id;
