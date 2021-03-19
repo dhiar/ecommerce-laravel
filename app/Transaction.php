@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{Address, DeliveryStatus, TransactionDetail, User};
+use App\{Address, DeliveryStatus, TransactionDetail, Admin};
 
 class Transaction extends Model
 {
@@ -15,7 +15,7 @@ class Transaction extends Model
         'total_weight',
         'total_price',
         'id_address',
-        'id_user',
+        'id_admin_owner',
         'id_delivery_status',
         'token',
         'token_created_at'
@@ -25,12 +25,12 @@ class Transaction extends Model
         return $this->belongsTo(Address::class, 'id_address', 'id');
     }
 
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function admin(){
+        return $this->belongsTo(Admin::class, 'id_admin_owner', 'id');
     }
 
     public function delivery_status(){
-        return $this->belongsTo(DeliveryStatus::class);
+        return $this->belongsTo(DeliveryStatus::class,'id_delivery_status','id');
     }
 
     public function transaction_details()

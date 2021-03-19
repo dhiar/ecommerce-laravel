@@ -14,7 +14,7 @@ class ProductSeeder extends Seeder
     public function run()
     {
         for ($i=1; $i <= 30; $i++) {
-            Product::create([
+            $product = Product::create([
                 'id_category_brand'  => '1',
                 'id_admin'  => '2',
                 'name'  => $i <= 15 ? 'Madu Hutan NTT (Bunga Kayu Putih) - '.$i : 'Madu Randu - '.$i,
@@ -32,6 +32,16 @@ class ProductSeeder extends Seeder
                 'count_view'  => 100 + $i,
                 'count_like' => 500 - $i,
             ]);
+            
+            if ($i <= 7) {
+                $product->syncTagsWithType(['madurandu', 'madusragen', 'maduternak'], 'product');
+            } else if ($i <= 15) {
+                $product->syncTagsWithType(['madukayuputih', 'madusragen', 'maduternak'], 'product');                
+            } else if ($i <= 22) {
+                $product->syncTagsWithType(['madukayuputih', 'maduntt', 'maduhutan'], 'product');
+            } else if ($i <= 30) {
+                $product->syncTagsWithType(['madurambutan', 'madusragen', 'maduternak'], 'product');    
+            }
         }
     }
 }

@@ -1,5 +1,113 @@
 <template>
 	<div>
+		<div
+			class="modal fade"
+			id="modalOrder"
+			tabindex="-1"
+			aria-labelledby="addNewLabel"
+			aria-hidden="true"
+			style="width: 100%;"
+		>
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div class="h5 text-gray-800 line-height-222">
+							Masukkan Identitas Anda
+						</div>
+					</div>
+					<form @submit.prevent="orderViaWa()">
+						<div class="modal-body">
+							<div class="form-group">
+								<label for="name">Name</label>
+								<input
+									v-model="form.name"
+									type="text"
+									id="name"
+									name="name"
+									placeholder="name"
+									class="form-control"
+									:class="{
+										'is-invalid': submitted && $v.form.name.$error,
+
+										'is-valid': !$v.form.name.$invalid,
+									}"
+								/>
+								<div class="valid-feedback">Name is valid.</div>
+								<div
+									v-if="submitted && !$v.form.name.required"
+									class="invalid-feedback"
+								>
+									Name harus diisi
+								</div>
+								<div
+									v-if="submitted && !$v.form.name.maxLength"
+									class="invalid-feedback"
+								>
+									Name terlalu panjang ( maks :
+									{{ $v.form.name.$params.maxLength.max }} karakter )
+								</div>
+								<div
+									v-if="submitted && !$v.form.name.minLength"
+									class="invalid-feedback"
+								>
+									Name terlalu pendek ( min :
+									{{ $v.form.name.$params.minLength.min }} karakter )
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name">Alamat</label>
+								<textarea
+									v-model="form.address"
+									placeholder="Detail alamat anda / penerima"
+									name="address"
+									id="desc"
+									class="form-control"
+									rows="5"
+									:class="{
+										'is-invalid': submitted && $v.form.address.$error,
+
+										'is-valid': !$v.form.address.$invalid,
+									}"
+								></textarea>
+								<div class="valid-feedback">Alamat is valid.</div>
+								<div
+									v-if="submitted && !$v.form.address.required"
+									class="invalid-feedback"
+								>
+									Alamat harus diisi
+								</div>
+								<div
+									v-if="submitted && !$v.form.address.maxLength"
+									class="invalid-feedback"
+								>
+									Alamat terlalu panjang ( maks :
+									{{ $v.form.address.$params.maxLength.max }} karakter )
+								</div>
+								<div
+									v-if="submitted && !$v.form.address.minLength"
+									class="invalid-feedback"
+								>
+									Alamat terlalu pendek ( min :
+									{{ $v.form.address.$params.minLength.min }} karakter )
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">
+								Close
+							</button>
+							<button
+								type="submit"
+								:disabled="form.busy"
+								class="btn btn-primary"
+							>
+								Save
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 		<div class="breacrumb-section">
 			<div class="container">
 				<div class="row">
@@ -173,12 +281,10 @@
 											/>
 											<span class="inc qtybtn" @click="changeNumber(1)">+</span>
 										</div>
-										<a
-											class="success-btn pd-cart bg-green-light"
-											:href="
-												'https://api.whatsapp.com/send?phone=6281289482090&text=Selamat%20pagi%20bpk%2Fibu%20*' +
+										<!-- :href="
+												'https://api.whatsapp.com/send?phone='+product.relationships.admin.whatsapp+'&text=Selamat%20pagi%20bpk%2Fibu%20*' +
 												product.relationships.admin.name +
-												'*%20%2C%20ingin%20menanyakan%2C%20apakah%20produk%20berikut%20masih%20tersedia%3F%0D%0A%0D%0AProduk%20%3A%20' +
+												'*%20%2C%20ingin%20menanyakan%2C%20apakah%20produk%20berikut%20masih%20tersedia%3F%0D%0A%0D%0A' +
 												encodeURIComponent(
 													'Category : ' + product.relationships.category.name
 												) +
@@ -191,9 +297,13 @@
 												encodeURIComponent(product.name) +
 												'*%0D%0A' +
 												'Jumlah%20:%20*' +
-												count +
-												'*'
-											"
+												count + '*'
+											" -->
+										<!-- @click="modalOrder" -->
+										<a
+											@click="modalOrder"
+											href="#"
+											class="success-btn pd-cart bg-green-light"
 										>
 											<span class="fa fa-whatsapp"></span>
 											Order Via WA
@@ -314,6 +424,7 @@
 <script>
 import carousel from "../admin/Carousel.vue";
 import { BPagination } from "bootstrap-vue";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
 	components: {
 		carousel: carousel,
@@ -321,11 +432,16 @@ export default {
 	},
 	data() {
 		return {
+			submitted: false,
 			page: "product",
 			endpoint: "/api/products",
 			endpoint_filter: "/api/filter-products",
 			endpoint_tags: "/api/product_tags",
 			dataImgBigUrl: "",
+			form: new Form({
+				name: "",
+				address: "",
+			}),
 			images: [],
 			product: {
 				relationships: {
@@ -351,6 +467,20 @@ export default {
 			totalItems: 50,
 			results: {},
 		};
+	},
+	validations: {
+		form: {
+			name: {
+				required,
+				minLength: minLength(5),
+				maxLength: maxLength(30),
+			},
+			address: {
+				required,
+				minLength: minLength(5),
+				maxLength: maxLength(300),
+			},
+		},
 	},
 	async created() {
 		let productSlug = this.$route.params.slug;
@@ -400,6 +530,45 @@ export default {
 		}
 	},
 	methods: {
+		orderViaWa() {
+			const self = this;
+			this.submitted = true;
+			this.$v.$touch();
+			if (this.$v.$error) {
+				return;
+			} else {
+				let product = this.product;
+				let name = this.form.name;
+				let address = this.form.address;
+
+				window.location.href =
+					"https://api.whatsapp.com/send?phone=" +
+					product.relationships.admin.whatsapp +
+					"&text=Selamat%20pagi%20bpk%2Fibu%20*" +
+					product.relationships.admin.name +
+					"*%20%2C%20ingin%20menanyakan%2C%20apakah%20produk%20berikut%20masih%20tersedia%3F%0D%0A%0D%0A" +
+					encodeURIComponent(
+						"Category : " + product.relationships.category.name
+					) +
+					"%0D%0A" +
+					encodeURIComponent("Brand : " + product.relationships.brand.name) +
+					"%0D%0A" +
+					"Name%20:%20*" +
+					encodeURIComponent(product.name) +
+					"*%0D%0A" +
+					"Jumlah%20:%20*" +
+					this.count +
+					"*%0D%0A%0D%0A" +
+					encodeURIComponent("Nama Customer : *" + name + "*") +
+					"%0D%0A" +
+					encodeURIComponent("Alamat : *" + address + "*") +
+					"%0D%0A";
+			}
+		},
+		modalOrder() {
+			$("#modalOrder").modal("show");
+			const self = this;
+		},
 		changeNumber(number) {
 			this.count = parseInt(this.count);
 			this.count += number;

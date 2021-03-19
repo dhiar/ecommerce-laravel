@@ -15,8 +15,8 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('invoice', 50);
-            $table->double('shipping_charges');
+            $table->string('invoice', 50); // bila via WA isi dengan kode, wa_10digits
+            $table->double('shipping_charges')->nullable();
             $table->integer('total_weight');
             $table->double('total_price');
 
@@ -25,18 +25,18 @@ class CreateTransactionsTable extends Migration
                 ->references('id')
                 ->on('address');
 
-            $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')
+            $table->unsignedBigInteger('id_admin_owner');
+            $table->foreign('id_admin_owner')
                 ->references('id')
-                ->on('users');
+                ->on('admins');
 
             $table->unsignedBigInteger('id_delivery_status');
             $table->foreign('id_delivery_status')
                 ->references('id')
                 ->on('delivery_status');
             
-            $table->text('token');
-            $table->dateTime('token_created_at');
+            $table->text('token')->nullable();
+            $table->dateTime('token_created_at')->nullable();
             $table->timestamps();
         });
     }
@@ -52,8 +52,8 @@ class CreateTransactionsTable extends Migration
             $table->dropForeign(['id_address']);
             $table->dropColumn('id_address');
 
-            $table->dropForeign(['id_user']);
-            $table->dropColumn('id_user');
+            $table->dropForeign(['id_admin_owner']);
+            $table->dropColumn('id_admin_owner');
 
             $table->dropForeign(['id_delivery_status']);
             $table->dropColumn('id_delivery_status');
