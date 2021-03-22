@@ -131,7 +131,7 @@
 						></filter-product>
 					</div>
 					<div class="col-lg-9">
-						<div class="row" v-if="results.data">
+						<div class="row" v-if="results.data && results.data.length > 0">
 							<div class="col-lg-12">
 								<div class="product-list">
 									<div class="row">
@@ -210,8 +210,17 @@
 										align="center"
 									></b-pagination>
 								</div>
-								<!-- 
-								</div> -->
+							</div>
+						</div>
+
+						<div
+							class="row text-center"
+							v-if="results.data && results.data.length == 0"
+						>
+							<div class="col-lg-12 text-center">
+								<h4 style="color: #252525; font-weight: 700;">
+									Produk Tidak Ditemukan.
+								</h4>
 							</div>
 						</div>
 
