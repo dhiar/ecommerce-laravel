@@ -12,12 +12,8 @@ class Address extends Model
     protected $guarded = ['id'];
     protected $fillable = ['name'];
 
-    public function user() {
-        return $this->belongsTo(User::class, 'id_address');
-    }
-
-    public function transactions()
-    {
-        return $this->belongsToMany(Transaction::class)->withTimestamps()->withPivot(['invoice']);
-    }
+    // public function transactions()
+    // {
+    //     return $this->belongsToMany(Transaction::class)->withTimestamps()->withPivot(['invoice']);
+    // }
 }

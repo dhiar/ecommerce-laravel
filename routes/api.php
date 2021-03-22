@@ -88,7 +88,6 @@ Route::post('search-tags', 'API\ProductController@searchTags')->name('search.tag
 Route::get('tags', 'API\ProductController@searchTags')->name('all.tags');
 Route::post('filter-products', 'API\ProductController@filterProducts')->name('filter.products');
 
-
 Route::apiResource('grosirs', 'API\GrosirController')->names([
 	'store' => 'grosir.store'
 ]);
@@ -98,6 +97,10 @@ Route::apiResource('product_images', 'API\ProductImageController')->names([
 
 Route::apiResource('promos', 'API\PromoController')->names([
 	'store' => 'promo.store'
+]);
+
+Route::apiResource('transactions', 'API\TransactionController')->names([
+	'store' => 'transaction.store'
 ]);
 
 Route::get('list-province', 'API\ShippingController@listProvince');
@@ -198,6 +201,10 @@ Route::bind('promo', function (string $id) {
 });
 
 Route::bind('grosir', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
+Route::bind('transaction', function (string $id) {
 	return  MainHasher::decode($id);
 });
 

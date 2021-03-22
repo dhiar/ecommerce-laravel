@@ -54,7 +54,7 @@
 														</li>
 														<li class="quick-view">
 															<a :href="baseURL + '/product/' + item.slug"
-																>+ Quick View</a
+																>Quick View</a
 															>
 														</li>
 														<li class="w-icon">

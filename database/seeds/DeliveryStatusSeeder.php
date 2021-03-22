@@ -13,10 +13,10 @@ class DeliveryStatusSeeder extends Seeder
     public function run()
     {
         DeliveryStatus::create([
-            'name'  => 'Pending'
+            'name'  => 'Verifikasi'
         ]);
         DeliveryStatus::create([
-            'name'  => 'Verifikasi'
+            'name'  => 'Pending'
         ]);
         DeliveryStatus::create([
             'name'  => 'Sedang Dikirim'

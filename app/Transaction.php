@@ -33,8 +33,7 @@ class Transaction extends Model
         return $this->belongsTo(DeliveryStatus::class,'id_delivery_status','id');
     }
 
-    public function transaction_details()
-    {
-        return $this->belongsToMany(TransactionDetail::class)->withTimestamps()->withPivot(['subtotal_price']);
+    public function transaction_details(){
+        return $this->hasMany(TransactionDetail::class, 'id_transaction', 'id');
     }
 }

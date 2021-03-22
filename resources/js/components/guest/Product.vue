@@ -99,9 +99,9 @@
 							<button
 								type="submit"
 								:disabled="form.busy"
-								class="btn btn-primary"
+								class="btn btn-success bg-green-light"
 							>
-								Save
+								<span class="fa fa-whatsapp"></span>&nbsp;&nbsp;Hubungi Penjual
 							</button>
 						</div>
 					</form>
@@ -163,7 +163,7 @@
 														</li>
 														<li class="quick-view">
 															<a :href="baseURL + '/product/' + item.slug"
-																>+ Quick View</a
+																>Quick View</a
 															>
 														</li>
 														<li class="w-icon">
@@ -281,25 +281,6 @@
 											/>
 											<span class="inc qtybtn" @click="changeNumber(1)">+</span>
 										</div>
-										<!-- :href="
-												'https://api.whatsapp.com/send?phone='+product.relationships.admin.whatsapp+'&text=Selamat%20pagi%20bpk%2Fibu%20*' +
-												product.relationships.admin.name +
-												'*%20%2C%20ingin%20menanyakan%2C%20apakah%20produk%20berikut%20masih%20tersedia%3F%0D%0A%0D%0A' +
-												encodeURIComponent(
-													'Category : ' + product.relationships.category.name
-												) +
-												'%0D%0A' +
-												encodeURIComponent(
-													'Brand : ' + product.relationships.brand.name
-												) +
-												'%0D%0A' +
-												'Name%20:%20*' +
-												encodeURIComponent(product.name) +
-												'*%0D%0A' +
-												'Jumlah%20:%20*' +
-												count + '*'
-											" -->
-										<!-- @click="modalOrder" -->
 										<a
 											@click="modalOrder"
 											href="#"
@@ -437,6 +418,7 @@ export default {
 			endpoint: "/api/products",
 			endpoint_filter: "/api/filter-products",
 			endpoint_tags: "/api/product_tags",
+			endpoint_transaction: "/api/transactions",
 			dataImgBigUrl: "",
 			form: new Form({
 				name: "",
@@ -537,32 +519,59 @@ export default {
 			if (this.$v.$error) {
 				return;
 			} else {
-				let product = this.product;
+				let product = self.product;
+				// let product = productData
+				// product.relationships = [];
 				let name = this.form.name;
 				let address = this.form.address;
 
-				window.location.href =
-					"https://api.whatsapp.com/send?phone=" +
-					product.relationships.admin.whatsapp +
-					"&text=Selamat%20pagi%20bpk%2Fibu%20*" +
-					product.relationships.admin.name +
-					"*%20%2C%20ingin%20menanyakan%2C%20apakah%20produk%20berikut%20masih%20tersedia%3F%0D%0A%0D%0A" +
-					encodeURIComponent(
-						"Category : " + product.relationships.category.name
-					) +
-					"%0D%0A" +
-					encodeURIComponent("Brand : " + product.relationships.brand.name) +
-					"%0D%0A" +
-					"Name%20:%20*" +
-					encodeURIComponent(product.name) +
-					"*%0D%0A" +
-					"Jumlah%20:%20*" +
-					this.count +
-					"*%0D%0A%0D%0A" +
-					encodeURIComponent("Nama Customer : *" + name + "*") +
-					"%0D%0A" +
-					encodeURIComponent("Alamat : *" + address + "*") +
-					"%0D%0A";
+				axios
+					.post(self.endpoint_transaction, {
+						product: product,
+						name: name,
+						address: address,
+						is_wa: 1,
+						is_grosir: 0,
+						count: this.count,
+					})
+					.then(({ data }) => {
+						if (data.success) {
+							Swal.fire("Success !", data.message, "success");
+
+							let linkWA =
+								"https://api.whatsapp.com/send?phone=" +
+								product.relationships.admin.whatsapp +
+								"&text=Selamat%20pagi%20bpk%2Fibu%20*" +
+								product.relationships.admin.name +
+								"*%20%2C%20ingin%20menanyakan%2C%20apakah%20produk%20berikut%20masih%20tersedia%3F%0D%0A%0D%0A" +
+								encodeURIComponent(
+									"Category : " + product.relationships.category.name
+								) +
+								"%0D%0A" +
+								encodeURIComponent(
+									"Brand : " + product.relationships.brand.name
+								) +
+								"%0D%0A" +
+								"Name%20:%20*" +
+								encodeURIComponent(product.name) +
+								"*%0D%0A" +
+								"Jumlah%20:%20*" +
+								this.count +
+								"*%0D%0A%0D%0A" +
+								encodeURIComponent("Nama Customer : *" + name + "*") +
+								"%0D%0A" +
+								encodeURIComponent("Alamat : *" + address + "*") +
+								"%0D%0A";
+
+							window.open(linkWA, "_blank");
+						} else {
+							Swal.fire("Failed !", data.message, "error");
+						}
+						$("#modalOrder").modal("hide");
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
 			}
 		},
 		modalOrder() {

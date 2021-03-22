@@ -24,8 +24,8 @@ class CreateTransactionsTable extends Migration
             $table->foreign('id_address')
                 ->references('id')
                 ->on('address');
-
-            $table->unsignedBigInteger('id_admin_owner');
+            // bila menggunakan transaksi transfer, maka akan masuk ke pihak ke-3 (superadmin)
+            $table->unsignedBigInteger('id_admin_owner')->nullable();
             $table->foreign('id_admin_owner')
                 ->references('id')
                 ->on('admins');
