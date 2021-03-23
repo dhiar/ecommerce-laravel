@@ -157,6 +157,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </router-link>
               </li>
             </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <router-link to="/admin/orders" class="nav-link">
+                  <i class="fas fa-shopping-cart nav-icon"></i>
+                  <p>Orders</p>
+                </router-link>
+              </li>
+            </ul>
           </li>
 
           <!-- @can('isAdmin') -->

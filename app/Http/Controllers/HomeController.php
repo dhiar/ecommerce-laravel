@@ -69,11 +69,16 @@ class HomeController extends Controller
 
     public function productDetail(CommonRequest $request, $slug){
         $this->middleware('guest');
-        $product = Product::whereSlug($slug)->first();
         return view('product', [
-            'product' => $product,
             'categories' => $this->categories,
-            'slides' => $this->slides,
+        ]);
+    }
+
+    public function orders(CommonRequest $request, $invoice = null){
+        $this->middleware('guest');
+        return view('orders', [
+            'categories' => $this->categories,
+            'invoice' => $invoice
         ]);
     }
 }

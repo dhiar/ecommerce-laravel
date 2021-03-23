@@ -154,6 +154,9 @@ let routes = [
 
 	{ path: "/product/:slug", component: require(cmpGuest + "Product").default },
 	{ path: "/products", component: require(cmpGuest + "Products").default },
+
+	{ path: "/admin/orders", component: require(cmpAdmin + "Orders").default },
+	{ path: "/orders", component: require(cmpGuest + "Orders").default },
 ];
 
 const router = new VueRouter({
@@ -280,6 +283,17 @@ Vue.mixin({
 
 				return "Rp. " + currency;
 			}
+		},
+		formatWeight(text){
+			let textCoba = 9653
+			let weight = parseInt(text)
+			if (weight >= 1000) {
+				let floatWeight = parseFloat(weight/1000)
+				return floatWeight.toFixed(3) + " kg"
+			} else {
+				return text + " gram"
+			}
+
 		},
 		prevPage() {
 			this.$router.go(-1);

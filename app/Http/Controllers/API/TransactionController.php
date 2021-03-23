@@ -28,6 +28,11 @@ class TransactionController extends Controller
         $this->transformer = new TransactionTransformer();
     }
 
+    public function index(CommonRequest $request)
+    {
+        return $request->index($this->model, $this->transformer);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -73,14 +78,13 @@ class TransactionController extends Controller
                     ]);
                 }
 
+                DB::commit();
                 return response()->json([
                     'success' => true,
                     'process' => 'store',
                     'data' => fractal($transaction, $this->transformer)->toArray()['data'],
                     'message' => 'Success store transaction',
                 ]);
-
-                DB::commit();
             }
             catch (\Exception $e) {
                 return response()->json([
@@ -96,6 +100,6 @@ class TransactionController extends Controller
 
     public function show($id, CommonRequest $request)
 	{
-		// return $request->show($id, $this->model, $this->transformer);
+		return $request->show($id, $this->model, $this->transformer);
 	}
 }

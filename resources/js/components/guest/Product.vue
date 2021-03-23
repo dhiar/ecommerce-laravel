@@ -547,6 +547,7 @@ export default {
 						if (data.success) {
 							Swal.fire("Success !", data.message, "success");
 
+							localStorage.setItem("invoice", data.data.invoice);
 							let linkWA =
 								"https://api.whatsapp.com/send?phone=" +
 								product.relationships.admin.whatsapp +

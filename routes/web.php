@@ -23,6 +23,7 @@ Route::get('/verify', 'Auth\RegisterController@verifyUser')->name('verify.user')
 Route::get('/user/logout', 'Auth\LoginController@userLogout')->name('user.logout');
 Route::get('/products', 'HomeController@products')->name('user.products');
 Route::get('/orders', 'HomeController@orders')->name('user.orders');
+Route::get('/orders/{invoice}', 'HomeController@orders')->name('user.orders');
 
 // middlwware guest:admin
 // or middlwware auth:admin
