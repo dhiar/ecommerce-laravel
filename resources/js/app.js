@@ -282,16 +282,17 @@ Vue.mixin({
 				currency = currency.join(".").split("").reverse().join("");
 
 				return "Rp. " + currency;
-			}
+			} else {
+
+				return "Rp. 0";	}
 		},
 		formatWeight(text){
-			let textCoba = 9653
 			let weight = parseInt(text)
 			if (weight >= 1000) {
 				let floatWeight = parseFloat(weight/1000)
-				return floatWeight.toFixed(3) + " kg"
+				return floatWeight.toFixed(2).replace('.',',') + " kg"
 			} else {
-				return text + " gram"
+				return text + " gr"
 			}
 
 		},
