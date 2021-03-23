@@ -26,7 +26,74 @@
 					</div>
 					<!-- modal-header -->
 					<div class="modal-body">
-						Isi dengan detail order with pagination
+						<table class="table table-hover">
+							<tr>
+								<th style="width: 30%;">Invoice</th>
+								<td>{{ form.invoice }}</td>
+							</tr>
+							<tr>
+								<th>Bea Kirim</th>
+								<td>{{ formatCurrency(form.shipping_charges) }}</td>
+							</tr>
+							<tr>
+								<th>Harga Produk</th>
+								<td>{{ formatCurrency(form.total_price) }}</td>
+							</tr>
+							<tr>
+								<th>Berat</th>
+								<td>{{ formatWeight(form.total_weight) }}</td>
+							</tr>
+							<tr>
+								<th>Alamat Tujuan</th>
+								<td>{{ form.relationships.address.name }}</td>
+							</tr>
+							<tr>
+								<th>Status Kirim</th>
+								<td>{{ form.relationships.delivery_status.name }}</td>
+							</tr>
+						</table>
+						<table class="table table-hover">
+							<tr>
+								<th>
+									<div class="h5 text-gray-800 line-height-222">
+										Detail
+									</div>
+								</th>
+							</tr>
+						</table>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th class="text-center">No</th>
+									<th>Produk</th>
+									<th>Harga</th>
+									<th>Berat</th>
+									<th>Seller</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr
+									v-for="(item, idx) in form.relationships.transaction_details"
+									:key="item.id"
+								>
+									<td class="text-center">
+										{{ idx + 1 }}
+									</td>
+									<td>
+										{{ item.relationships.product.name }}
+									</td>
+									<td>
+										{{ formatCurrency(item.relationships.product.price) }}
+									</td>
+									<td>
+										{{ formatWeight(item.relationships.product.weight) }}
+									</td>
+									<td>
+										{{ item.relationships.product.relationships.admin.name }}
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<!--modal body-->
 
@@ -78,7 +145,10 @@
 								{{ item.invoice }}
 							</td>
 							<td>
-								{{ item.relationships.transaction_details[0].relationships.product.relationships.admin.name }}
+								{{
+									item.relationships.transaction_details[0].relationships
+										.product.relationships.admin.name
+								}}
 							</td>
 							<td>
 								{{ item.relationships.delivery_status.name }}
@@ -142,6 +212,17 @@ export default {
 			form: new Form({
 				id: "",
 				invoice: "",
+				shipping_charges: 0,
+				total_weight: 9600,
+				total_price: 1560000,
+				id_admin_owner: "",
+				token: null,
+				token_created_at: null,
+				relationships: {
+					address: {},
+					delivery_status: {},
+					transaction_details: [],
+				},
 			}),
 		};
 	},
@@ -152,26 +233,20 @@ export default {
 		async showModalOrders(id) {
 			this.submitted = false;
 			$("#modalOrders").modal("show");
-			// const self = this;
-			// this.form.id = id;
-			// if (id) {
-			// 	const result = await axios
-			// 		.get(self.endpoint + "/" + id)
-			// 		.catch((error) => {
-			// 			this.showErrorMessage(error);
-			// 		});
-
-			// 	this.form = result.data;
-			// } else {
-			// 	// clear form
-			// 	if (!this.submitted) {
-			// 		self.clearForm(self.form);
-			// 	}
-			// }
+			alert(id);
+			const self = this;
+			this.form.id = id;
+			if (id) {
+				const result = await axios
+					.get(self.endpoint + "/" + id)
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+				this.form = result.data;
+			}
 		},
 		async fetchData(page = 1) {
 			const self = this;
-			alert(self.endpoint);
 			await axios.get(self.endpoint + "?page=" + page).then(({ data }) => {
 				this.currentPage = data.current_page;
 				this.perPage = data.per_page;
