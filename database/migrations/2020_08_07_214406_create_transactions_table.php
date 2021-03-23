@@ -16,7 +16,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('invoice', 50); // bila via WA isi dengan kode, wa_10digits
-            $table->double('shipping_charges')->nullable();
+            $table->double('shipping_cost')->default(0);
             $table->integer('total_weight');
             $table->double('total_price');
 

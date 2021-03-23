@@ -148,7 +148,7 @@
 										</el-select>
 										<div class="valid-feedback">Condition is valid.</div>
 										<div
-											v-if="submitted && !$v.form.price.required"
+											v-if="submitted && !$v.form.condition.required"
 											class="invalid-feedback"
 										>
 											Condition harus diisi

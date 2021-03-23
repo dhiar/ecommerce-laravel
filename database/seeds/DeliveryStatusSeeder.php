@@ -16,13 +16,16 @@ class DeliveryStatusSeeder extends Seeder
             'name'  => 'Verifikasi'
         ]);
         DeliveryStatus::create([
-            'name'  => 'Pending'
+            'name'  => 'Dikemas'
         ]);
         DeliveryStatus::create([
-            'name'  => 'Sedang Dikirim'
+            'name'  => 'Dikirim'
         ]);
         DeliveryStatus::create([
             'name'  => 'Diterima'
+        ]);
+        DeliveryStatus::create([
+            'name'  => 'Cancel'
         ]);
     }
 }

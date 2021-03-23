@@ -102,4 +102,9 @@ class TransactionController extends Controller
 	{
 		return $request->show($id, $this->model, $this->transformer);
 	}
+
+    public function update(CommonRequest $request, $id)
+	{
+		return $request->update($id, $this->model, $this->transformer);
+	}
 }

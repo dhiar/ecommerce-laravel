@@ -116,7 +116,7 @@ class CommonRequest extends FormRequest
         if (!$params) {
             $params = \request()->all();
         }
-        if($params['slug']) {
+        if(isset($params['slug'])) {
             $params['slug'] = Str::slug(request('slug'),"-");
         }
 

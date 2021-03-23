@@ -34,7 +34,7 @@ class DeliveryStatusTransformer extends TransformerAbstract
     public function transform(DeliveryStatus $model)
     {
         $result = $model->toArray();
-        $result["id"] = MainHasher::encode($result["id"]);
+        // $result["id"] = MainHasher::encode($result["id"]);
         unset($result['created_at']);
         unset($result['updated_at']);
         unset($result['deleted_at']);

@@ -44,5 +44,27 @@ class AdminSeeder extends Seeder
             'phone' => '081289482090',
             'photo' => 'https://www.travelcontinuously.com/wp-content/uploads/2018/04/empty-avatar.png'
         ]);
+        
+        Admin::create([
+            'name'  => 'Rocky Ahmad',
+            'id_user_type' => 3,
+            'id_address' => 1,
+            'email' => 'rocky-ahmad@gmail.com',
+            'password' => bcrypt('manager247'),
+            'job_title' => 'Manage & monitor owner product.',
+            'phone' => '081289482090',
+            'photo' => 'https://www.travelcontinuously.com/wp-content/uploads/2018/04/empty-avatar.png'
+        ]);
+
+        Admin::create([
+            'name'  => 'Nuruddin Zangky',
+            'id_user_type' => 3,
+            'id_address' => 1,
+            'email' => 'nuruddin-zangky@gmail.com',
+            'password' => bcrypt('manager247'),
+            'job_title' => 'Manage & monitor owner product.',
+            'phone' => '081289482090',
+            'photo' => 'https://www.travelcontinuously.com/wp-content/uploads/2018/04/empty-avatar.png'
+        ]);
     }
 }

@@ -11,7 +11,7 @@ class Transaction extends Model
     protected $guarded = ['id'];
     protected $fillable = [
         'invoice',
-        'shipping_charges',
+        'shipping_cost',
         'total_weight',
         'total_price',
         'id_address',

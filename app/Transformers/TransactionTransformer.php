@@ -43,7 +43,7 @@ class TransactionTransformer extends TransformerAbstract
         ];
 
         unset($result['id_address']);
-        unset($result['id_delivery_status']);
+        // unset($result['id_delivery_status']);
         unset($result['created_at']);
         unset($result['updated_at']);
         unset($result['deleted_at']);
