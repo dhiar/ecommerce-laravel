@@ -6,7 +6,7 @@ use League\Fractal\TransformerAbstract;
 use App\Product;
 use App\Hashers\MainHasher;
 use App\Transformers\{AdminTransformer, ProductImageOnlyTransformer, ProductCategoryTransformer, ProductBrandOnlyTransformer};
-use App\Transformers\TagsTransformer;
+use App\Transformers\{TagsTransformer, GrosirPriceTransformer};
 use Illuminate\Support\Facades\Storage;
 use Spatie\Tags\Tag;
 
@@ -54,7 +54,8 @@ class ProductTransformer extends TransformerAbstract
             'brand' => $brand,
             'admin' => fractal($model->admin, new AdminTransformer())->toArray()['data'],
             'images' => fractal($model->images, new ProductImageOnlyTransformer())->toArray()['data'],
-            'tags' => fractal($model->tags()->get(), new TagsTransformer())->toArray()['data']
+            'tags' => fractal($model->tags()->get(), new TagsTransformer())->toArray()['data'],
+            'grosirs' => fractal($model->grosirs, new GrosirPriceTransformer())->toArray()['data'],
         ];
         return $result;
     }

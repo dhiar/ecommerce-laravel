@@ -267,9 +267,7 @@
 									<div class="pd-desc" style="color: #636363; font-size: 15px;">
 										<h4>{{ formatCurrency(product.price) }}</h4>
 										<br />
-
-										Weight : {{ product.weight }} gram. Description :
-										<p v-html="product.description"></p>
+										Weight : {{ formatWeight(product.weight) }}
 										<!-- <h4>harga_promo<span><harga_ori></span></h4> -->
 									</div>
 									<!-- <div class="pd-size-choose">
@@ -340,12 +338,12 @@
 								<ul class="nav" role="tablist">
 									<li>
 										<a class="active" data-toggle="tab" href="#tab-1" role="tab"
-											>DESCRIPTION</a
+											>Deskripsi</a
 										>
 									</li>
 									<li>
 										<a data-toggle="tab" href="#tab-2" role="tab"
-											>SPECIFICATIONS</a
+											>Grosir</a
 										>
 									</li>
 								</ul>
@@ -361,9 +359,7 @@
 											<div class="row">
 												<div class="col-lg-7">
 													<h5>Info Produk</h5>
-													<p>
-														Deskripsi Produk
-													</p>
+													<p v-html="product.description"></p>
 												</div>
 												<div class="col-lg-5">
 													<img src="img/product-single/tab-desc.jpg" alt="" />
@@ -373,7 +369,24 @@
 									</div>
 									<div class="tab-pane fade" id="tab-2" role="tabpanel">
 										<div class="specification-table">
-											<table>
+												<table>
+													<tr v-for="(grosir, idx) in product.relationships.grosirs" :key="grosir.id">
+														<td class="p-catagory">Minimal Beli</td>
+														<td>
+															<div class="p-price text-center">
+																{{ grosir.min }}
+															</div>
+														</td>
+														<td style="width:10%;"></td>
+														<td class="p-catagory">Harga</td>
+														<td style="width:20%;">
+															<div class="p-price text-right">
+																{{ formatCurrency(grosir.price) }}
+															</div>
+														</td>
+													</tr>
+												</table>
+											<!-- <table>
 												<tr>
 													<td class="p-catagory">Price</td>
 													<td>
@@ -398,7 +411,7 @@
 														<div class="p-code">00012</div>
 													</td>
 												</tr>
-											</table>
+											</table> -->
 										</div>
 									</div>
 								</div>
@@ -447,6 +460,7 @@ export default {
 						id: "",
 						name: "",
 					},
+					grosirs:[]
 				},
 			},
 			count: 1,
