@@ -366,10 +366,10 @@ export default {
 					this.showErrorMessage(error);
 				});
 		},
-		async fetchData(page = 1) {
+		async fetchData(page = 1, search = "") {
 			const self = this;
 			await axios
-				.get(self.endpoint + "?page=" + page, {
+				.get(self.endpoint + "?page=" + page + "&q=" + search, {
 					params: {
 						is_promo: "0",
 					},
@@ -396,10 +396,10 @@ export default {
 				this.formPromo = promo.data;
 			}
 		},
-		async fetchDataPromo(page = 1) {
+		async fetchDataPromo(page = 1, search = "") {
 			const self = this;
 			await axios
-				.get(self.endpoint + "?page=" + page, {
+				.get(self.endpoint + "?page=" + page + "&q=" + search, {
 					params: {
 						is_promo: "1",
 					},
@@ -419,7 +419,7 @@ export default {
 			axios
 				.get(self.endpoint + "?q=" + query, {
 					params: {
-						is_promo: "0",
+						is_promo: "1",
 					},
 				})
 				.then(({ data }) => {
@@ -461,12 +461,12 @@ export default {
 	watch: {
 		currentPage: {
 			handler: function (value) {
-				this.fetchData(value);
+				this.fetchData(value, this.$parent.search);
 			},
 		},
 		currentPagePromo: {
 			handler: function (value) {
-				this.fetchDataPromo(value);
+				this.fetchDataPromo(value, this.$parent.search);
 			},
 		},
 	},

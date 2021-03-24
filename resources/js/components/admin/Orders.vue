@@ -35,7 +35,6 @@
 								<tr>
 									<th>Bea Kirim</th>
 									<td v-if="isEdit">
-										form.shipping_cost = {{ form.shipping_cost }}
 										<input
 											type="text"
 											v-model="displayShippingCharge"
@@ -332,9 +331,7 @@ export default {
 	},
 	methods: {
 		updateOrder(id) {
-			alert("updateOrder");
 			const self = this;
-			// self.form.id_delivery_status = self.delivery_status
 			axios
 				.put(self.endpoint + "/" + id, {
 					id_delivery_status: self.form.id_delivery_status,
@@ -366,12 +363,11 @@ export default {
 						this.showErrorMessage(error);
 					});
 				this.form = result.data;
-				// this.form.id_delivery_status = result.data.relationships.delivery_status.id;
 			}
 		},
-		async fetchData(page = 1) {
+		async fetchData(page = 1, search = "") {
 			const self = this;
-			await axios.get(self.endpoint + "?page=" + page).then(({ data }) => {
+			await axios.get(self.endpoint + "?page=" + page + "&q=" + search).then(({ data }) => {
 				this.currentPage = data.current_page;
 				this.perPage = data.per_page;
 				this.totalItems = data.total;
@@ -383,7 +379,6 @@ export default {
 		const self = this;
 		Fire.$on("searching", () => {
 			let query = this.$parent.search;
-			alert("query = " + query);
 			axios
 				.get(self.endpoint + "?q=" + query)
 				.then(({ data }) => {
@@ -412,7 +407,7 @@ export default {
 	watch: {
 		currentPage: {
 			handler: function (value) {
-				this.fetchData(value);
+				this.fetchData(value, this.$parent.search);
 			},
 		},
 	},

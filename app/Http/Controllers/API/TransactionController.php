@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use App\Helpers\PaginationFormat;
+use App\Http\Transformers\IlluminatePaginatorAdapter;
 use Auth;
 
 class TransactionController extends Controller
@@ -30,6 +32,40 @@ class TransactionController extends Controller
 
     public function index(CommonRequest $request)
     {
+        if (request('q')) {
+            $search = request('q');
+            
+            $paginator = $this->model->whereHas('transaction_details', function($query) use($search) { 
+                // transaction_details
+                $query->whereHas('product',function($qproduct) use($search) {
+                    $qproduct->whereHas('admin',function($qadmin) use($search){
+                        $qadmin->where('name', 'LIKE', "%$search%")
+                        ->orWhere('email', 'LIKE', "%$search%")
+                        ->orWhere('phone', 'LIKE', "%$search%");
+                    })
+                    ->orWhere('name', 'LIKE', "%$search%")
+                    ->orWhere('slug', 'LIKE', "%$search%")
+                    ->orWhere('image', 'LIKE', "%$search%")
+                    ->orWhere('description', 'LIKE', "%$search%");
+                });
+            })
+            ->orWhereHas('delivery_status', function($query) use($search) {
+                $query->where('name', 'LIKE', "%$search%");
+            })
+            ->orWhereHas('address', function($query) use($search) {
+                $query->where('name', 'LIKE', "%$search%");
+            })
+            ->paginate(10);
+
+            $result = $paginator->getCollection();
+            $response = fractal()
+                ->collection($result,  $this->transformer)
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
+
+            return PaginationFormat::commit($paginator, $response);
+        }
+        
         return $request->index($this->model, $this->transformer);
     }
 

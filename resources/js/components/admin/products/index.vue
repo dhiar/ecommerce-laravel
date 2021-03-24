@@ -429,8 +429,10 @@ export default {
 				});
 			this.categories = categories.data.data;
 			this.categories.unshift({
-				id: "0", name: "All Category", slug: ""
-			})
+				id: "0",
+				name: "All Category",
+				slug: "",
+			});
 		},
 		async onSelectFormCategory(option) {
 			await axios
@@ -518,10 +520,10 @@ export default {
 				}
 			});
 		},
-		async fetchData(page = 1) {
+		async fetchData(page = 1, search = "") {
 			const self = this;
 			await axios
-				.get(self.endpoint + "?page=" + page, {
+				.get(self.endpoint + "?page=" + page + "&q=" + search, {
 					params: {
 						id_category: self.category.id,
 						id_brand: self.brand.id,
@@ -534,7 +536,7 @@ export default {
 					this.results = data;
 				});
 
-			this.asyncFindCategory("")
+			this.asyncFindCategory("");
 		},
 		async cloneProduct(id) {
 			await axios
@@ -576,7 +578,7 @@ export default {
 	watch: {
 		currentPage: {
 			handler: function (value) {
-				this.fetchData(value);
+				this.fetchData(value, this.$parent.search);
 			},
 		},
 	},

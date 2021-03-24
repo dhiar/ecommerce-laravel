@@ -392,14 +392,16 @@ export default {
 				}
 			});
 		},
-		async fetchData(page = 1) {
+		async fetchData(page = 1, search = "") {
 			const self = this;
-			await axios.get(self.endpoint + "?page=" + page).then(({ data }) => {
-				this.currentPage = data.current_page;
-				this.perPage = data.per_page;
-				this.totalItems = data.total;
-				this.results = data;
-			});
+			await axios
+				.get(self.endpoint + "?page=" + page + "&q=" + search)
+				.then(({ data }) => {
+					this.currentPage = data.current_page;
+					this.perPage = data.per_page;
+					this.totalItems = data.total;
+					this.results = data;
+				});
 		},
 		async cloneCategory(id) {
 			await axios
@@ -441,7 +443,7 @@ export default {
 	watch: {
 		currentPage: {
 			handler: function (value) {
-				this.fetchData(value);
+				this.fetchData(value, this.$parent.search);
 			},
 		},
 	},
