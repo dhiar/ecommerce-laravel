@@ -16,5 +16,10 @@ class CategoryBrandSeeder extends Seeder
             'id_category'  => '3',
             'id_brand'  => '1'
         ]);
+
+        CategoryBrand::create([
+            'id_category'  => '3',
+            'id_brand'  => '2'
+        ]);
     }
 }

@@ -386,32 +386,6 @@
 														</td>
 													</tr>
 												</table>
-											<!-- <table>
-												<tr>
-													<td class="p-catagory">Price</td>
-													<td>
-														<div class="p-price">$495.00</div>
-													</td>
-												</tr>
-												<tr>
-													<td class="p-catagory">Availability</td>
-													<td>
-														<div class="p-stock">22 in stock</div>
-													</td>
-												</tr>
-												<tr>
-													<td class="p-catagory">Weight</td>
-													<td>
-														<div class="p-weight">1,3kg</div>
-													</td>
-												</tr>
-												<tr>
-													<td class="p-catagory">Sku</td>
-													<td>
-														<div class="p-code">00012</div>
-													</td>
-												</tr>
-											</table> -->
 										</div>
 									</div>
 								</div>

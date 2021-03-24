@@ -14,7 +14,12 @@ class ProductBrandSeeder extends Seeder
     {
         ProductBrand::create([
             'name'  => 'Madu Hutan (NTT)',
-            'slug'  => 'madu-hutan-(ntt)'
+            'slug'  => 'madu-hutan-ntt'
+        ]);
+
+        ProductBrand::create([
+            'name'  => 'Madu Ternak (Randu)',
+            'slug'  => 'madu-ternak-randu'
         ]);
     }
 }

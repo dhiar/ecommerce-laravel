@@ -43,8 +43,8 @@ class AdminTransformer extends TransformerAbstract
 				'photo' => $admin->photo,
 				'created_at' => $admin->created_at,
                 'relationships' => [
-                    'address' => $admin->address->name
-                ]  
+                    'address' => is_object($admin->address) ? $admin->address->name : ""
+                ]
 			];
     }
 

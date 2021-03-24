@@ -30,7 +30,7 @@ class CreateAdminsTable extends Migration
 				$table->string('job_title')->default("Manage & monitoring app.");
 				$table->string('password');
 				$table->string('phone',15);
-				$table->string('photo', 100)->nullable();
+				$table->string('photo', 100)->nullable()->default('https://www.travelcontinuously.com/wp-content/uploads/2018/04/empty-avatar.png');
 				$table->rememberToken();
 				$table->timestamps();
 				$table->softDeletes();

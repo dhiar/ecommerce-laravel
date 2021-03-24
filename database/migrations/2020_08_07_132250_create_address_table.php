@@ -16,6 +16,9 @@ class CreateAddressTable extends Migration
         Schema::create('address', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->default('Indonesia');
+            $table->integer('province_id')->nullable();
+            $table->integer('city_id')->nullable();
+            $table->integer('district_id')->nullable();
             $table->timestamps();
         });
     }
