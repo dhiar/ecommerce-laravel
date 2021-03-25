@@ -245,9 +245,9 @@
 								<div class="product-details">
 									<div class="pd-title">
 										<span style="color: #212529; text-transform: none;"
-											>Owner Produk : {{ product.relationships.admin.name }} ,
+											>Seller : {{ product.relationships.admin.name }} ,
 											Location :
-											{{ product.relationships.admin.relationships.address }}
+											{{ product.relationships.admin.relationships.address.name }}
 										</span>
 										<h3>
 											{{ product.name }}

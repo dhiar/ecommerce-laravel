@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Address;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MailController;
 use App\Providers\RouteServiceProvider;
-use App\Admin;
+use App\{Admin, Address};
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -63,12 +62,15 @@ class AdminRegisterController extends Controller
 
         DB::beginTransaction();
         try {
+            $address = Address::create(['name' => 'Indonesia']);
+
             $admin = new Admin();
             $admin->name = $request->name;
             $admin->email = $request->email;
             $admin->password = bcrypt($request->password);
             $admin->id_user_type = 3;
             $admin->phone = $request->phone;
+            $admin->id_address = $address->id;
             $admin->job_title = 'Manage & monitor owner product.';
             $admin->save();
             DB::commit();

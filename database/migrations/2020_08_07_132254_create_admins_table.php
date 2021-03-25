@@ -21,7 +21,7 @@ class CreateAdminsTable extends Migration
 						->references('id')
 						->on('user_types');
 
-				$table->unsignedBigInteger('id_address')->nullable();
+				$table->unsignedBigInteger('id_address');
 				$table->foreign('id_address')
                 ->references('id')
                 ->on('address');

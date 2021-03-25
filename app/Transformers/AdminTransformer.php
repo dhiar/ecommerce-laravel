@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\{Admin};
+use App\Transformers\AddressTransformer;
 use App\Hashers\MainHasher;
 
 class AdminTransformer extends TransformerAbstract
@@ -33,19 +34,19 @@ class AdminTransformer extends TransformerAbstract
      */
     public function transform(Admin $admin)
     {
-			return [
-				'id' => MainHasher::encode($admin->id),
-				'name' => $admin->name,
-				'phone' => $admin->phone,
-                'whatsapp' => $this->hp($admin->phone),
-                'email' => $admin->email,
-                'job_title' => $admin->job_title,
-				'photo' => $admin->photo,
-				'created_at' => $admin->created_at,
-                'relationships' => [
-                    'address' => is_object($admin->address) ? $admin->address->name : ""
-                ]
-			];
+        return [
+            'id' => MainHasher::encode($admin->id),
+            'name' => $admin->name,
+            'phone' => $admin->phone,
+            'whatsapp' => $this->hp($admin->phone),
+            'email' => $admin->email,
+            'job_title' => $admin->job_title,
+            'photo' => $admin->photo,
+            'created_at' => $admin->created_at,
+            'relationships' => [
+                'address' => is_object($admin->address) ? fractal($admin->address, new AddressTransformer())->toArray()['data'] : ""
+            ]
+        ];
     }
 
     function hp($nohp) {

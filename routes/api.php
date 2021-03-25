@@ -103,6 +103,10 @@ Route::apiResource('transactions', 'API\TransactionController')->names([
 	'store' => 'transaction.store'
 ]);
 
+Route::apiResource('address', 'API\AddressController')->names([
+	'store' => 'address.store'
+]);
+
 Route::get('list-province', 'API\ShippingController@listProvince');
 Route::get('list-city/{province}', 'API\ShippingController@listCity');
 Route::get('list-district/{city}', 'API\ShippingController@listDistrict');
@@ -116,6 +120,10 @@ Route::post('upload-brand', [FileController::class, 'uploadBrand']);
 /**
  * Router Binding
  */
+Route::bind('address', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
 Route::bind('user', function (string $id) {
 	return  MainHasher::decode($id);
 });

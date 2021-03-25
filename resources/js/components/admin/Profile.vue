@@ -8,6 +8,171 @@
 
 <template>
 	<div class="container">
+		<div
+			class="modal fade"
+			id="modalAddress"
+			tabindex="-1"
+			aria-labelledby="addNewLabel"
+			aria-hidden="true"
+			style="width: 100%;"
+		>
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div class="h5 text-gray-800 line-height-222">
+							Change Address
+						</div>
+						<button
+							type="button"
+							class="close"
+							data-dismiss="modal"
+							aria-label="Close"
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+
+					<form @submit.prevent="updateAddress(formAddress.id)">
+						<div class="modal-body">
+							<div class="form-group">
+								<div class="form-group">
+									<label for="province">Propinsi</label>
+									<multiselect
+										v-model="province"
+										:options="data_province"
+										placeholder="Select one"
+										label="name"
+										track-by="id"
+										:searchable="true"
+										:max-height="150"
+										:max="3"
+										@select="onSelectProvince"
+										:class="{
+											'is-invalid':
+												submitted && $v.formAddress.province_id.$error,
+											'is-valid': !$v.formAddress.province_id.$invalid,
+										}"
+									></multiselect>
+
+									<div class="valid-feedback">Propinsi is valid.</div>
+									<div
+										v-if="submitted && !$v.formAddress.province_id.required"
+										class="invalid-feedback"
+									>
+										Propinsi harus diisi
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="province">Kabupaten</label>
+								<multiselect
+									v-model="city"
+									:options="data_city"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="150"
+									:max="3"
+									@select="onSelectCity"
+									:class="{
+										'is-invalid': submitted && $v.formAddress.city_id.$error,
+										'is-valid': !$v.formAddress.city_id.$invalid,
+									}"
+								></multiselect>
+
+								<div class="valid-feedback">Kabupaten is valid.</div>
+								<div
+									v-if="submitted && !$v.formAddress.city_id.required"
+									class="invalid-feedback"
+								>
+									Kabupaten harus diisi
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="district">Kecamatan</label>
+								<multiselect
+									v-model="district"
+									:options="data_district"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="150"
+									:max="3"
+									@select="onSelectDistrict"
+									:class="{
+										'is-invalid':
+											submitted && $v.formAddress.district_id.$error,
+										'is-valid': !$v.formAddress.district_id.$invalid,
+									}"
+								></multiselect>
+								<div class="valid-feedback">Kecamatan is valid.</div>
+								<div
+									v-if="submitted && !$v.formAddress.district_id.required"
+									class="invalid-feedback"
+								>
+									Kecamatan harus diisi
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="address">Desa (Jalan / Nomor / Gang)</label>
+								<input
+									v-model="formAddress.name"
+									type="text"
+									id="name"
+									name="name"
+									placeholder="name"
+									class="form-control"
+									:class="{
+										'is-invalid': submitted && $v.formAddress.name.$error,
+
+										'is-valid': !$v.formAddress.name.$invalid,
+									}"
+								/>
+								<div class="valid-feedback">Address is valid.</div>
+								<div
+									v-if="submitted && !$v.formAddress.name.required"
+									class="invalid-feedback"
+								>
+									Address harus diisi
+								</div>
+								<div
+									v-if="submitted && !$v.formAddress.name.maxLength"
+									class="invalid-feedback"
+								>
+									Address terlalu panjang ( maks :
+									{{ $v.formAddress.name.$params.maxLength.max }} karakter )
+								</div>
+								<div
+									v-if="submitted && !$v.formAddress.name.minLength"
+									class="invalid-feedback"
+								>
+									Address terlalu pendek ( maks :
+									{{ $v.formAddress.name.$params.minLength.min }} karakter )
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">
+								Close
+							</button>
+							<button
+								type="submit"
+								:disabled="form.busy"
+								class="btn btn-primary"
+							>
+								Change
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
 		<div class="row justify-content-center">
 			<div class="col-md-12">
 				<div class="card card-widget widget-user">
@@ -167,7 +332,13 @@
 										@click.prevent="updateInfo"
 										class="btn btn-danger"
 									>
-										Update
+										Update Profile
+									</button>
+									<button
+										@click.prevent="showModalAddress"
+										class="btn btn-primary"
+									>
+										Change Address
 									</button>
 								</div>
 							</div>
@@ -181,9 +352,12 @@
 </template>
 
 <script>
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
 	data() {
 		return {
+			submitted: false,
+			endpoint_address: "/api/address",
 			backgroundUrl: "",
 			form: new Form({
 				id: "",
@@ -196,13 +370,81 @@ export default {
 				photo: "",
 				// id_user_type: 2
 			}),
+			formAddress: new Form({
+				id: "",
+				name: "",
+				province_id: "",
+				city_id: "",
+				district_id: "",
+			}),
+			province: { id: null, name: "" },
+			data_province: [],
+			city: { id: null, name: "" },
+			data_city: [],
+			district: { id: null, name: "" },
+			data_district: [],
 		};
 	},
-	created() {
-		this.backgroundUrl = process.env.MIX_APP_URL + "/img/user-cover.png";
-		axios.get("/api/profile").then(({ data }) => this.form.fill(data));
+	validations: {
+		formAddress: {
+			province_id: {
+				required,
+			},
+			city_id: {
+				required,
+			},
+			district_id: {
+				required,
+			},
+			name: {
+				required,
+				minLength: minLength(10),
+				maxLength: maxLength(150),
+			},
+		},
+	},
+	mounted() {
+		this.fetchData();
 	},
 	methods: {
+		async fetchData() {
+			this.backgroundUrl = process.env.MIX_APP_URL + "/img/user-cover.png";
+			// axios.get("/api/profile").then(({ data }) => this.form.fill(data));
+
+			const self = this;
+			axios
+				.get("/api/profile")
+				.then(({ data }) => {
+					this.form.fill(data);
+					this.formAddress.fill(data.relationships.address);
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+
+			// get exist data area-dropdown
+			axios
+				.get("/api/list-province")
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_province = data.data.data.results;
+						self.province = _.find(self.data_province, function (obj) {
+							return obj.id == self.formAddress.province_id;
+						});
+
+						self.getDataCity();
+						self.getDataDistrict();
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		showModalAddress() {
+			$("#modalAddress").modal("show");
+		},
 		async updateInfo() {
 			this.$Progress.start();
 
@@ -250,6 +492,120 @@ export default {
 						: process.env.MIX_APP_URL + "/img/profile/" + this.form.photo;
 			}
 			return photo;
+		},
+		async updateAddress(id) {
+			const self = this;
+			this.submitted = true;
+			this.$v.$touch();
+			if (this.$v.$error) {
+				return;
+			} else {
+				await this.formAddress
+					.put("/api/address/" + this.formAddress.id)
+					.then(({ data }) => {
+						if (data.success) {
+							Swal.fire("Success !", data.message, "success");
+							self.fetchData();
+						} else {
+							Swal.fire("Failed !", data.message, "error");
+						}
+						$("#modalAddress").modal("hide");
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+			}
+		},
+		async getDataCity() {
+			const self = this;
+			await axios
+				.get("/api/list-city/" + self.formAddress.province_id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_city = data.data.data.results;
+						self.city = _.find(self.data_city, function (obj) {
+							return obj.id == self.formAddress.city_id;
+						});
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+
+		async getDataDistrict() {
+			const self = this;
+			await axios
+				.get("/api/list-district/" + self.formAddress.city_id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_district = data.data.data.results;
+						self.district = _.find(self.data_district, function (obj) {
+							return obj.id == self.formAddress.district_id;
+						});
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async onSelectProvince(option) {
+			const self = this;
+			self.formAddress.province_id = option.id;
+
+			// clear city & district
+			self.city = { id: "", name: "" };
+			self.data_city = [];
+			self.formAddress.city_id = "";
+
+			self.district = { id: "", name: "" };
+			self.data_district = [];
+			self.formAddress.district_id = "";
+
+			// select city
+			axios
+				.get("/api/list-city/" + option.id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_city = data.data.data.results;
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async onSelectCity(option) {
+			const self = this;
+			self.formAddress.city_id = option.id;
+
+			// clear district
+			self.district = { id: "", name: "" };
+			self.data_district = [];
+			self.formAddress.district_id = "";
+
+			// select district
+			axios
+				.get("/api/list-district/" + option.id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_district = data.data.data.results;
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async onSelectDistrict(option) {
+			const self = this;
+			self.formAddress.district_id = option.id;
 		},
 	},
 };
