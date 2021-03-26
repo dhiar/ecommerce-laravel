@@ -78,19 +78,37 @@ class ProductController extends Controller
     }
 
     public function filterProducts(CommonRequest $request){
+        $model = $this->model;
         if (request('id_brand') || request('id_category')  )  {
             $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
             $categoryId = is_numeric(request('id_category')) ? request('id_category') : MainHasher::decode(request('id_category'));
 
             if (request('id_category') && request('id_brand')) {
-                $model = Product::whereHas('category_brand', function($query) use($categoryId, $brandId) { 
+                $model = $model::whereHas('category_brand', function($query) use($categoryId, $brandId) { 
                     $query->where('id_category', $categoryId)->where('id_brand', $brandId); 
                 });
             } else {
-                $model = Product::whereHas('category_brand', function($query) use($categoryId) { 
+                $model = $model::whereHas('category_brand', function($query) use($categoryId) { 
                     $query->where('id_category', $categoryId); 
                 });
             }
+        }
+        else if (
+            request('province_id') || request('city_id')  || request('district_id') || request('name')
+        ) {
+            $model = $model::whereHas('admin', function($query) { 
+                $query->whereHas('address',  function($qAddress) {
+                    $name = request('name') ? request('name') : "";
+                    $province_id = request('province_id') ? request('province_id') : "";
+                    $city_id = request('city_id') ? request('city_id') : "";
+                    $district_id = request('district_id') ? request('district_id') : "";
+
+                    $qAddress->where('name', 'LIKE', "%".$name."%")
+                    ->where('province_id', 'LIKE', "%$province_id%")
+                    ->where('city_id', 'LIKE', "%$city_id%")
+                    ->where('district_id', 'LIKE', "%$district_id%");
+                }); 
+            });
         }
         else {
             $model = $this->model;

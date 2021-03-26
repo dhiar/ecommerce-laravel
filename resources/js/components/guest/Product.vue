@@ -128,6 +128,7 @@
 						<!-- category, brand dari component -->
 						<filter-product
 							@fromChildSetModal="fromParentSetModal"
+							@fromChildFilterAddress="fromParentFilterAddress"
 						></filter-product>
 					</div>
 					<div class="col-lg-9">
@@ -247,7 +248,9 @@
 										<span style="color: #212529; text-transform: none;"
 											>Seller : {{ product.relationships.admin.name }} ,
 											Location :
-											{{ product.relationships.admin.relationships.address.name }}
+											{{
+												product.relationships.admin.relationships.address.name
+											}}
 										</span>
 										<h3>
 											{{ product.name }}
@@ -342,9 +345,7 @@
 										>
 									</li>
 									<li>
-										<a data-toggle="tab" href="#tab-2" role="tab"
-											>Grosir</a
-										>
+										<a data-toggle="tab" href="#tab-2" role="tab">Grosir</a>
 									</li>
 								</ul>
 							</div>
@@ -369,23 +370,26 @@
 									</div>
 									<div class="tab-pane fade" id="tab-2" role="tabpanel">
 										<div class="specification-table">
-												<table>
-													<tr v-for="(grosir, idx) in product.relationships.grosirs" :key="grosir.id">
-														<td class="p-catagory">Minimal Beli</td>
-														<td>
-															<div class="p-price text-center">
-																{{ grosir.min }}
-															</div>
-														</td>
-														<td style="width:10%;"></td>
-														<td class="p-catagory">Harga</td>
-														<td style="width:20%;">
-															<div class="p-price text-right">
-																{{ formatCurrency(grosir.price) }}
-															</div>
-														</td>
-													</tr>
-												</table>
+											<table>
+												<tr
+													v-for="(grosir, idx) in product.relationships.grosirs"
+													:key="grosir.id"
+												>
+													<td class="p-catagory">Minimal Beli</td>
+													<td>
+														<div class="p-price text-center">
+															{{ grosir.min }}
+														</div>
+													</td>
+													<td style="width: 10%;"></td>
+													<td class="p-catagory">Harga</td>
+													<td style="width: 20%;">
+														<div class="p-price text-right">
+															{{ formatCurrency(grosir.price) }}
+														</div>
+													</td>
+												</tr>
+											</table>
 										</div>
 									</div>
 								</div>
@@ -424,7 +428,12 @@ export default {
 			product: {
 				relationships: {
 					admin: {
-						relationships: {},
+						relationships: {
+							address: {
+								id: "",
+								name: "",
+							},
+						},
 					},
 					category: {
 						id: "",
@@ -434,7 +443,7 @@ export default {
 						id: "",
 						name: "",
 					},
-					grosirs:[]
+					grosirs: [],
 				},
 			},
 			count: 1,
@@ -445,6 +454,11 @@ export default {
 			perPage: 6,
 			totalItems: 50,
 			results: {},
+			
+			addressName: "",
+			addressProvinceId: "",
+			addressCityId: "",
+			addressDistrictId: ""
 		};
 	},
 	validations: {
@@ -592,19 +606,35 @@ export default {
 				this.count = 1;
 			}
 		},
+		fromParentFilterAddress(formAddress){
+			const self = this
+
+			self.addressName = formAddress.name
+			self.addressProvinceId = formAddress.province_id
+			self.addressCityId = formAddress.city_id
+			self.addressDistrictId = formAddress.district_id
+
+			self.fetchProducts()
+		},
 		fromParentSetModal(val) {
 			const self = this;
-			this.categoryId = val.category_id;
-			this.brandId = val.brand_id;
-			this.product_tags = val.product_tags;
+			self.categoryId = val.category_id;
+			self.brandId = val.brand_id;
+			self.product_tags = val.product_tags;
 
-			let productTags = this.product_tags;
-
+			self.fetchProducts()
+		},
+		async fetchProducts(page = 1) {
+			const self = this;
 			axios
-				.post(self.endpoint_filter, {
+				.post(self.endpoint_filter + "?page=" + page, {
 					id_category: this.categoryId,
 					id_brand: this.brandId,
 					product_tags: this.product_tags,
+					name: this.addressName,
+					province_id: this.addressProvinceId,
+					city_id: this.addressCityId,
+					district_id: this.addressDistrictId,
 					limit: 6,
 				})
 				.then(({ data }) => {
@@ -615,26 +645,6 @@ export default {
 				})
 				.catch((error) => {
 					this.showErrorMessage(error);
-				});
-		},
-
-		async fetchProducts(page = 1) {
-			const self = this;
-
-			await axios
-				.get(self.endpoint + "?page=" + page, {
-					params: {
-						id_category: this.categoryId,
-						id_brand: this.brandId,
-						product_tags: this.product_tags,
-						limit: 6,
-					},
-				})
-				.then(({ data }) => {
-					this.currentPage = data.current_page;
-					this.perPage = data.per_page;
-					this.totalItems = data.total;
-					this.results = data;
 				});
 		},
 	},

@@ -19,6 +19,7 @@
 						<!-- category, brand dari component -->
 						<filter-product
 							@fromChildSetModal="fromParentSetModal"
+							@fromChildFilterAddress="fromParentFilterAddress"
 						></filter-product>
 					</div>
 					<div class="col-lg-9">
@@ -137,30 +138,53 @@ export default {
 		return {
 			page: "product",
 			endpoint: "/api/products",
+			endpoint_filter: "/api/filter-products",
 			categoryId: "",
 			brandId: "",
 			currentPage: 1,
 			perPage: 6,
 			totalItems: 50,
 			results: {},
+			addressName: "",
+			addressProvinceId: "",
+			addressCityId: "",
+			addressDistrictId: ""
 		};
 	},
 	async created() {
 		this.fetchProducts();
 	},
 	methods: {
+		fromParentFilterAddress(formAddress){
+			const self = this
+
+			self.addressName = formAddress.name
+			self.addressProvinceId = formAddress.province_id
+			self.addressCityId = formAddress.city_id
+			self.addressDistrictId = formAddress.district_id
+
+			self.fetchProducts()
+		},
 		fromParentSetModal(val) {
 			const self = this;
-			this.categoryId = val.category_id;
-			this.brandId = val.brand_id;
+			self.categoryId = val.category_id;
+			self.brandId = val.brand_id;
+			self.product_tags = val.product_tags;
 
+			self.fetchProducts()
+		},
+		async fetchProducts(page = 1) {
+			const self = this;
 			axios
-				.get(self.endpoint, {
-					params: {
-						id_category: this.categoryId,
-						id_brand: this.brandId,
-						limit: 6,
-					},
+				.post(self.endpoint_filter + "?page=" + page, {
+					id_category: this.categoryId,
+					id_brand: this.brandId,
+					product_tags: this.product_tags,
+					name: this.addressName,
+					province_id: this.addressProvinceId,
+					city_id: this.addressCityId,
+					district_id: this.addressDistrictId,
+					limit: 6,
 				})
 				.then(({ data }) => {
 					this.currentPage = data.current_page;
@@ -170,25 +194,6 @@ export default {
 				})
 				.catch((error) => {
 					this.showErrorMessage(error);
-				});
-		},
-
-		async fetchProducts(page = 1) {
-			const self = this;
-
-			await axios
-				.get(self.endpoint + "?page=" + page, {
-					params: {
-						id_category: this.categoryId,
-						id_brand: this.brandId,
-						limit: 6,
-					},
-				})
-				.then(({ data }) => {
-					this.currentPage = data.current_page;
-					this.perPage = data.per_page;
-					this.totalItems = data.total;
-					this.results = data;
 				});
 		},
 	},

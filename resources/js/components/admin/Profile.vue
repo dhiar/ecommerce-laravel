@@ -53,7 +53,6 @@
 											'is-valid': !$v.formAddress.province_id.$invalid,
 										}"
 									></multiselect>
-
 									<div class="valid-feedback">Propinsi is valid.</div>
 									<div
 										v-if="submitted && !$v.formAddress.province_id.required"
@@ -63,7 +62,6 @@
 									</div>
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="province">Kabupaten</label>
 								<multiselect
@@ -90,7 +88,6 @@
 									Kabupaten harus diisi
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="district">Kecamatan</label>
 								<multiselect
@@ -117,7 +114,6 @@
 									Kecamatan harus diisi
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="address">Desa (Jalan / Nomor / Gang)</label>
 								<input

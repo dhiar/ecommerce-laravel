@@ -203,6 +203,18 @@ ol {
 	/* text-transform: uppercase; */
 }
 
+
+.danger-btn {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 700;
+	padding: 12px 30px;
+	color: #ffffff;
+	background-color: #dc3545;
+  border-color: #dc3545;
+	/* text-transform: uppercase; */
+}
+
 .site-btn {
 	color: #ffffff;
 	background: #e7ab3c;
