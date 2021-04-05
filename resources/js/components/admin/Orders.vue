@@ -167,89 +167,167 @@
 
 		<go-back></go-back><br />
 		<!-- Page Heading -->
-		<div class="card shadow">
-			<div class="card-header">
-				<div class="row">
-					<div class="col-md-8 align-self-center">
-						<h2 class="lead text-dark mb-0">Orders</h2>
-					</div>
-					<div class="col-md-4 float-right text-right"></div>
-				</div>
-			</div>
-			<div class="card-body table-responsive">
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th class="text-center" style="width: 8% !important;">No</th>
-							<th style="width: 20% !important;">Invoice</th>
-							<th style="width: 18% !important;">
-								Penjual
-							</th>
-							<th style="width: 13% !important;">
-								Status Order
-							</th>
-							<th class="text-right" style="width: 13% !important;">
-								Total Berat
-							</th>
-							<th class="text-right" style="width: 15% !important;">
-								Total Harga
-							</th>
-							<th class="text-center">Aksi</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(item, idx) in results.data" :key="item.id">
-							<td class="text-center">{{ getNumber(currentPage, idx) }}</td>
-							<td>
-								{{ item.invoice }}
-							</td>
-							<td>
-								{{
-									item.relationships.transaction_details[0].relationships
-										.product.relationships.admin.name
-								}}
-							</td>
-							<td>
-								{{ item.relationships.delivery_status.name }}
-							</td>
-							<td class="text-right">
-								{{ formatWeight(item.total_weight) }}
-							</td>
-							<td class="text-right">
-								{{ formatCurrency(item.total_price) }}
-							</td>
 
-							<td class="text-center">
-								<a
-									class="btn btn-sm btn-success"
-									href="#"
-									@click="showModalOrders(item.id, false)"
-									><i class="fa fa-eye text-gray-100"></i
-								></a>
-								<a
-									class="btn btn-sm btn-info"
-									href="#"
-									@click="showModalOrders(item.id, true)"
-									><i class="fa fa-pen text-gray-100"></i
-								></a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="card card-primary card-outline card-outline-tabs">
+			<div class="card-header p-0 border-bottom-0">
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="nav-item">
+						<a
+							class="nav-link active"
+							data-toggle="pill"
+							href="#order-confirm-address"
+							role="tab"
+							aria-selected="true"
+							>Update Alamat Penerima</a
+						>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							data-toggle="pill"
+							href="#order-confirm-pay"
+							role="tab"
+							aria-selected="true"
+							>Update Pembayaran</a
+						>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							data-toggle="pill"
+							href="#order-confirm-shipping"
+							role="tab"
+							aria-selected="true"
+							>Update Pengiriman</a
+						>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							data-toggle="pill"
+							href="#order-complete"
+							role="tab"
+							aria-selected="true"
+							>Pesanan Selesai</a
+						>
+					</li>
+				</ul>
 			</div>
-			<div class="card-footer">
-				<div class="overflow-auto">
-					<b-pagination
-						size="md"
-						first-text="First"
-						prev-text="Prev"
-						next-text="Next"
-						last-text="Last"
-						:total-rows="totalItems"
-						v-model="currentPage"
-						:per-page="perPage"
-						align="center"
-					></b-pagination>
+
+			<div class="card-body">
+				<div class="tab-content">
+					<div
+						class="tab-pane fade active show"
+						id="order-confirm-address"
+						role="tabpanel"
+					>
+						<div class="card shadow">
+							<div class="card-header">
+								<div class="row">
+									<div class="col-md-8 align-self-center">
+										<h2 class="lead text-dark mb-0">Orders</h2>
+									</div>
+									<div class="col-md-4 float-right text-right"></div>
+								</div>
+							</div>
+							<div class="card-body table-responsive">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th class="text-center" style="width: 8% !important;">
+												No
+											</th>
+											<th style="width: 20% !important;">Invoice</th>
+											<th style="width: 18% !important;">
+												Penjual
+											</th>
+											<th style="width: 13% !important;">
+												Status Order
+											</th>
+											<th class="text-right" style="width: 13% !important;">
+												Total Berat
+											</th>
+											<th class="text-right" style="width: 15% !important;">
+												Total Harga
+											</th>
+											<th class="text-center">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr v-for="(item, idx) in results.data" :key="item.id">
+											<td class="text-center">
+												{{ getNumber(currentPage, idx) }}
+											</td>
+											<td>
+												{{ item.invoice }}
+											</td>
+											<td>
+												{{
+													item.relationships.transaction_details[0]
+														.relationships.product.relationships.admin.name
+												}}
+											</td>
+											<td>
+												{{ item.relationships.delivery_status.name }}
+											</td>
+											<td class="text-right">
+												{{ formatWeight(item.total_weight) }}
+											</td>
+											<td class="text-right">
+												{{ formatCurrency(item.total_price) }}
+											</td>
+
+											<td class="text-center">
+												<a
+													class="btn btn-sm btn-success"
+													href="#"
+													@click="showModalOrders(item.id, false)"
+													><i class="fa fa-eye text-gray-100"></i
+												></a>
+												<a
+													class="btn btn-sm btn-info"
+													href="#"
+													@click="showModalOrders(item.id, true)"
+													><i class="fa fa-pen text-gray-100"></i
+												></a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="card-footer">
+								<div class="overflow-auto">
+									<b-pagination
+										size="md"
+										first-text="First"
+										prev-text="Prev"
+										next-text="Next"
+										last-text="Last"
+										:total-rows="totalItems"
+										v-model="currentPage"
+										:per-page="perPage"
+										align="center"
+									></b-pagination>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="tab-pane fade" id="order-confirm-pay" role="tabpanel">
+						Update Bea Pengiriman
+					</div>
+
+					<div
+						class="tab-pane fade"
+						id="order-confirm-shipping"
+						role="tabpanel"
+					>
+						Update Status Pengiriman
+					</div>
+
+					<div class="tab-pane fade" id="order-complete" role="tabpanel">
+						Pesanan Selesai
+					</div>
 				</div>
 			</div>
 		</div>
@@ -294,8 +372,8 @@ export default {
 				invoice: "",
 				shipping_cost: 0,
 				id_delivery_status: "1",
-				total_weight: 9600,
-				total_price: 1560000,
+				total_weight: 0,
+				total_price: 0,
 				id_admin_owner: "",
 				token: null,
 				token_created_at: null,
@@ -367,12 +445,14 @@ export default {
 		},
 		async fetchData(page = 1, search = "") {
 			const self = this;
-			await axios.get(self.endpoint + "?page=" + page + "&q=" + search).then(({ data }) => {
-				this.currentPage = data.current_page;
-				this.perPage = data.per_page;
-				this.totalItems = data.total;
-				this.results = data;
-			});
+			await axios
+				.get(self.endpoint + "?page=" + page + "&q=" + search)
+				.then(({ data }) => {
+					this.currentPage = data.current_page;
+					this.perPage = data.per_page;
+					this.totalItems = data.total;
+					this.results = data;
+				});
 		},
 	},
 	created() {
@@ -413,3 +493,10 @@ export default {
 	},
 };
 </script>
+<style scoped>
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+	color: #003cff;
+	font-weight: 700 !important;
+}
+</style>

@@ -32,6 +32,7 @@ class TransactionController extends Controller
 
     public function index(CommonRequest $request)
     {
+        $model = $this->model;
         if (request('q')) {
             $search = request('q');
             
@@ -57,6 +58,11 @@ class TransactionController extends Controller
             })
             ->paginate(10);
 
+        } else if (request('invoice')){
+            $paginator = $model->whereInvoice(request('invoice'))->first()->paginate(10);
+        }
+
+        if (request('q') || request('invoice')){
             $result = $paginator->getCollection();
             $response = fractal()
                 ->collection($result,  $this->transformer)
@@ -66,7 +72,7 @@ class TransactionController extends Controller
             return PaginationFormat::commit($paginator, $response);
         }
         
-        return $request->index($this->model, $this->transformer);
+        return $request->index($model, $this->transformer);
     }
 
     /**

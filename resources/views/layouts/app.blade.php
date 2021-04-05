@@ -219,7 +219,6 @@
                                     </li>
                                     <li><a href="<?= $baseUrl.'/products'; ?>">Products</a></li>
                                     <li><a href="<?= $baseUrl.'/orders'; ?>">Orders</a></li>
-                                    <li><a href="<?= $baseUrl.'/payments'; ?>">Payment</a></li>
                                     <li><a href="#">About Us</a>
                                         <ul class="dropdown">
                                             <li><a href="<?= $baseUrl.'/contact-us'; ?>">Contact Us</a></li> 
@@ -367,7 +366,6 @@
                                 </li>
                                 <li><a href="./products">Products</a></li>
                                 <li><a href="./orders">Orders</a></li>
-                                <li><a href="./orders">Payment</a></li>
                                 <li><a href="./contact-us">Contact Us</a>
                                     <ul class="dropdown">
                                         <li><a href="./contact-us">Contact Us</a></li> 

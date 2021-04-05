@@ -176,7 +176,6 @@
                                 </li>
                                 <li class="<?php if ($routeName == 'product.detail' || $routeName == 'user.products') echo 'active'; ?>"><a href="<?= $baseUrl.'/products'; ?>">Products</a></li>
                                 <li class="<?php if ($routeName == 'user.orders') echo 'active'; ?>"><a href="<?= $baseUrl.'/orders'; ?>">Orders</a></li>
-                                <li><a href="<?= $baseUrl.'/payments'; ?>">Payment</a></li>
                                 <li><a href="#">About Us</a>
                                     <ul class="dropdown">
                                         <li><a href="<?= $baseUrl.'/contact-us'; ?>">Contact Us</a></li> 

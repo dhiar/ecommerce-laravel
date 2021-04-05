@@ -294,7 +294,18 @@ Vue.mixin({
 			} else {
 				return text + " gr"
 			}
-
+		},
+		formatName(text = "") {
+			if (text) {
+				let splitWA = text.split("wa_")
+				if (splitWA.length == 2) {
+					return splitWA[1].split("_")[0].split("-").join(" ")
+				} else {
+					return text	
+				}
+			} else {
+				return text
+			}
 		},
 		prevPage() {
 			this.$router.go(-1);
