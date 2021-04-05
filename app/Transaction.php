@@ -17,6 +17,9 @@ class Transaction extends Model
         'id_address',
         'id_admin_owner',
         'id_delivery_status',
+        'phone_code',
+        'phone_number',
+        'phone_formatted',
         'token',
         'token_created_at'
     ];

@@ -12,7 +12,13 @@
 			<div class="modal-dialog modal-dialog-centered modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<div class="h5 text-gray-800 line-height-222">
+						<div
+							v-if="number_of_tabs == '1'"
+							class="h5 text-gray-800 line-height-222"
+						>
+							Update Alamat Penerima
+						</div>
+						<div v-else class="h5 text-gray-800 line-height-222">
 							Detail Orders
 						</div>
 						<button
@@ -34,7 +40,10 @@
 								</tr>
 								<tr>
 									<th>Bea Kirim</th>
-									<td v-if="isEdit">
+									<td v-if="isEdit && number_of_tabs == '1'">
+										{{ formatCurrency(form.shipping_cost) }}
+									</td>
+									<td v-else-if="isEdit">
 										<input
 											type="text"
 											v-model="displayShippingCharge"
@@ -66,7 +75,6 @@
 								</tr>
 								<tr>
 									<th>Harga Produk</th>
-
 									<td>
 										{{ formatCurrency(form.total_price) }}
 									</td>
@@ -76,11 +84,11 @@
 									<td>{{ formatWeight(form.total_weight) }}</td>
 								</tr>
 								<tr>
-									<th>Alamat Tujuan</th>
+									<th>Alamat / Desa , RT/RW / No.</th>
 									<td>{{ form.relationships.address.name }}</td>
 								</tr>
 
-								<tr>
+								<tr v-if="number_of_tabs != '1'">
 									<th>Status Kirim</th>
 									<td v-if="isEdit">
 										<el-select
@@ -101,6 +109,94 @@
 										</el-select>
 									</td>
 									<td v-else>{{ form.relationships.delivery_status.name }}</td>
+								</tr>
+
+								<tr v-if="isEdit && number_of_tabs == '1'">
+									<th>Propinsi</th>
+									<td>
+										<multiselect
+											v-model="province"
+											:options="data_province"
+											placeholder="Select one"
+											label="name"
+											track-by="id"
+											:searchable="true"
+											:max-height="150"
+											:max="3"
+											@select="onSelectProvince"
+											:class="{
+												'is-invalid': submitted && $v.form.province_id.$error,
+												'is-valid': !$v.form.province_id.$invalid,
+											}"
+										></multiselect>
+										<div class="valid-feedback">Propinsi is valid.</div>
+										<div
+											v-if="submitted && !$v.form.province_id.required"
+											class="invalid-feedback"
+										>
+											Propinsi harus diisi
+										</div>
+									</td>
+								</tr>
+
+								<tr v-if="isEdit && number_of_tabs == '1'">
+									<th>Kabupaten</th>
+									<td>
+										<multiselect
+											v-model="city"
+											:options="data_city"
+											placeholder="Select one"
+											label="name"
+											track-by="id"
+											:searchable="true"
+											:max-height="150"
+											:max="3"
+											@select="onSelectCity"
+											:class="{
+												'is-invalid': submitted && $v.form.city_id.$error,
+												'is-valid': !$v.form.city_id.$invalid,
+											}"
+										></multiselect>
+										<div class="valid-feedback">Kabupaten is valid.</div>
+										<div
+											v-if="submitted && !$v.form.city_id.required"
+											class="invalid-feedback"
+										>
+											Kabupaten harus diisi
+										</div>
+									</td>
+								</tr>
+
+								<tr v-if="isEdit && number_of_tabs == '1'">
+									<th>Kecamatan</th>
+									<td>
+										<multiselect
+											v-model="district"
+											:options="data_district"
+											placeholder="Select one"
+											label="name"
+											track-by="id"
+											:searchable="true"
+											:max-height="150"
+											:max="3"
+											@select="onSelectDistrict"
+											:class="{
+												'is-invalid': submitted && $v.form.district_id.$error,
+												'is-valid': !$v.form.district_id.$invalid,
+											}"
+										></multiselect>
+									</td>
+								</tr>
+
+								<tr v-if="isEdit && number_of_tabs == '1'">
+									<th>No.HP Penerima</th>
+									<td>
+										<vue-phone-number-input
+											default-country-code="ID"
+											@update="showPhonePayload"
+											v-model="form.phone_number"
+										></vue-phone-number-input>
+									</td>
 								</tr>
 							</table>
 							<table v-if="!isEdit" class="table table-hover">
@@ -222,14 +318,6 @@
 						role="tabpanel"
 					>
 						<div class="card shadow">
-							<div class="card-header">
-								<div class="row">
-									<div class="col-md-8 align-self-center">
-										<h2 class="lead text-dark mb-0">Orders</h2>
-									</div>
-									<div class="col-md-4 float-right text-right"></div>
-								</div>
-							</div>
 							<div class="card-body table-responsive">
 								<table class="table table-hover">
 									<thead>
@@ -344,13 +432,18 @@ import {
 	numeric,
 } from "vuelidate/lib/validators";
 
+import VuePhoneNumberInput from "vue-phone-number-input";
+import "vue-phone-number-input/dist/vue-phone-number-input.css";
+
 export default {
 	components: {
 		GoBack,
 		"b-pagination": BPagination,
+		"vue-phone-number-input": VuePhoneNumberInput,
 	},
 	data() {
 		return {
+			number_of_tabs: "1",
 			isInputActive: false,
 			isEdit: false,
 			currentPage: 1,
@@ -367,6 +460,7 @@ export default {
 				{ id: 4, name: "Diterima" },
 				{ id: 5, name: "Cancel" },
 			],
+			phonePayloads: {},
 			form: new Form({
 				id: "",
 				invoice: "",
@@ -377,12 +471,25 @@ export default {
 				id_admin_owner: "",
 				token: null,
 				token_created_at: null,
+				province_id: "",
+				city_id: "",
+				district_id: "",
+				phone_code: "",
+				phone_number: "",
+				phone_formatted: "",
 				relationships: {
 					address: {},
 					delivery_status: {},
 					transaction_details: [],
 				},
 			}),
+
+			province: { id: null, name: "" },
+			data_province: [],
+			city: { id: null, name: "" },
+			data_city: [],
+			district: { id: null, name: "" },
+			data_district: [],
 		};
 	},
 	mounted() {
@@ -408,25 +515,80 @@ export default {
 		},
 	},
 	methods: {
+		showPhonePayload(payload) {
+			this.phonePayloads = payload;
+		},
 		updateOrder(id) {
 			const self = this;
-			axios
-				.put(self.endpoint + "/" + id, {
-					id_delivery_status: self.form.id_delivery_status,
-					shipping_cost: self.form.shipping_cost,
-				})
-				.then(({ data }) => {
-					if (data.success) {
-						Swal.fire("Success !", data.message, "success");
-						window.location.href = self.baseURL + "/admin/orders";
-					} else {
-						Swal.fire("Failed !", data.message, "error");
-					}
-					this.fetchData();
-				})
-				.catch((error) => {
-					this.showErrorMessage(error);
-				});
+
+			// update address
+			if (self.number_of_tabs == "1") {
+				if (!this.phonePayloads.isValid) {
+					return Swal.fire({
+						icon: "warning",
+						title: "Save Failed!",
+						html: "Ensure that the phone are correct.",
+						type: "warning",
+						showConfirmButton: true,
+					});
+				}
+
+				axios
+					.put(self.endpoint + "/" + id, {
+						phone_code: this.phonePayloads.countryCallingCode,
+						phone_number: this.phonePayloads.phoneNumber,
+						phone_formatted: this.phonePayloads.formattedNumber,
+					})
+					.then(({ data }) => {
+						if (data.success) {
+							Swal.fire("Success !", data.message, "success");
+						} else {
+							Swal.fire("Failed !", data.message, "error");
+						}
+						this.fetchData();
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+
+				axios
+					.put("/api/address" + "/" + self.form.relationships.address.id, {
+						province_id: self.province.id,
+						city_id: self.city.id,
+						district_id: self.district.id,
+					})
+					.then(({ data }) => {
+						if (data.success) {
+							Swal.fire("Success !", data.message, "success");
+						} else {
+							Swal.fire("Failed !", data.message, "error");
+						}
+						this.fetchData();
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+
+				$("#modalOrders").modal("hide");
+			} else {
+				axios
+					.put(self.endpoint + "/" + id, {
+						id_delivery_status: self.form.id_delivery_status,
+						shipping_cost: self.form.shipping_cost,
+					})
+					.then(({ data }) => {
+						if (data.success) {
+							Swal.fire("Success !", data.message, "success");
+							window.location.href = self.baseURL + "/admin/orders";
+						} else {
+							Swal.fire("Failed !", data.message, "error");
+						}
+						this.fetchData();
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+			}
 		},
 		async showModalOrders(id, isEdit) {
 			this.isEdit = isEdit;
@@ -441,6 +603,27 @@ export default {
 						this.showErrorMessage(error);
 					});
 				this.form = result.data;
+				this.form.province_id = result.data.relationships.address.province_id;
+				this.form.city_id = result.data.relationships.address.city_id;
+				this.form.district_id = result.data.relationships.address.district_id;
+
+				axios
+					.get("/api/list-province")
+					.then(({ data }) => {
+						if (data.success) {
+							self.data_province = data.data.data.results;
+							self.province = _.find(self.data_province, function (obj) {
+								return obj.id == self.form.relationships.address.province_id;
+							});
+							self.getDataCity();
+							self.getDataDistrict();
+						} else {
+							Swal.fire("Failed !", data.message, "error");
+						}
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
 			}
 		},
 		async fetchData(page = 1, search = "") {
@@ -453,6 +636,97 @@ export default {
 					this.totalItems = data.total;
 					this.results = data;
 				});
+		},
+		async getDataCity() {
+			const self = this;
+			await axios
+				.get("/api/list-city/" + self.form.province_id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_city = data.data.data.results;
+						self.city = _.find(self.data_city, function (obj) {
+							return obj.id == self.form.city_id;
+						});
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+
+		async getDataDistrict() {
+			const self = this;
+			await axios
+				.get("/api/list-district/" + self.form.city_id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_district = data.data.data.results;
+						self.district = _.find(self.data_district, function (obj) {
+							return obj.id == self.form.district_id;
+						});
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async onSelectProvince(option) {
+			const self = this;
+			self.form.province_id = option.id;
+
+			// clear city & district
+			self.city = { id: "", name: "" };
+			self.data_city = [];
+			self.form.city_id = "";
+
+			self.district = { id: "", name: "" };
+			self.data_district = [];
+			self.form.district_id = "";
+
+			// select city
+			axios
+				.get("/api/list-city/" + option.id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_city = data.data.data.results;
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async onSelectCity(option) {
+			const self = this;
+			self.form.city_id = option.id;
+
+			// clear district
+			self.district = { id: "", name: "" };
+			self.data_district = [];
+			self.form.district_id = "";
+
+			// select district
+			axios
+				.get("/api/list-district/" + option.id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_district = data.data.data.results;
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async onSelectDistrict(option) {
+			const self = this;
+			self.form.district_id = option.id;
 		},
 	},
 	created() {
@@ -481,6 +755,15 @@ export default {
 			shipping_cost: {
 				required,
 				numeric,
+			},
+			province_id: {
+				required,
+			},
+			city_id: {
+				required,
+			},
+			district_id: {
+				required,
 			},
 		},
 	},
