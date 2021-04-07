@@ -116,6 +116,7 @@ Route::post('upload-product', [FileController::class, 'uploadProduct']);
 Route::post('upload-slide', [FileController::class, 'uploadSlide']);
 Route::post('upload-category', [FileController::class, 'uploadCategory']);
 Route::post('upload-brand', [FileController::class, 'uploadBrand']);
+Route::post('upload-payment', [FileController::class, 'uploadPayment']);
 
 /**
  * Router Binding

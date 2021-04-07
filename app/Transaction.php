@@ -20,6 +20,7 @@ class Transaction extends Model
         'phone_code',
         'phone_number',
         'phone_formatted',
+        'ekspedisi_name',
         'token',
         'token_created_at'
     ];

@@ -18,6 +18,12 @@
 						>
 							Update Alamat Penerima
 						</div>
+						<div
+							v-else-if="number_of_tabs == '2'"
+							class="h5 text-gray-800 line-height-222"
+						>
+							Update Bea Kirim
+						</div>
 						<div v-else class="h5 text-gray-800 line-height-222">
 							Detail Orders
 						</div>
@@ -38,12 +44,12 @@
 									<th style="width: 30%;">Invoice</th>
 									<td>{{ form.invoice }}</td>
 								</tr>
-								<tr>
+								<tr v-if="isEdit && number_of_tabs == '2'">
 									<th>Bea Kirim</th>
-									<td v-if="isEdit && number_of_tabs == '1'">
+									<!-- <td v-if="isEdit && number_of_tabs == '1'">
 										{{ formatCurrency(form.shipping_cost) }}
-									</td>
-									<td v-else-if="isEdit">
+									</td> -->
+									<td>
 										<input
 											type="text"
 											v-model="displayShippingCharge"
@@ -71,7 +77,21 @@
 											Bea kirim harus berupa angka
 										</div>
 									</td>
-									<td v-else>{{ formatCurrency(form.shipping_cost) }}</td>
+								</tr>
+								<tr v-if="isEdit && number_of_tabs == '2'">
+									<th>Nama Ekspedisi</th>
+									<td>
+										<div class="form-group">
+											<input
+												v-model="form.ekspedisi_name"
+												type="text"
+												id="ekspedisi_name"
+												name="ekspedisi_name"
+												placeholder="Nama Jasa Ekspedisi (JNE, JNT, Si Cepat, dll)"
+												class="form-control"
+											/>
+										</div>
+									</td>
 								</tr>
 								<tr>
 									<th>Harga Produk</th>
@@ -88,7 +108,80 @@
 									<td>{{ form.relationships.address.name }}</td>
 								</tr>
 
-								<tr v-if="number_of_tabs != '1'">
+								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2'">
+									<th></th>
+									<td v-if="isEdit">
+										<el-upload
+											:action="baseURL + '/api/upload-payment'"
+											style="
+												border-style: dashed;
+												border-width: 1px;
+												border-color: gray;
+												width: 100%;
+											"
+											class="img-fluid text-center"
+											:show-file-list="false"
+											:on-success="handlePaymentImageSuccess"
+											:before-upload="beforePaymentImageUpload"
+										>
+											<img
+												v-if="form.payment_image"
+												:src="form.payment_image"
+												class="img-fluid text-center"
+												@error="imgErrorCondition"
+												:class="{
+													'is-invalid':
+														submitted && $v.form.payment_image.$error,
+
+													'is-valid': !$v.form.payment_image.$invalid,
+												}"
+											/>
+											<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+										</el-upload>
+										<small class="text-muted"
+											>Pastikan gambar berukuran maksimal 2mb, berformat png,
+											jpg, jpeg. Dan berukuran 1600x400px</small
+										>
+										<div class="valid-feedback">Icon is valid.</div>
+										<div
+											v-if="submitted && !$v.form.payment_image.required"
+											class="invalid-feedback"
+										>
+											Bukti pembayaran harus diisi
+										</div>
+									</td>
+								</tr>
+
+								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2'">
+									<th>Nomor Resi Pengiriman</th>
+									<td v-if="isEdit">
+										<div class="form-group">
+											<input
+												v-model="form.delivery_number"
+												type="text"
+												id="delivery_number"
+												name="delivery_number"
+												placeholder="Nomor Resi Pengiriman"
+												class="form-control"
+												:class="{
+													'is-invalid':
+														submitted && $v.form.delivery_number.$error,
+
+													'is-valid': !$v.form.delivery_number.$invalid,
+												}"
+											/>
+											<div class="valid-feedback">Nomor resi is valid.</div>
+											<div
+												v-if="submitted && !$v.form.delivery_number.required"
+												class="invalid-feedback"
+											>
+												Nomor resi harus diisi
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2'">
 									<th>Status Kirim</th>
 									<td v-if="isEdit">
 										<el-select
@@ -111,9 +204,9 @@
 									<td v-else>{{ form.relationships.delivery_status.name }}</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs == '1'">
+								<tr v-if="isEdit && number_of_tabs != '3'">
 									<th>Propinsi</th>
-									<td>
+									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect
 											v-model="province"
 											:options="data_province"
@@ -123,6 +216,7 @@
 											:searchable="true"
 											:max-height="150"
 											:max="3"
+											:disabled="number_of_tabs == '1' ? false : true"
 											@select="onSelectProvince"
 											:class="{
 												'is-invalid': submitted && $v.form.province_id.$error,
@@ -139,9 +233,9 @@
 									</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs == '1'">
+								<tr v-if="isEdit && number_of_tabs != '3'">
 									<th>Kabupaten</th>
-									<td>
+									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect
 											v-model="city"
 											:options="data_city"
@@ -151,6 +245,7 @@
 											:searchable="true"
 											:max-height="150"
 											:max="3"
+											:disabled="number_of_tabs == '1' ? false : true"
 											@select="onSelectCity"
 											:class="{
 												'is-invalid': submitted && $v.form.city_id.$error,
@@ -167,9 +262,9 @@
 									</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs == '1'">
+								<tr v-if="isEdit && number_of_tabs != '3'">
 									<th>Kecamatan</th>
-									<td>
+									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect
 											v-model="district"
 											:options="data_district"
@@ -179,12 +274,20 @@
 											:searchable="true"
 											:max-height="150"
 											:max="3"
+											:disabled="number_of_tabs == '1' ? false : true"
 											@select="onSelectDistrict"
 											:class="{
 												'is-invalid': submitted && $v.form.district_id.$error,
 												'is-valid': !$v.form.district_id.$invalid,
 											}"
 										></multiselect>
+										<div class="valid-feedback">Kecamatan is valid.</div>
+										<div
+											v-if="submitted && !$v.form.district_id.required"
+											class="invalid-feedback"
+										>
+											Kecamatan harus diisi
+										</div>
 									</td>
 								</tr>
 
@@ -274,7 +377,19 @@
 							href="#order-confirm-address"
 							role="tab"
 							aria-selected="true"
+							@click="fetchData(null, null, '1', 'order-confirm-address')"
 							>Update Alamat Penerima</a
+						>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							data-toggle="pill"
+							href="#order-ongkir"
+							role="tab"
+							aria-selected="true"
+							@click="fetchData(null, null, '2', 'order-ongkir')"
+							>Update Ongkir</a
 						>
 					</li>
 					<li class="nav-item">
@@ -284,6 +399,7 @@
 							href="#order-confirm-pay"
 							role="tab"
 							aria-selected="true"
+							@click="fetchData(null, null, '3', 'order-confirm-pay')"
 							>Update Pembayaran</a
 						>
 					</li>
@@ -294,6 +410,7 @@
 							href="#order-confirm-shipping"
 							role="tab"
 							aria-selected="true"
+							@click="fetchData(null, null, '4', 'order-confirm-shipping')"
 							>Update Pengiriman</a
 						>
 					</li>
@@ -304,6 +421,7 @@
 							href="#order-complete"
 							role="tab"
 							aria-selected="true"
+							@click="fetchData(null, null, '5', 'order-complete')"
 							>Pesanan Selesai</a
 						>
 					</li>
@@ -312,11 +430,7 @@
 
 			<div class="card-body">
 				<div class="tab-content">
-					<div
-						class="tab-pane fade active show"
-						id="order-confirm-address"
-						role="tabpanel"
-					>
+					<div class="tab-pane fade active show" :id="elId" role="tabpanel">
 						<div class="card shadow">
 							<div class="card-body table-responsive">
 								<table class="table table-hover">
@@ -401,9 +515,9 @@
 						</div>
 					</div>
 
-					<div class="tab-pane fade" id="order-confirm-pay" role="tabpanel">
+					<!-- <div class="tab-pane fade" id="order-ongkir" role="tabpanel">
 						Update Bea Pengiriman
-					</div>
+					</div> -->
 
 					<div
 						class="tab-pane fade"
@@ -443,6 +557,7 @@ export default {
 	},
 	data() {
 		return {
+			elId: "order-confirm-address",
 			number_of_tabs: "1",
 			isInputActive: false,
 			isEdit: false,
@@ -477,6 +592,10 @@ export default {
 				phone_code: "",
 				phone_number: "",
 				phone_formatted: "",
+				ekspedisi_name: "JNE",
+				payment_image: "",
+				storage_payment_image: "",
+				delivery_number: "",
 				relationships: {
 					address: {},
 					delivery_status: {},
@@ -515,6 +634,26 @@ export default {
 		},
 	},
 	methods: {
+		// :on-success="handlePaymentImageSuccess"
+		// :before-upload="beforePaymentImageUpload"
+		handlePaymentImageSuccess(res, file) {
+			this.form.storage_payment_image = res.result;
+			this.form.payment_image = URL.createObjectURL(file.raw);
+		},
+		beforePaymentImageUpload(file) {
+			const isJPG = file.type === "image/jpeg";
+			const isPNG = file.type === "image/png";
+
+			if (!isJPG && !isPNG) {
+				Swal.fire(
+					"Oops...!",
+					"Icon picture must be JPG / PNG format!",
+					"error"
+				);
+			}
+
+			return isJPG || isPNG;
+		},
 		showPhonePayload(payload) {
 			this.phonePayloads = payload;
 		},
@@ -570,11 +709,62 @@ export default {
 					});
 
 				$("#modalOrders").modal("hide");
+			} else if (self.number_of_tabs == "2") {
+				axios
+					.put(self.endpoint + "/" + id, {
+						ekspedisi_name: self.form.ekspedisi_name,
+						shipping_cost: self.form.shipping_cost,
+					})
+					.then(({ data }) => {
+						if (data.success) {
+							Swal.fire("Success !", data.message, "success");
+						} else {
+							Swal.fire("Failed !", data.message, "error");
+						}
+						self.fetchData(null, null, "2", "order-ongkir");
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+
+				$("#modalOrders").modal("hide");
+			} else if (self.number_of_tabs == "3") {
+				this.submitted = true;
+
+				this.$v.$touch();
+				if (this.$v.$error) {
+					Swal.fire(
+						"Failed !",
+						"Bukti pembayaran & no.resi harus diisi",
+						"error"
+					);
+					return;
+				} else {
+					axios
+						.put(self.endpoint + "/" + id, {
+							storage_payment_image: self.form.storage_payment_image,
+							payment_image: self.form.storage_payment_image,
+							delivery_number: self.form.delivery_number,
+							id_delivery_status: self.form.id_delivery_status,
+						})
+						.then(({ data }) => {
+							if (data.success) {
+								Swal.fire("Success !", data.message, "success");
+							} else {
+								Swal.fire("Failed !", data.message, "error");
+							}
+							self.fetchData(null, null, "3", "order-confirm-pay");
+						})
+						.catch((error) => {
+							this.showErrorMessage(error);
+						});
+
+					$("#modalOrders").modal("hide");
+				}
 			} else {
 				axios
 					.put(self.endpoint + "/" + id, {
 						id_delivery_status: self.form.id_delivery_status,
-						shipping_cost: self.form.shipping_cost,
 					})
 					.then(({ data }) => {
 						if (data.success) {
@@ -626,10 +816,25 @@ export default {
 					});
 			}
 		},
-		async fetchData(page = 1, search = "") {
+		async fetchData(
+			page = 1,
+			search = "",
+			number_of_tabs = "1",
+			elId = "order-confirm-address"
+		) {
 			const self = this;
+
+			self.elId = elId;
+			let pageNumber = page ? page : 1;
+			let searchValue = search ? search : "";
+			self.number_of_tabs = number_of_tabs;
+
 			await axios
-				.get(self.endpoint + "?page=" + page + "&q=" + search)
+				.get(self.endpoint + "?page=" + pageNumber + "&q=" + searchValue, {
+					params: {
+						number_of_tabs: number_of_tabs,
+					},
+				})
 				.then(({ data }) => {
 					this.currentPage = data.current_page;
 					this.perPage = data.per_page;
@@ -763,6 +968,12 @@ export default {
 				required,
 			},
 			district_id: {
+				required,
+			},
+			payment_image: {
+				required,
+			},
+			delivery_number: {
 				required,
 			},
 		},

@@ -62,7 +62,37 @@ class TransactionController extends Controller
             $paginator = $model->whereInvoice(request('invoice'))->first()->paginate(10);
         }
 
-        if (request('q') || request('invoice')){
+        if (request('number_of_tabs')) {
+            $number_of_tabs = request('number_of_tabs');
+            if ($number_of_tabs == '1') {
+                $paginator = $model::whereHas('address', function($query) { 
+                    $query->whereNull('province_id')->whereNull('city_id')
+                    ->whereNull('district_id'); 
+                })
+                ->orWhereNull('phone_number')->paginate(10);
+            } else if ($number_of_tabs == '2') {
+                $paginator = $model::whereHas('address', function($query) { 
+                    $query->whereNotNull('province_id')->whereNotNull('city_id')
+                    ->whereNotNull('district_id'); 
+                })
+                ->whereNotNull('phone_number')
+                ->Where('shipping_cost','=', '0')
+                ->orWhereNull('ekspedisi_name')
+                ->paginate(10);
+            } else if ($number_of_tabs == '3') {
+                $paginator = $model::where('shipping_cost','>', '0')
+                ->whereNotNull('ekspedisi_name')
+                ->whereNull('payment_image')
+                ->whereNull('delivery_number')
+                ->paginate(10);
+            } else if ($number_of_tabs == '4') {
+                $paginator = $model::whereNotNull('delivery_number')
+                ->whereNotNull('delivery_number')
+                ->paginate(10);
+            }
+        }
+
+        if (request('q') || request('invoice') || request('number_of_tabs')){
             $result = $paginator->getCollection();
             $response = fractal()
                 ->collection($result,  $this->transformer)
@@ -147,6 +177,20 @@ class TransactionController extends Controller
 
     public function update(CommonRequest $request, $id)
 	{
+        if (request('storage_payment_image')) {
+            $obj = $this->model->find($id);
+            $pathCurrentImage = storage_path('app/'.$obj->payment_image);
+
+			if (file_exists($pathCurrentImage)) {
+                @unlink($pathCurrentImage);
+            }
+
+            request()->request->add(['payment_image' => request('storage_payment_image')]);
+            request()->request->remove('storage_payment_image');
+        } else {
+            request()->request->remove('payment_image');
+        }
+
 		return $request->update($id, $this->model, $this->transformer);
 	}
 }

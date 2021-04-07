@@ -32,4 +32,9 @@ class FileController extends Controller
         $result = $request->file('file')->store('public/brands');
         return ['result' => $result];
     }
+
+    public function uploadPayment(Request $request) {
+        $result = $request->file('file')->store('public/payments');
+        return ['result' => $result];
+    }
 }
