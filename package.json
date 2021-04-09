@@ -49,6 +49,7 @@
         "vue-phone-number-input": "^1.1.10",
         "vue-progressbar": "^0.7.5",
         "vue-router": "^3.5.1",
+        "vue-simple-accordion": "^0.1.0",
         "vue-table-component": "^1.9.2",
         "vue2-google-maps": "^0.10.7",
         "vuelidate": "^0.7.6"
