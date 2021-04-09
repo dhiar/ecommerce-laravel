@@ -34,4 +34,23 @@ class ShippingController extends Controller
         $endpoint = $this->URL_RUANGAPI."/districts?city=".$cityId;
         return $request->getListArea($endpoint);
     }
+
+    public function showProvince(ShippingRequest $request, String $id)
+    {
+        $endpoint = $this->URL_RUANGAPI."/provinces?id=".$id;
+        return $request->getListArea($endpoint);
+    }
+
+    public function showCity(ShippingRequest $request, String $id)
+    {
+        $endpoint = $this->URL_RUANGAPI."/cities?id=".$id;
+        return $request->getListArea($endpoint);
+    }
+
+    // public function showDistrict(ShippingRequest $request, String $id)
+    // {
+        // districts?city=1&id=
+        // $endpoint = $this->URL_RUANGAPI."/districts?id=".$id;
+        // return $request->getListArea($endpoint);
+    // }
 }

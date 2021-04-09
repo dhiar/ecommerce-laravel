@@ -59,7 +59,7 @@ class TransactionController extends Controller
             ->paginate(10);
 
         } else if (request('invoice')){
-            $paginator = $model->whereInvoice(request('invoice'))->first()->paginate(10);
+            $paginator = $model->where('invoice',request('invoice'))->paginate(1);
         }
 
         if (request('number_of_tabs')) {

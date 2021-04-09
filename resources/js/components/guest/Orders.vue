@@ -13,49 +13,88 @@
 					</div>
 
 					<div class="card-body">
-						<table class="table table-hover">
-								<tr>
-									<th style="width: 30%;">Total Berat</th>
-									<td>{{ formatWeight(form.total_weight) }}</td>
-								</tr>
-								<tr>
-									<th style="width: 30%;">Total Bea Produk</th>
-									<td>{{ formatCurrency(form.total_price) }}</td>
-								</tr>
-								<tr>
-									<th style="width: 30%;">Bea Kirim</th>
-									<td>{{ formatCurrency(form.shipping_cost) }}</td>
-								</tr>
-								<tr>
-									<th style="width: 30%;">Status Kirim</th>
-									<td>{{ form.relationships.delivery_status.name }}</td>
-								</tr>
-								<tr>
-									<th style="width: 30%;">Nama Penerima</th>
-									<td>{{ formatName(form.invoice) }}</td>
-								</tr>
-								<br>
-								<tr class="card-header">
-									<th style="width: 30%;">Alamat Penerima</th>
-									<td></td>
-								</tr>
-								<tr>
-									<th style="width: 30%;">Nama Desa RT.RW. / Jalan / Nomor</th>
-									<td>{{ form.relationships.address.name }}</td>
-								</tr>
-								<tr>
-									<th style="width: 30%;">Propinsi</th>
-									<td>{{ form.relationships.address.province_id ? form.relationships.address.province_id : '-' }}</td>
-								</tr>
-								<tr>
-									<th style="width: 30%;">Kabupaten</th>
-									<td>{{ form.relationships.address.city_id ? form.relationships.address.city_id : '-' }}</td>
-								</tr>
-								<tr>
-									<th style="width: 30%;">Kecamatan</th>
-									<td>{{ form.relationships.address.district_id ? form.relationships.address.city_id : '-' }}</td>
-								</tr>
-						</table>
+						<vsa-list>
+							<!-- Here you can use v-for to loop through items  -->
+							<vsa-item v-for="(item, idx) in orders" :key="idx">
+								<vsa-heading>
+									{{ item.title }}
+								</vsa-heading>
+								<vsa-content v-if="item.id == 1">
+									<table class="table table-hover">
+										<tr>
+											<th style="width: 30%;">Total Berat</th>
+											<td>{{ formatWeight(item.data.total_weight) }}</td>
+										</tr>
+										<tr>
+											<th style="width: 30%;">Total Bea Produk</th>
+											<td>{{ formatCurrency(item.data.total_price) }}</td>
+										</tr>
+									</table>
+								</vsa-content>
+								<vsa-content v-if="item.id == 2">
+									<table class="table table-hover">
+										<tr>
+											<th style="width: 30%;">Nama Penerima</th>
+											<td>{{ formatName(item.data.invoice) }}</td>
+										</tr>
+										<tr class="card-header">
+											<th style="width: 30%;">Alamat Penerima</th>
+											<td>{{ item.data.relationships_address }}</td>
+										</tr>
+										<tr>
+											<th style="width: 30%;">
+												Nama Desa RT.RW. / Jalan / Nomor
+											</th>
+											<td>{{ item.data.relationships.address.name }}</td>
+										</tr>
+										<tr>
+											<th style="width: 30%;">Propinsi</th>
+											<td>
+												{{
+													item.data.relationships.address.province
+														? item.data.relationships.address.province
+														: "-"
+												}}
+											</td>
+										</tr>
+										<tr>
+											<th style="width: 30%;">Kabupaten</th>
+											<td>
+												{{
+													item.data.relationships.address.city
+														? item.data.relationships.address.city
+														: "-"
+												}}
+											</td>
+										</tr>
+										<tr>
+											<th style="width: 30%;">Kecamatan</th>
+											<td>
+												{{
+													item.data.relationships.address.district
+														? item.data.relationships.address.district
+														: "-"
+												}}
+											</td>
+										</tr>
+									</table>
+								</vsa-content>
+								<vsa-content v-if="item.id == 3">
+									<table class="table table-hover">
+										<tr>
+											<th style="width: 30%;">Bea Kirim</th>
+											<td>{{ formatCurrency(item.data.shipping_cost) }}</td>
+										</tr>
+										<tr>
+											<th style="width: 30%;">Status Kirim</th>
+											<td>
+												{{ item.data.relationships.delivery_status.name }}
+											</td>
+										</tr>
+									</table>
+								</vsa-content>
+							</vsa-item>
+						</vsa-list>
 					</div>
 				</div>
 			</div>
@@ -65,9 +104,27 @@
 
 <script>
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
+
+import {
+	VsaList,
+	VsaItem,
+	VsaHeading,
+	VsaContent,
+	VsaIcon,
+} from "vue-simple-accordion";
+import "vue-simple-accordion/dist/vue-simple-accordion.css";
+
 export default {
+	components: {
+		VsaList,
+		VsaItem,
+		VsaHeading,
+		VsaContent,
+		VsaIcon,
+	},
 	data() {
 		return {
+			orders: [],
 			submitted: false,
 			endpoint: "/api/transactions",
 			page: "order",
@@ -83,11 +140,12 @@ export default {
 				invoice: "",
 				shipping_cost: 0,
 				id_delivery_status: "1",
-				total_weight: 9600,
-				total_price: 1560000,
+				total_weight: 0,
+				total_price: 0,
 				id_admin_owner: "",
 				token: null,
 				token_created_at: null,
+				relationships_address: null,
 				relationships: {
 					address: {},
 					delivery_status: {},
@@ -98,21 +156,36 @@ export default {
 	},
 	mounted() {
 		this.fetchData();
-		alert(localStorage.invoice);
 	},
 	methods: {
 		async fetchData() {
 			const self = this;
 
 			if (localStorage.invoice) {
-				await axios
+				axios
 					.get(self.endpoint, {
 						params: {
 							invoice: localStorage.invoice,
 						},
 					})
 					.then(({ data }) => {
-						console.log("data = " + JSON.stringify(data));
+						self.orders = [
+							{
+								id: 1,
+								title: "Detail Produk",
+								data: data.data[0],
+							},
+							{
+								id: 2,
+								title: "Detail Penerima",
+								data: data.data[0],
+							},
+							{
+								id: 3,
+								title: "Detail Pembayaran & Pengiriman",
+								data: data.data[0],
+							},
+						];
 						this.form = data.data[0];
 					})
 					.catch((error) => {

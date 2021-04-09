@@ -110,7 +110,10 @@ Route::apiResource('address', 'API\AddressController')->names([
 
 Route::get('list-province', 'API\ShippingController@listProvince');
 Route::get('list-city/{province}', 'API\ShippingController@listCity');
-Route::get('list-district/{city}', 'API\ShippingController@listDistrict');
+
+Route::get('show-province/{id}', 'API\ShippingController@showProvince');
+Route::get('show-city/{id}', 'API\ShippingController@showCity');
+Route::get('show-district/{id}', 'API\ShippingController@showDistrict');
 
 Route::post('upload', [FileController::class, 'upload']);
 Route::post('upload-product', [FileController::class, 'uploadProduct']);

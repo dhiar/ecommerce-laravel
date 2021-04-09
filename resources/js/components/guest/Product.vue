@@ -138,7 +138,7 @@
 									<div class="row">
 										<div
 											class="col-lg-4 col-sm-6"
-											v-for="(item, idx) in results.data"
+											v-for="item in results.data"
 											:key="item.id"
 										>
 											<div class="product-item">
@@ -318,7 +318,7 @@
 											<span
 												class="badge badge-primary text-gray-100 btn"
 												style="margin: 2px;"
-												v-for="(tag, idx) in product.relationships.tags"
+												v-for="tag in product.relationships.tags"
 												:key="tag.id"
 											>
 												{{ tag.name }}
@@ -372,7 +372,7 @@
 										<div class="specification-table">
 											<table>
 												<tr
-													v-for="(grosir, idx) in product.relationships.grosirs"
+													v-for="grosir in product.relationships.grosirs"
 													:key="grosir.id"
 												>
 													<td class="p-catagory">Minimal Beli</td>
