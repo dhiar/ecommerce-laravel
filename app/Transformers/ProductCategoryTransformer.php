@@ -38,7 +38,7 @@ class ProductCategoryTransformer extends TransformerAbstract
             'id' => MainHasher::encode($model->id),
             'name' => $model->name,
             'slug' => $model->slug,
-            'icon' => \env('APP_URL').Storage::url($model->icon)
+            'icon' => env('APP_URL').Storage::url($model->icon)
         ];
     }
 }

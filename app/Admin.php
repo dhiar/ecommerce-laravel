@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\{Address, UserTypes, Testimony};
+use App\{Address, UserTypes, Testimony, Rekening, AdminRekening};
 
 class Admin extends Authenticatable
 {
@@ -58,5 +58,9 @@ class Admin extends Authenticatable
     public function testimonys()
     {
         return $this->morphMany(Testimony::class, 'testimonyable');
+    }
+
+    public function rekenings(){
+        return $this->belongsToMany(Rekening::class,'admin_rekening', 'id_admin', 'id_rekening')->withTimestamps();
     }
 }

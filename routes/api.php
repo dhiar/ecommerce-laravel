@@ -30,6 +30,7 @@ Route::get('bitly', 'API\BaseController@bitly');
 Route::get('findUser', 'API\UserController@search');
 Route::get('profile', 'API\UserController@profile');
 Route::put('profile', 'API\UserController@updateProfile');
+Route::put('admin-rekening/{admin}', 'API\UserController@updateRekening');
 
 Route::get('base/show-description', 'API\BaseController@index')->name('base-show-description');
 Route::post('base/create', 'API\BaseController@createBase')->name('base-create');
@@ -121,6 +122,10 @@ Route::post('upload-payment', [FileController::class, 'uploadPayment']);
 /**
  * Router Binding
  */
+Route::bind('admin', function (string $id) {
+	return  MainHasher::decode($id);
+});
+
 Route::bind('address', function (string $id) {
 	return  MainHasher::decode($id);
 });

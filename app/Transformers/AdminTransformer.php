@@ -44,7 +44,8 @@ class AdminTransformer extends TransformerAbstract
             'photo' => $admin->photo,
             'created_at' => $admin->created_at,
             'relationships' => [
-                'address' => is_object($admin->address) ? fractal($admin->address, new AddressTransformer())->toArray()['data'] : ""
+                'address' => is_object($admin->address) ? fractal($admin->address, new AddressTransformer())->toArray()['data'] : "",
+                'rekenings' => $admin->rekenings()->get()->toArray()
             ]
         ];
     }

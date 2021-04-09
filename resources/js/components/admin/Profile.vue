@@ -35,31 +35,29 @@
 					<form @submit.prevent="updateAddress(formAddress.id)">
 						<div class="modal-body">
 							<div class="form-group">
-								<div class="form-group">
-									<label for="province">Propinsi</label>
-									<multiselect
-										v-model="province"
-										:options="data_province"
-										placeholder="Select one"
-										label="name"
-										track-by="id"
-										:searchable="true"
-										:max-height="150"
-										:max="3"
-										@select="onSelectProvince"
-										:class="{
-											'is-invalid':
-												submitted && $v.formAddress.province_id.$error,
-											'is-valid': !$v.formAddress.province_id.$invalid,
-										}"
-									></multiselect>
-									<div class="valid-feedback">Propinsi is valid.</div>
-									<div
-										v-if="submitted && !$v.formAddress.province_id.required"
-										class="invalid-feedback"
-									>
-										Propinsi harus diisi
-									</div>
+								<label for="province">Propinsi</label>
+								<multiselect
+									v-model="province"
+									:options="data_province"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="150"
+									:max="3"
+									@select="onSelectProvince"
+									:class="{
+										'is-invalid':
+											submitted && $v.formAddress.province_id.$error,
+										'is-valid': !$v.formAddress.province_id.$invalid,
+									}"
+								></multiselect>
+								<div class="valid-feedback">Propinsi is valid.</div>
+								<div
+									v-if="submitted && !$v.formAddress.province_id.required"
+									class="invalid-feedback"
+								>
+									Propinsi harus diisi
 								</div>
 							</div>
 							<div class="form-group">
@@ -162,6 +160,91 @@
 								class="btn btn-primary"
 							>
 								Change
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div
+			class="modal fade"
+			id="modalRekening"
+			tabindex="-1"
+			aria-labelledby="addNewLabel"
+			aria-hidden="true"
+			style="width: 100%;"
+		>
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div class="h5 text-gray-800 line-height-222">
+							Change Rekening User : {{ form.name }}
+						</div>
+					</div>
+					<!-- modal header -->
+
+					<form @submit.prevent="updateRekening(form.id)">
+						<div class="modal-body">
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-4">Nama Bank</div>
+									<div class="col-sm-5">No. Rekening</div>
+									<div class="col-sm-3">Aksi</div>
+								</div>
+							</div>
+							<div
+								class="form-group"
+								v-for="(item, idx) in formAdminRekening.rekenings"
+								:key="idx"
+							>
+								<div class="row">
+									<div class="col-sm-4">
+										<input
+											v-model="formAdminRekening.rekenings[idx].rekening"
+											type="text"
+											class="form-control"
+										/>
+									</div>
+									<div class="col-sm-5">
+										<input
+											v-model="formAdminRekening.rekenings[idx].number"
+											type="text"
+											class="form-control"
+										/>
+									</div>
+									<div class="col-sm-3">
+										<span>
+											<!-- v-if="idx == formAdminRekening.rekenings.length - 1" -->
+											<a
+												class="btn btn-sm btn-primary"
+												@click="addInputRekening"
+												href="#"
+												><i class="fa fa-plus text-gray-100"></i></a
+										></span>
+										<span>
+											<a
+												class="btn btn-sm btn-danger"
+												@click="removeInputRekening(idx)"
+												href="#"
+												><i class="fa fa fa-times text-gray-100"></i
+											></a>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">
+								Close
+							</button>
+							<button
+								type="submit"
+								:disabled="form.busy"
+								class="btn btn-primary"
+							>
+								Save
 							</button>
 						</div>
 					</form>
@@ -326,15 +409,21 @@
 									<button
 										type="submit"
 										@click.prevent="updateInfo"
-										class="btn btn-danger"
+										class="btn btn-success"
 									>
-										Update Profile
+										<b>Update Profile</b>
 									</button>
 									<button
 										@click.prevent="showModalAddress"
-										class="btn btn-primary"
+										class="btn btn-outline-primary"
 									>
-										Change Address
+										<b>Change Address</b>
+									</button>
+									<button
+										@click.prevent="showModalRekening"
+										class="btn btn-outline-danger"
+									>
+										<b>Change Rekening</b>
 									</button>
 								</div>
 							</div>
@@ -379,6 +468,16 @@ export default {
 			data_city: [],
 			district: { id: null, name: "" },
 			data_district: [],
+
+			formAdminRekening: new Form({
+				rekenings: [
+					{
+						id: null,
+						rekening: "", // BCA, BRI , dll
+						number: "",
+					},
+				],
+			}),
 		};
 	},
 	validations: {
@@ -403,6 +502,24 @@ export default {
 		this.fetchData();
 	},
 	methods: {
+		addInputRekening() {
+			this.formAdminRekening.rekenings.push({
+				id: null,
+				rekening: "",
+				number: "",
+			});
+		},
+		removeInputRekening(idx) {
+			if (this.formAdminRekening.rekenings.length == 1) {
+				Swal.fire(
+					"Failed delete data rekening !",
+					"Minimum has 1 data.",
+					"warning"
+				);
+			} else {
+				this.formAdminRekening.rekenings.splice(idx, 1);
+			}
+		},
 		async fetchData() {
 			this.backgroundUrl = process.env.MIX_APP_URL + "/img/user-cover.png";
 			// axios.get("/api/profile").then(({ data }) => this.form.fill(data));
@@ -413,6 +530,10 @@ export default {
 				.then(({ data }) => {
 					this.form.fill(data);
 					this.formAddress.fill(data.relationships.address);
+
+					if (data.relationships.rekenings.length > 0) {
+						this.formAdminRekening.rekenings = data.relationships.rekenings;
+					}
 				})
 				.catch((error) => {
 					this.showErrorMessage(error);
@@ -440,6 +561,9 @@ export default {
 		},
 		showModalAddress() {
 			$("#modalAddress").modal("show");
+		},
+		showModalRekening() {
+			$("#modalRekening").modal("show");
 		},
 		async updateInfo() {
 			this.$Progress.start();
@@ -511,6 +635,36 @@ export default {
 						this.showErrorMessage(error);
 					});
 			}
+		},
+		async updateRekening() {
+			// input harus diisi semua
+			let isValid = true;
+
+			this.formAdminRekening.rekenings.forEach((object) => {
+				if (object.rekening == "" || object.number == "") {
+					isValid = false;
+				}
+			});
+
+			if (!isValid || this.formAdminRekening.rekenings.length == 0) {
+				Swal.fire("Failed !", "Data rekening harus diisi", "error");
+				return;
+			}
+
+			await axios
+				.put("/api/admin-rekening/" + this.form.id, this.formAdminRekening)
+				.then(({ data }) => {
+					if (data.success) {
+						Swal.fire("Success !", data.message, "success");
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+					$("#modalRekening").modal("hide");
+					this.fetchData();
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
 		},
 		async getDataCity() {
 			const self = this;

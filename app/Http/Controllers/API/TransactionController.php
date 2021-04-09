@@ -86,7 +86,16 @@ class TransactionController extends Controller
                 ->whereNull('delivery_number')
                 ->paginate(10);
             } else if ($number_of_tabs == '4') {
-                $paginator = $model::whereNotNull('delivery_number')
+                $paginator = $model::whereHas('delivery_status', function($query) { 
+                    $query->where('id','<=', '3'); 
+                })->whereNotNull('payment_image')
+                ->whereNotNull('delivery_number')
+                ->paginate(10);
+            } else if ($number_of_tabs == '5') {
+                $paginator = $model::whereHas('delivery_status', function($query) { 
+                    $query->where('id','>', '3'); 
+                })
+                ->whereNotNull('payment_image')
                 ->whereNotNull('delivery_number')
                 ->paginate(10);
             }

@@ -108,8 +108,8 @@
 									<td>{{ form.relationships.address.name }}</td>
 								</tr>
 
-								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2'">
-									<th></th>
+								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2' && number_of_tabs != '4'">
+									<th>Bukti Pembayaran</th>
 									<td v-if="isEdit">
 										<el-upload
 											:action="baseURL + '/api/upload-payment'"
@@ -152,7 +152,7 @@
 									</td>
 								</tr>
 
-								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2'">
+								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2' && number_of_tabs != '4'">
 									<th>Nomor Resi Pengiriman</th>
 									<td v-if="isEdit">
 										<div class="form-group">
@@ -204,7 +204,7 @@
 									<td v-else>{{ form.relationships.delivery_status.name }}</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs != '3'">
+								<tr v-if="isEdit && number_of_tabs != '3' && number_of_tabs != '4'">
 									<th>Propinsi</th>
 									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect
@@ -233,7 +233,7 @@
 									</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs != '3'">
+								<tr v-if="isEdit && number_of_tabs != '3' && number_of_tabs != '4'">
 									<th>Kabupaten</th>
 									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect
@@ -262,7 +262,7 @@
 									</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs != '3'">
+								<tr v-if="isEdit && number_of_tabs != '3' && number_of_tabs != '4'">
 									<th>Kecamatan</th>
 									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect

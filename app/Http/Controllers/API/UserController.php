@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\{Address, Admin, User};
+use App\{Address, Admin, User, Rekening};
 use Illuminate\Support\Facades\DB;
 use App\Transformers\{AdminTransformer, UserTransformer};
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +25,7 @@ class UserController extends Controller
 		// $this->middleware('auth', ['only' => 'index']);
 		// $this->middleware('auth', ['except' => ['create', 'store', 'edit', 'update', 'delete']]);
 
-		$this->middleware('auth:admin-api', ['profile', 'updateProfile']);
+		$this->middleware('auth:admin-api', ['profile', 'updateProfile', 'updateRekening']);
 	}
 
 	/**
@@ -150,13 +150,64 @@ class UserController extends Controller
 			}
 
 			$user->update($request->all());
-
 			DB::commit();
 
 			return ['message' => 'Success update user profile.'];
 		}
 		catch (\Exception $e) {
 			return ['message' => 'Failed update user profile.'];
+			DB::rollback();
+		}
+	}
+
+	public function updateRekening(Request $request, $id) {
+		$admin = Admin::find($id);
+		$existingIds = $admin->rekenings()->get()->pluck('id');
+		$syncIds = [];
+
+		DB::beginTransaction();
+		try {
+			foreach (request('rekenings') as $key => $object) {
+				if($object["id"])
+				{
+					array_push($syncIds, $object["id"]);
+
+					// update rekening dengan value baru
+					$rekening = Rekening::find($object["id"]);
+					$rekening->update([
+						'rekening' => $object['rekening'],
+						'number' =>  $object['number']
+					]);
+
+				} else {
+					// jika id null, maka create rekening , attach ke pivot
+					$rekening = Rekening::create(['rekening'=> $object['rekening'], 'number' => $object['number']]);
+					array_push($syncIds, $rekening->id);
+				}
+			}
+			
+			$admin->rekenings()->sync($syncIds); // sync ke pivot table
+			foreach ($existingIds  as $idRekening) {
+				// delete rekening yang sudah tidak dipakai oleh admin
+				if ( !in_array($idRekening, $syncIds) ) {
+					$rekening = Rekening::findOrFail($idRekening);
+					$rekening->delete();
+				}
+			}
+
+			DB::commit();
+			return response()->json([
+				'success' => true,
+				'data' => [],
+				'message' => 'Success update rekening',
+			]);
+		}
+		catch (\Exception $e) {
+			return response()->json([
+				'success' => false,
+				'data' => [],
+				'message' => 'Failed update rekening',
+			]);
 			DB::rollback();
 		}
 	}
