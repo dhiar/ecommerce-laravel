@@ -3,15 +3,12 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Address;
+use App\Transaction;
+use App\Transformers\{AllAddressTransformer};
 use App\Hashers\MainHasher;
-use App\Http\Controllers\API\ShippingController;
-use App\Http\Requests\API\{ShippingRequest};
+use Illuminate\Support\Facades\Storage;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-
-class AddressTransformer extends TransformerAbstract
+class TransactionAddressTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -36,11 +33,16 @@ class AddressTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(Address $model)
+    public function transform(Transaction $model)
     {
         $result = $model->toArray();
         $result["id"] = MainHasher::encode($result["id"]);
+        $result["relationships"] = [
+            'address' => fractal($model->address, new AllAddressTransformer())->toArray()['data'],
+        ];
 
+        unset($result['id_address']);
+        // unset($result['id_delivery_status']);
         unset($result['created_at']);
         unset($result['updated_at']);
         unset($result['deleted_at']);

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
-use App\Transformers\TransactionTransformer;
+use App\Transformers\{TransactionAddressTransformer, TransactionTransformer};
 use App\{Product, Transaction, TransactionDetail, Address};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
@@ -101,12 +101,21 @@ class TransactionController extends Controller
             }
         }
 
-        if (request('q') || request('invoice') || request('number_of_tabs')){
-            $result = $paginator->getCollection();
-            $response = fractal()
+        if (request('q') || request('invoice') || request('number_of_tabs'))
+        {
+            if (\request('show_address')) {
+                $result = $paginator->getCollection();
+                $response = fractal()
+                ->collection($result, new TransactionAddressTransformer())
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
+            } else {
+                $result = $paginator->getCollection();
+                $response = fractal()
                 ->collection($result,  $this->transformer)
                 ->paginateWith(new IlluminatePaginatorAdapter($paginator))
                 ->toArray();
+            }
 
             return PaginationFormat::commit($paginator, $response);
         }

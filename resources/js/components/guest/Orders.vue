@@ -49,7 +49,7 @@
 										</tr>
 										<tr>
 											<th style="width: 30%;">Propinsi</th>
-											<td>
+											<td id="province">
 												{{
 													item.data.relationships.address.province
 														? item.data.relationships.address.province
@@ -59,7 +59,7 @@
 										</tr>
 										<tr>
 											<th style="width: 30%;">Kabupaten</th>
-											<td>
+											<td id="city">
 												{{
 													item.data.relationships.address.city
 														? item.data.relationships.address.city
@@ -69,7 +69,7 @@
 										</tr>
 										<tr>
 											<th style="width: 30%;">Kecamatan</th>
-											<td>
+											<td id="district">
 												{{
 													item.data.relationships.address.district
 														? item.data.relationships.address.district
@@ -147,7 +147,11 @@ export default {
 				token_created_at: null,
 				relationships_address: null,
 				relationships: {
-					address: {},
+					address: {
+						province: "",
+						city: "",
+						district: "",
+					},
 					delivery_status: {},
 					transaction_details: [],
 				},
@@ -156,9 +160,10 @@ export default {
 	},
 	mounted() {
 		this.fetchData();
+		this.fetchData(true);
 	},
 	methods: {
-		async fetchData() {
+		async fetchData(show_address = null) {
 			const self = this;
 
 			if (localStorage.invoice) {
@@ -166,27 +171,39 @@ export default {
 					.get(self.endpoint, {
 						params: {
 							invoice: localStorage.invoice,
+							show_address: show_address,
 						},
 					})
 					.then(({ data }) => {
-						self.orders = [
-							{
-								id: 1,
-								title: "Detail Produk",
-								data: data.data[0],
-							},
-							{
-								id: 2,
-								title: "Detail Penerima",
-								data: data.data[0],
-							},
-							{
-								id: 3,
-								title: "Detail Pembayaran & Pengiriman",
-								data: data.data[0],
-							},
-						];
-						this.form = data.data[0];
+						if (show_address == true) {
+							let address = data.data[0].relationships.address;
+							this.form.relationships.address.province = address.province;
+							this.form.relationships.address.city = address.city;
+							this.form.relationships.address.district = address.district;
+
+							$("#province").html(address.province);
+							$("#city").html(address.city);
+							$("#district").html(address.district);
+						} else {
+							self.orders = [
+								{
+									id: 1,
+									title: "Detail Produk",
+									data: data.data[0],
+								},
+								{
+									id: 2,
+									title: "Detail Penerima",
+									data: data.data[0],
+								},
+								{
+									id: 3,
+									title: "Detail Pembayaran & Pengiriman",
+									data: data.data[0],
+								},
+							];
+							this.form = data.data[0];
+						}
 					})
 					.catch((error) => {
 						this.showErrorMessage(error);
