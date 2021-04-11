@@ -162,7 +162,7 @@ export default {
 			const self = this;
 
 			if (localStorage.invoice) {
-				axios
+				await axios
 					.get(self.endpoint, {
 						params: {
 							invoice: localStorage.invoice,
