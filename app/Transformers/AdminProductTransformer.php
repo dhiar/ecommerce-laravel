@@ -44,6 +44,7 @@ class AdminProductTransformer extends TransformerAbstract
         $result = $model->toArray();
         $result["id"] = MainHasher::encode($result["id"]);
         $result["id_admin"] = MainHasher::encode($result["id_admin"]);
+        $result["image"] = \env('APP_URL').Storage::url($result["image"]);
         $result["relationships"] = [
             'admin' => fractal($model->admin, new AdminTransformer())->toArray()['data'],
         ];

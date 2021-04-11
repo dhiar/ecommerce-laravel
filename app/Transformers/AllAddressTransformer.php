@@ -38,13 +38,13 @@ class AllAddressTransformer extends TransformerAbstract
      */
     public function transform(Address $model)
     {
-        $result = $model->toArray();
-        $result["id"] = MainHasher::encode($result["id"]);
+        $object = $model->toArray();
+        $result = [];
+        $result["id"] = MainHasher::encode($object["id"]);
 
-        // $request = new ShippingRequest();
-        $endpoint_province = env('URL_RUANGAPI')."/provinces?id=".$result["province_id"];
-        $endpoint_city = env('URL_RUANGAPI')."/cities?id=".$result["city_id"];
-        $endpoint_district = env('URL_RUANGAPI')."/districts?city=".$result["city_id"]."&id=".$result["district_id"];
+        $endpoint_province = env('URL_RUANGAPI')."/provinces?id=".$object["province_id"];
+        $endpoint_city = env('URL_RUANGAPI')."/cities?id=".$object["city_id"];
+        $endpoint_district = env('URL_RUANGAPI')."/districts?city=".$object["city_id"]."&id=".$object["district_id"];
 
         $province = $this->getListArea($endpoint_province);
         $city = $this->getListArea($endpoint_city);
@@ -54,9 +54,6 @@ class AllAddressTransformer extends TransformerAbstract
         $result["city"] = $city["data"]->data->results->name;
         $result["district"] = $district["data"]->data->results->name;
 
-        unset($result['created_at']);
-        unset($result['updated_at']);
-        unset($result['deleted_at']);
         return $result;
     }
 

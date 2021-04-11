@@ -19,6 +19,26 @@
 								<vsa-heading>
 									{{ item.title }}
 								</vsa-heading>
+								<vsa-content v-if="item.id == 0">
+									<table class="table table-hover">
+										<tr
+											v-for="(productDetail, idDetail) in item.data"
+											:key="idDetail"
+										>
+											<td class="vertical-align:middle;">-</td>
+											<td>{{ productDetail.relationships.product.name }}</td>
+											<td>
+												<img
+													v-if="productDetail.relationships.product.image"
+													:src="productDetail.relationships.product.image"
+													class="img-fluid text-center"
+													@error="imgErrorCondition"
+													style="width: 250px; height: 250px;"
+												/>
+											</td>
+										</tr>
+									</table>
+								</vsa-content>
 								<vsa-content v-if="item.id == 1">
 									<table class="table table-hover">
 										<tr>
@@ -39,7 +59,7 @@
 										</tr>
 										<tr class="card-header">
 											<th style="width: 30%;">Alamat Penerima</th>
-											<td>{{ item.data.relationships_address }}</td>
+											<td></td>
 										</tr>
 										<tr>
 											<th style="width: 30%;">
@@ -145,7 +165,6 @@ export default {
 				id_admin_owner: "",
 				token: null,
 				token_created_at: null,
-				relationships_address: null,
 				relationships: {
 					address: {
 						province: "",
@@ -187,8 +206,13 @@ export default {
 						} else {
 							self.orders = [
 								{
-									id: 1,
+									id: 0,
 									title: "Detail Produk",
+									data: data.data[0].relationships.transaction_details,
+								},
+								{
+									id: 1,
+									title: "Total Produk",
 									data: data.data[0],
 								},
 								{
