@@ -115,26 +115,32 @@ $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data']
               </p>
             </a>
             <ul class="nav nav-treeview">
-              {{-- Kategori --}}
+              @can('isSuperOrAdmin')
               <li class="nav-item">
                 <router-link to="/admin/category" class="nav-link">
                   <i class="fas fa-fw fa-tag nav-icon"></i>
                   <p>Category</p>
                 </router-link>
               </li>
+              @endcan
+
+              @can('isSuperOrAdmin')
               <li class="nav-item">
                 <router-link to="/admin/brand" class="nav-link">
                   <i class="fas fa-fw fa-award nav-icon"></i>
                   <p>Brand</p>
                 </router-link>
               </li>
-              {{-- <i class="fad fa-box-check"></i> --}}
+              @endcan
+
               <li class="nav-item">
                 <router-link to="/admin/product" class="nav-link">
                   <i class="fas fa-fw fa-box-open nav-icon"></i>
                   <p>Product</p>
                 </router-link>
               </li>
+
+              @can('isSuperOrAdmin')
               <li class="nav-item">
                 <router-link to="/admin/promo" class="nav-link">
                   <i class="fas fa-fw fa-fire nav-icon"></i>
@@ -159,6 +165,8 @@ $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data']
                   <p>Setting</p>
                 </router-link>
               </li>
+              @endcan
+
               <li class="nav-item">
                 <router-link to="/admin/profile" class="nav-link">
                   <i class="nav-icon fas fa-user"></i>
@@ -178,6 +186,8 @@ $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data']
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+
+            @can('isSuperOrAdmin')
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <router-link to="/admin/users" class="nav-link">
@@ -186,6 +196,8 @@ $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data']
                 </router-link>
               </li>
             </ul>
+            @endcan
+
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <router-link to="/admin/orders" class="nav-link">
@@ -196,7 +208,7 @@ $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data']
             </ul>
           </li>
 
-          <!-- @can('isAdmin') -->
+          @can('isSuperAdmin')
           <li class="nav-item">
             <router-link to="/admin/developer" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
@@ -205,7 +217,7 @@ $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data']
               </p>
             </router-link>
           </li>
-          <!-- @endcan('isAdmin') -->
+          @endcan
           
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.logout') }}"

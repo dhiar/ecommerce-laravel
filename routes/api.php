@@ -104,6 +104,8 @@ Route::apiResource('transactions', 'API\TransactionController')->names([
 	'store' => 'transaction.store'
 ]);
 
+Route::get('transactions-by-invoice', 'API\TransactionController@indexByInvoice');
+
 Route::apiResource('address', 'API\AddressController')->names([
 	'store' => 'address.store'
 ]);
@@ -111,7 +113,6 @@ Route::apiResource('address', 'API\AddressController')->names([
 Route::get('list-province', 'API\ShippingController@listProvince');
 Route::get('list-city/{province}', 'API\ShippingController@listCity');
 Route::get('list-district/{city}', 'API\ShippingController@listDistrict');
-
 
 Route::get('show-province/{id}', 'API\ShippingController@showProvince');
 Route::get('show-city/{id}', 'API\ShippingController@showCity');

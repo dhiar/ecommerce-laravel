@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
-use App\Transformers\{TransactionAddressTransformer, TransactionTransformer};
+use App\Transformers\{TransactionAddressTransformer, TransactionTransformer, AdminTransformer};
 use App\{Product, Transaction, TransactionDetail, Address};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
@@ -28,12 +28,20 @@ class TransactionController extends Controller
         $this->model = new Transaction();
         $this->model_details = new TransactionDetail();
         $this->transformer = new TransactionTransformer();
+
+        $this->middleware('auth:admin-api', ['only' => [
+            'index'
+        ]]);
     }
 
     public function index(CommonRequest $request)
     {
         $model = $this->model;
-        if (request('q')) {
+        $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data'];
+        $uTypeId = $admin["relationships"]["user_type"]["id"];
+        $uTypeId = is_numeric($uTypeId) ? $uTypeId : MainHasher::decode($uTypeId);
+
+        if (request('q')) { // admin page
             $search = request('q');
             
             $paginator = $this->model->whereHas('transaction_details', function($query) use($search) { 
@@ -58,41 +66,52 @@ class TransactionController extends Controller
             })
             ->paginate(10);
 
-        } else if (request('invoice')){
-            $paginator = $model->where('invoice',request('invoice'))->paginate(1);
         }
 
+        // admin page
         if (request('number_of_tabs')) {
             $number_of_tabs = request('number_of_tabs');
+            $modelByAdmin = $model::whereHas('transaction_details', function($qTransDetails) { 
+                $qTransDetails->whereHas('product', function($qProduct) {
+                    $qProduct->whereHas('admin', function($qAdmin) {
+                        $qAdmin->where('id', 5);
+                    });
+                });
+            });
+
+            if ($uTypeId != 3) {
+                $modelByAdmin = $model;
+            }
+
             if ($number_of_tabs == '1') {
-                $paginator = $model::whereHas('address', function($query) { 
+                $paginator = $modelByAdmin->whereHas('address', function($query) { 
                     $query->whereNull('province_id')->whereNull('city_id')
                     ->whereNull('district_id'); 
                 })
-                ->orWhereNull('phone_number')->paginate(10);
+                ->whereNull('phone_number')->paginate(10);
             } else if ($number_of_tabs == '2') {
-                $paginator = $model::whereHas('address', function($query) { 
+                $paginator = $modelByAdmin->whereHas('address', function($query) { 
                     $query->whereNotNull('province_id')->whereNotNull('city_id')
                     ->whereNotNull('district_id'); 
                 })
                 ->whereNotNull('phone_number')
-                ->Where('shipping_cost','=', '0')
-                ->orWhereNull('ekspedisi_name')
+                ->where('shipping_cost','=', '0')
+                ->whereNull('ekspedisi_name')
                 ->paginate(10);
             } else if ($number_of_tabs == '3') {
-                $paginator = $model::where('shipping_cost','>', '0')
+                $paginator = $modelByAdmin->where('shipping_cost','>', '0')
                 ->whereNotNull('ekspedisi_name')
-                ->whereNull('payment_image')
                 ->whereNull('delivery_number')
+                ->whereNull('payment_image')
                 ->paginate(10);
             } else if ($number_of_tabs == '4') {
-                $paginator = $model::whereHas('delivery_status', function($query) { 
+                $paginator = $modelByAdmin->whereHas('delivery_status', function($query) { 
                     $query->where('id','<=', '3'); 
                 })->whereNotNull('payment_image')
                 ->whereNotNull('delivery_number')
                 ->paginate(10);
             } else if ($number_of_tabs == '5') {
-                $paginator = $model::whereHas('delivery_status', function($query) { 
+                $paginator = $modelByAdmin->whereHas('delivery_status', function($query) { 
                     $query->where('id','>', '3'); 
                 })
                 ->whereNotNull('payment_image')
@@ -101,8 +120,25 @@ class TransactionController extends Controller
             }
         }
 
-        if (request('q') || request('invoice') || request('number_of_tabs'))
+        if (request('q') || request('number_of_tabs'))
         {
+            $result = $paginator->getCollection();
+                $response = fractal()
+                ->collection($result,  $this->transformer)
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
+
+            return PaginationFormat::commit($paginator, $response);
+        }
+        
+        return $request->index($model, $this->transformer);
+    }
+
+    public function indexByInvoice(CommonRequest $request)
+    {
+        $model = $this->model;
+        if (request('invoice')){ // guest page
+            $paginator = $model->where('invoice',request('invoice'))->paginate(1);
             if (\request('show_address')) {
                 $result = $paginator->getCollection();
                 $response = fractal()
@@ -119,8 +155,6 @@ class TransactionController extends Controller
 
             return PaginationFormat::commit($paginator, $response);
         }
-        
-        return $request->index($model, $this->transformer);
     }
 
     /**

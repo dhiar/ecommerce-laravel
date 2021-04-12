@@ -27,20 +27,24 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::define('isSuperAdmin', function($user) {
+            return strtolower($user->usertype->name) == 'super admin';
+        });
+
+        Gate::define('isSuperOrAdmin', function($user) {
+            return strtolower($user->usertype->name) == 'admin' || strtolower($user->usertype->name) == 'super admin';
+        });
+
         Gate::define('isAdmin', function($user) {
             return strtolower($user->usertype->name) == 'admin';
         });
 
-        Gate::define('isOwner', function($user) {
-            return strtolower($user->usertype->name) == 'owner';
+        Gate::define('isOwnerProduct', function($user) {
+            return strtolower($user->usertype->name) == 'owner product';
         });
 
         Gate::define('isCustomer', function($user) {
             return strtolower($user->usertype->name) == 'customer';
-        });
-
-        Gate::define('isGuest', function($user) {
-            return strtolower($user->usertype->name) == 'guest';
         });
 
 

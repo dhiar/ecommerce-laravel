@@ -146,7 +146,7 @@ export default {
 		return {
 			orders: [],
 			submitted: false,
-			endpoint: "/api/transactions",
+			endpoint: "/api/transactions-by-invoice",
 			page: "order",
 			list_delivery_status: [
 				{ id: 1, name: "Verifikasi" },

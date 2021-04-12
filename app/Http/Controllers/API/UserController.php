@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use App\Http\Transformers\IlluminatePaginatorAdapter;
 use App\Helpers\PaginationFormat;
+use App\Hashers\MainHasher;
 
 class UserController extends Controller
 {
@@ -170,13 +171,14 @@ class UserController extends Controller
 			foreach (request('rekenings') as $key => $object) {
 				if($object["id"])
 				{
-					array_push($syncIds, $object["id"]);
+					$id = is_numeric($object["id"]) ? $object["id"] : MainHasher::decode($object["id"]);
+					array_push($syncIds, $id);
 
 					// update rekening dengan value baru
-					$rekening = Rekening::find($object["id"]);
+					$rekening = Rekening::find($id);
 					$rekening->update([
 						'rekening' => $object['rekening'],
-						'number' =>  $object['number']
+						'number' =>  $object['number'],
 					]);
 
 				} else {
