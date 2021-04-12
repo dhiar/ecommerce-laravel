@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\{Admin};
-use App\Transformers\AddressTransformer;
+use App\Transformers\{AddressTransformer,UserTypeTransformer, RekeningTransformer};
 use App\Hashers\MainHasher;
 
 class AdminTransformer extends TransformerAbstract
@@ -45,7 +45,8 @@ class AdminTransformer extends TransformerAbstract
             'created_at' => $admin->created_at,
             'relationships' => [
                 'address' => is_object($admin->address) ? fractal($admin->address, new AddressTransformer())->toArray()['data'] : "",
-                'rekenings' => $admin->rekenings()->get()->toArray()
+                'rekenings' => $admin->rekenings ? fractal($admin->rekenings, new RekeningTransformer())->toArray()['data'] : "",
+                'user_type' => $admin->usertype ? fractal($admin->usertype, new UserTypeTransformer())->toArray()['data'] : ""
             ]
         ];
     }

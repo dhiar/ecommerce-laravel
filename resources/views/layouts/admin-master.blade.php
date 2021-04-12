@@ -3,6 +3,13 @@
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
+
+<?php
+use App\Transformers\AdminTransformer;
+use App\Admin;
+
+$admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data']
+?>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -10,7 +17,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>E-commerce Laravel</title>
-
 	<link rel="stylesheet" href="/css/app.css">
 </head>
 <body class="hold-transition sidebar-mini">
@@ -36,6 +42,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
       </div>
     </div>
+
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="fa fa-user-circle"></i>
+        <span class="badge badge-warning" style="padding: 7px; font-size:12px;">{{Auth::user()->name}}</span>
+          <span class="badge badge-danger" style="padding: 7px; font-size:12px;">
+          {{ $admin["relationships"]["user_type"]["name"] }}
+          </span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+          <a href="/admin/profile" class="dropdown-item">
+            <i class="fas fa-user-alt mr-2"></i> Profile
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="{{ route('admin.logout') }}"
+          onclick="event.preventDefault();
+            document.getElementById('logout-form').submit();" class="dropdown-item">
+            <i class="nav-icon fa fa-power-off red mr-2"></i> Logout
+          </a>
+        </div>
+      </li>
+    </ul>
   </nav>
   <!-- /.navbar -->
 
