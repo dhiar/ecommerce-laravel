@@ -108,7 +108,13 @@
 									<td>{{ form.relationships.address.name }}</td>
 								</tr>
 
-								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2' && number_of_tabs != '4'">
+								<tr
+									v-if="
+										number_of_tabs != '1' &&
+										number_of_tabs != '2' &&
+										number_of_tabs != '4'
+									"
+								>
 									<th>Bukti Pembayaran</th>
 									<td v-if="isEdit">
 										<el-upload
@@ -152,7 +158,13 @@
 									</td>
 								</tr>
 
-								<tr v-if="number_of_tabs != '1' && number_of_tabs != '2' && number_of_tabs != '4'">
+								<tr
+									v-if="
+										number_of_tabs != '1' &&
+										number_of_tabs != '2' &&
+										number_of_tabs != '4'
+									"
+								>
 									<th>Nomor Resi Pengiriman</th>
 									<td v-if="isEdit">
 										<div class="form-group">
@@ -204,7 +216,11 @@
 									<td v-else>{{ form.relationships.delivery_status.name }}</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs != '3' && number_of_tabs != '4'">
+								<tr
+									v-if="
+										isEdit && number_of_tabs != '3' && number_of_tabs != '4'
+									"
+								>
 									<th>Propinsi</th>
 									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect
@@ -233,7 +249,11 @@
 									</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs != '3' && number_of_tabs != '4'">
+								<tr
+									v-if="
+										isEdit && number_of_tabs != '3' && number_of_tabs != '4'
+									"
+								>
 									<th>Kabupaten</th>
 									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect
@@ -262,7 +282,11 @@
 									</td>
 								</tr>
 
-								<tr v-if="isEdit && number_of_tabs != '3' && number_of_tabs != '4'">
+								<tr
+									v-if="
+										isEdit && number_of_tabs != '3' && number_of_tabs != '4'
+									"
+								>
 									<th>Kecamatan</th>
 									<td v-if="number_of_tabs == '1' || number_of_tabs == '2'">
 										<multiselect
@@ -707,8 +731,6 @@ export default {
 					.catch((error) => {
 						this.showErrorMessage(error);
 					});
-
-				$("#modalOrders").modal("hide");
 			} else if (self.number_of_tabs == "2") {
 				axios
 					.put(self.endpoint + "/" + id, {
@@ -726,8 +748,6 @@ export default {
 					.catch((error) => {
 						this.showErrorMessage(error);
 					});
-
-				$("#modalOrders").modal("hide");
 			} else if (self.number_of_tabs == "3") {
 				this.submitted = true;
 
@@ -740,6 +760,28 @@ export default {
 					);
 					return;
 				} else {
+					if (self.form.id_delivery_status == "1") {
+						Swal.fire(
+							"Failed !",
+							"Status kirim harus diubah menjadi DIKEMAS",
+							"error"
+						);
+					}
+
+					if (self.form.id_delivery_status == "1") {
+						Swal.fire(
+							"Failed !",
+							"Status kirim harus diubah menjadi DIKEMAS",
+							"error"
+						);
+						return;
+					}
+
+					if (!self.form.storage_payment_image) {
+						Swal.fire("Failed !", "Bukti pembayaran harus diisi.", "error");
+						return;
+					}
+
 					axios
 						.put(self.endpoint + "/" + id, {
 							storage_payment_image: self.form.storage_payment_image,
@@ -758,10 +800,16 @@ export default {
 						.catch((error) => {
 							this.showErrorMessage(error);
 						});
-
-					$("#modalOrders").modal("hide");
 				}
 			} else {
+				if (parseInt(self.form.id_delivery_status) <= 2) {
+					Swal.fire(
+						"Failed !",
+						"Status kirim harus diubah menjadi DIKIRIM atau DITERIMA",
+						"error"
+					);
+					return;
+				}
 				axios
 					.put(self.endpoint + "/" + id, {
 						id_delivery_status: self.form.id_delivery_status,
@@ -779,6 +827,7 @@ export default {
 						this.showErrorMessage(error);
 					});
 			}
+			$("#modalOrders").modal("hide");
 		},
 		async showModalOrders(id, isEdit) {
 			this.isEdit = isEdit;
@@ -828,6 +877,29 @@ export default {
 			let pageNumber = page ? page : 1;
 			let searchValue = search ? search : "";
 			self.number_of_tabs = number_of_tabs;
+
+			this.list_delivery_status = [
+				{ id: 1, name: "Verifikasi" },
+				{ id: 2, name: "Dikemas" },
+				{ id: 3, name: "Dikirim" },
+				{ id: 4, name: "Diterima" },
+				{ id: 5, name: "Cancel" },
+			];
+
+			if (number_of_tabs == 3) {
+				this.list_delivery_status = [
+					{ id: 1, name: "Verifikasi" },
+					{ id: 2, name: "Dikemas" },
+				];
+			}
+			if (number_of_tabs == 4) {
+				this.list_delivery_status = [
+					{ id: 2, name: "Dikemas" },
+					{ id: 3, name: "Dikirim" },
+					{ id: 4, name: "Diterima" },
+					{ id: 5, name: "Cancel" },
+				];
+			}
 
 			await axios
 				.get(self.endpoint + "?page=" + pageNumber + "&q=" + searchValue, {

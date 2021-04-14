@@ -38,6 +38,7 @@ class TransactionController extends Controller
     {
         $model = $this->model;
         $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data'];
+        $adminId = Auth::id();
         $uTypeId = $admin["relationships"]["user_type"]["id"];
         $uTypeId = is_numeric($uTypeId) ? $uTypeId : MainHasher::decode($uTypeId);
 
@@ -65,16 +66,15 @@ class TransactionController extends Controller
                 $query->where('name', 'LIKE', "%$search%");
             })
             ->paginate(10);
-
         }
 
         // admin page
         if (request('number_of_tabs')) {
             $number_of_tabs = request('number_of_tabs');
-            $modelByAdmin = $model::whereHas('transaction_details', function($qTransDetails) { 
-                $qTransDetails->whereHas('product', function($qProduct) {
-                    $qProduct->whereHas('admin', function($qAdmin) {
-                        $qAdmin->where('id', 5);
+            $modelByAdmin = $model::whereHas('transaction_details', function($qTransDetails) use ($adminId){ 
+                $qTransDetails->whereHas('product', function($qProduct) use ($adminId) {
+                    $qProduct->whereHas('admin', function($qAdmin) use ($adminId) {
+                        $qAdmin->where('id', $adminId);
                     });
                 });
             });
@@ -99,15 +99,40 @@ class TransactionController extends Controller
                 ->whereNull('ekspedisi_name')
                 ->paginate(10);
             } else if ($number_of_tabs == '3') {
+                // dd($adminId);
                 $paginator = $modelByAdmin->where('shipping_cost','>', '0')
                 ->whereNotNull('ekspedisi_name')
-                ->whereNull('delivery_number')
                 ->whereNull('payment_image')
-                ->paginate(10);
+                ->orWhere(function($query) use ($adminId) {
+                    $query->whereHas('transaction_details', function($qTransDetails)  use ($adminId) { 
+                        $qTransDetails->whereHas('product', function($qProduct) use ($adminId) {
+                            $qProduct->whereHas('admin', function($qAdmin) use ($adminId) {
+                                $qAdmin->where('id', $adminId);
+                            });
+                        });
+                    })
+                    ->where('shipping_cost','>', '0')
+                    ->whereNotNull('ekspedisi_name')
+                    ->whereNull('delivery_number');
+                })
+                ->orWhere(function($query) use ($adminId) {
+                    $query->whereHas('transaction_details', function($qTransDetails)  use ($adminId) { 
+                        $qTransDetails->whereHas('product', function($qProduct) use ($adminId) {
+                            $qProduct->whereHas('admin', function($qAdmin) use ($adminId) {
+                                $qAdmin->where('id', $adminId);
+                            });
+                        });
+                    })
+                    ->where('shipping_cost','>', '0')
+                    ->whereNotNull('ekspedisi_name')
+                    ->whereNotNull('delivery_number')
+                    ->whereNotNull('payment_image')
+                    ->where('id_delivery_status', '=', '1');
+                })->paginate(10);
             } else if ($number_of_tabs == '4') {
-                $paginator = $modelByAdmin->whereHas('delivery_status', function($query) { 
-                    $query->where('id','<=', '3'); 
-                })->whereNotNull('payment_image')
+                $paginator = $modelByAdmin
+                ->where('id_delivery_status', '<=', '3')
+                ->whereNotNull('payment_image')
                 ->whereNotNull('delivery_number')
                 ->paginate(10);
             } else if ($number_of_tabs == '5') {
