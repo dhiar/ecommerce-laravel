@@ -41,18 +41,28 @@ class AllAddressTransformer extends TransformerAbstract
         $object = $model->toArray();
         $result = [];
         $result["id"] = MainHasher::encode($object["id"]);
+        $result["name"] = $object["name"];
+        $result["province_id"] = $object["province_id"];
+        $result["city_id"] = $object["city_id"];
+        $result["district_id"] = $object["district_id"];
 
         $endpoint_province = env('URL_RUANGAPI')."/provinces?id=".$object["province_id"];
         $endpoint_city = env('URL_RUANGAPI')."/cities?id=".$object["city_id"];
         $endpoint_district = env('URL_RUANGAPI')."/districts?city=".$object["city_id"]."&id=".$object["district_id"];
 
-        $province = $this->getListArea($endpoint_province);
-        $city = $this->getListArea($endpoint_city);
-        $district = $this->getListArea($endpoint_district);
+        if (!$object["province_id"] && !$object["city_id"] && !$object["district_id"] ) {
+            $result["province"] = "";
+            $result["city"] = "";
+            $result["district"] = "";
+        } else {
+            $province = $this->getListArea($endpoint_province);
+            $city = $this->getListArea($endpoint_city);
+            $district = $this->getListArea($endpoint_district);
 
-        $result["province"] = $province["data"]->data->results->name;
-        $result["city"] = $city["data"]->data->results->name;
-        $result["district"] = $district["data"]->data->results->name;
+            $result["province"] = $province["data"]->data->results->name;
+            $result["city"] = $city["data"]->data->results->name;
+            $result["district"] = $district["data"]->data->results->name;
+        }
 
         return $result;
     }

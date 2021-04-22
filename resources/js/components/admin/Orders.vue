@@ -248,7 +248,6 @@
 										</div>
 									</td>
 								</tr>
-
 								<tr
 									v-if="
 										isEdit && number_of_tabs != '3' && number_of_tabs != '4'
@@ -932,7 +931,6 @@ export default {
 					this.showErrorMessage(error);
 				});
 		},
-
 		async getDataDistrict() {
 			const self = this;
 			await axios
