@@ -52,7 +52,8 @@ class HomeController extends Controller
         $this->middleware('auth');
         
         return view('home', [
-            'categories' => $this->categories
+            'categories' => $this->categories,
+            'slides' => $this->slides,
         ]);
     }
 

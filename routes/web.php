@@ -18,10 +18,10 @@ Route::get('/', 'HomeController@index')->name('index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@home')->name('home');
-Route::get('/product/{slug}', 'HomeController@productDetail')->name('product.detail')->where('slug', '([A-z\d-\/_.]+)?');
+Route::get('/products', 'HomeController@products')->name('user.products');
+Route::get('/product/{slug}', 'HomeController@productDetail')->name('product.detail')->where('slug', '([A-z\d\-\/_.]+)');
 Route::get('/verify', 'Auth\RegisterController@verifyUser')->name('verify.user');
 Route::get('/user/logout', 'Auth\LoginController@userLogout')->name('user.logout');
-Route::get('/products', 'HomeController@products')->name('user.products');
 Route::get('/orders', 'HomeController@orders')->name('user.orders');
 Route::get('/orders/{invoice}', 'HomeController@orders')->name('user.orders');
 
@@ -34,5 +34,5 @@ Route::prefix('admin')->group(function(){
 	Route::get('/register', 'Auth\AdminRegisterController@showRegisterForm')->name('admin.register');
 	Route::post('/register', 'Auth\AdminRegisterController@register')->name('admin.register.submit');
 	Route::get('/', 'AdminController@index')->name('admin.dashboard');
-	Route::get('/{path}', 'AdminController@index')->where('path', '([A-z\d-\/_.]+)?');
+	Route::get('/{path}', 'AdminController@index')->where('path', '([A-z\d\-\/_.]+)');
 });
