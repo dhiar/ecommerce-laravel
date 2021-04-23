@@ -267,7 +267,7 @@ export default {
 				.get("/api/list-province")
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_province = data.data.data.results;
+						self.data_province = data.data;
 						self.province = _.find(self.data_province, function (obj) {
 							return obj.id == self.formAddress.province_id;
 						});
@@ -306,7 +306,7 @@ export default {
 				.get("/api/list-city/" + option.id)
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_city = data.data.data.results;
+						self.data_city = data.data;
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}
@@ -329,7 +329,7 @@ export default {
 				.get("/api/list-district/" + option.id)
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_district = data.data.data.results;
+						self.data_district = data.data;
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}

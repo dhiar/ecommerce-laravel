@@ -20,7 +20,7 @@
 					</div>
 					<div class="card-body">
 						<p class="text-muted">
-							Deskripsi singkat ini ditampilkan pada footer
+							Alamat ini ditampilkan pada footer
 						</p>
 						<form @submit.prevent="createAddress($event, '')">
 							<div class="form-group">
@@ -209,14 +209,17 @@ export default {
 				.get("/api/list-province")
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_province = data.data.data.results;
-
+						self.data_province = data.data;
 						self.province = _.find(self.data_province, function (obj) {
 							return obj.id == self.form.province_id;
 						});
 
-						self.getDataCity();
-						self.getDataDistrict();
+						if (!self.province) {
+							self.province = { id: "", name: "" };
+						} else {
+							self.getDataCity();
+							self.getDataDistrict();
+						}
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}
@@ -231,10 +234,14 @@ export default {
 				.get("/api/list-city/" + self.form.province_id)
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_city = data.data.data.results;
+						self.data_city = data.data;
 						self.city = _.find(self.data_city, function (obj) {
 							return obj.id == self.form.city_id;
 						});
+
+						if (!self.city) {
+							self.city = { id: "", name: "" };
+						}
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}
@@ -243,17 +250,20 @@ export default {
 					this.showErrorMessage(error);
 				});
 		},
-
 		async getDataDistrict() {
 			const self = this;
 			await axios
 				.get("/api/list-district/" + self.form.city_id)
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_district = data.data.data.results;
+						self.data_district = data.data;
 						self.district = _.find(self.data_district, function (obj) {
 							return obj.id == self.form.district_id;
 						});
+
+						if (!self.district) {
+							self.district = { id: "", name: "" };
+						}
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}
@@ -280,7 +290,7 @@ export default {
 				.get("/api/list-city/" + option.id)
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_city = data.data.data.results;
+						self.data_city = data.data;
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}
@@ -303,7 +313,7 @@ export default {
 				.get("/api/list-district/" + option.id)
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_district = data.data.data.results;
+						self.data_district = data.data;
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}

@@ -403,21 +403,17 @@ export default {
 				!this.form.relationships.address.city_id &&
 				!this.form.relationships.address.district_id
 			) {
-				console.log("2");
-				// console.log('aaa')
-				// console.log('2.data = ' + JSON.stringify(tempData))
 				await axios
 					.get("/api/list-province")
 					.then(({ data }) => {
 						if (data.success) {
-							self.data_province = data.data.data.results;
+							self.data_province = data.data;
 
 							console.log(
 								"address.province_id = " +
 									self.form.relationships.address.province_id
 							);
 							self.province = _.find(self.data_province, function (obj) {
-								console.log("obj.id = " + obj.id);
 								return obj.id == self.form.relationships.address.province_id;
 							});
 
@@ -461,8 +457,10 @@ export default {
 							// let orders4 = self.orders[4].data
 							// self.orders[3] = { ...orders3, secondName: 'Fogerty'}
 
-							self.getDataCity();
-							self.getDataDistrict();
+							if (self.province) {
+								self.getDataCity();
+								self.getDataDistrict();
+							}
 						} else {
 							// Swal.fire("Failed !", data.message, "error");
 						}
@@ -484,10 +482,14 @@ export default {
 					.get("/api/list-city/" + self.form.relationships.address.province_id)
 					.then(({ data }) => {
 						if (data.success) {
-							self.data_city = data.data.data.results;
+							self.data_city = data.data;
 							self.city = _.find(self.data_city, function (obj) {
 								return obj.id == self.form.relationships.address.city_id;
 							});
+
+							if (!self.city) {
+								self.city = { id: "", name: "" };
+							}
 						} else {
 							Swal.fire("Failed !", data.message, "error");
 						}
@@ -505,10 +507,15 @@ export default {
 					.get("/api/list-district/" + self.form.relationships.address.city_id)
 					.then(({ data }) => {
 						if (data.success) {
-							self.data_district = data.data.data.results;
+							self.data_district = data.data;
 							self.district = _.find(self.data_district, function (obj) {
 								return obj.id == self.form.relationships.address.district_id;
 							});
+
+							if (!self.district) {
+								self.district = { id: "", name: "" };
+							}
+
 						} else {
 							Swal.fire("Failed !", data.message, "error");
 						}
@@ -534,7 +541,7 @@ export default {
 				.get("/api/list-city/" + option.id)
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_city = data.data.data.results;
+						self.data_city = data.data;
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}
@@ -557,7 +564,7 @@ export default {
 				.get("/api/list-district/" + option.id)
 				.then(({ data }) => {
 					if (data.success) {
-						self.data_district = data.data.data.results;
+						self.data_district = data.data;
 					} else {
 						Swal.fire("Failed !", data.message, "error");
 					}
