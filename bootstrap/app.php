@@ -52,4 +52,11 @@ $app->singleton(
 |
 */
 
+// $app->configure('laravolt');
+// $app->register(Laravolt\Indonesia\ServiceProvider::class);
+
+
+// // class aliases
+// class_alias(Laravolt\Indonesia\Facade::class, 'Indonesia');
+
 return $app;

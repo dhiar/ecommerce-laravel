@@ -182,7 +182,7 @@ return [
         App\Providers\PaginationServiceProvider::class,
 
         // List propinsi, kabupaten, kecamatan, kelurahan
-        // Laravolt\Indonesia\ServiceProvider::class
+        Laravolt\Indonesia\ServiceProvider::class
     ],
 
     /*
@@ -236,7 +236,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'PaginationHelp' => App\Helpers\PaginationFormat::class,
-        // 'Indonesia' => Laravolt\Indonesia\Facade::class
+        'Indonesia' => Laravolt\Indonesia\Facade::class
     ],
 
 ];

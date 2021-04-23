@@ -19,6 +19,7 @@
         "laravel/passport": "^10.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
+        "laravolt/indonesia": "^0.29.0",
         "spatie/laravel-fractal": "^5.7",
         "spatie/laravel-tags": "^2.7",
         "vinkla/hashids": "^9.1.0"
