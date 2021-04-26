@@ -41,6 +41,20 @@ class AddressTransformer extends TransformerAbstract
         $result = $model->toArray();
         $result["id"] = MainHasher::encode($result["id"]);
 
+        $province = $city = $district = null;
+        if(is_numeric($result['province_id'])) {
+            $province = \Indonesia::findProvince($result['province_id']);
+        }
+        if(is_numeric($result['city_id'])) {
+            $city = \Indonesia::findCity($result['city_id']);
+        }
+        if(is_numeric($result['district_id'])) {
+            $district = \Indonesia::findDistrict($result['district_id']);
+        }
+        $result["province"] = $province->name ?? $province;
+        $result["city"] = $city->name ?? $city;
+        $result["district"] = $district->name ?? $district;
+
         unset($result['created_at']);
         unset($result['updated_at']);
         unset($result['deleted_at']);

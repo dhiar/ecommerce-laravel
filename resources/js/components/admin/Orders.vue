@@ -731,6 +731,16 @@ export default {
 						this.showErrorMessage(error);
 					});
 			} else if (self.number_of_tabs == "2") {
+				if (!self.form.ekspedisi_name || self.form.shipping_cost <= 0) {
+					return Swal.fire({
+						icon: "warning",
+						title: "Save Failed!",
+						html: "Ensure that the ekspedisi name & shipping cost are correct.",
+						type: "warning",
+						showConfirmButton: true,
+					});
+				}
+
 				axios
 					.put(self.endpoint + "/" + id, {
 						ekspedisi_name: self.form.ekspedisi_name,
@@ -765,15 +775,6 @@ export default {
 							"Status kirim harus diubah menjadi DIKEMAS",
 							"error"
 						);
-					}
-
-					if (self.form.id_delivery_status == "1") {
-						Swal.fire(
-							"Failed !",
-							"Status kirim harus diubah menjadi DIKEMAS",
-							"error"
-						);
-						return;
 					}
 
 					if (!self.form.storage_payment_image) {
@@ -875,6 +876,8 @@ export default {
 			number_of_tabs = "1",
 			elId = "order-confirm-address"
 		) {
+
+			console.log('number_of_tabs = ' + number_of_tabs)
 			const self = this;
 
 			self.elId = elId;
@@ -916,6 +919,9 @@ export default {
 					this.perPage = data.per_page;
 					this.totalItems = data.total;
 					this.results = data;
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
 				});
 		},
 		async getDataCity() {

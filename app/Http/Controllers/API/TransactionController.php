@@ -99,7 +99,6 @@ class TransactionController extends Controller
                 ->whereNull('ekspedisi_name')
                 ->paginate(10);
             } else if ($number_of_tabs == '3') {
-                // dd($adminId);
                 $paginator = $modelByAdmin->where('shipping_cost','>', '0')
                 ->whereNotNull('ekspedisi_name')
                 ->whereNull('payment_image')
@@ -164,19 +163,12 @@ class TransactionController extends Controller
         $model = $this->model;
         if (request('invoice')){ // guest page
             $paginator = $model->where('invoice',request('invoice'))->paginate(1);
-            if (\request('show_address')) {
-                $result = $paginator->getCollection();
-                $response = fractal()
-                ->collection($result, new TransactionAddressTransformer())
-                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
-                ->toArray();
-            } else {
-                $result = $paginator->getCollection();
-                $response = fractal()
-                ->collection($result,  $this->transformer)
-                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
-                ->toArray();
-            }
+            
+            $result = $paginator->getCollection();
+            $response = fractal()
+            ->collection($result,  $this->transformer)
+            ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+            ->toArray();
 
             return PaginationFormat::commit($paginator, $response);
         }
