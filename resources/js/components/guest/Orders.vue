@@ -48,22 +48,8 @@
 import Accordioncard from "./Accordioncard.vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
-import {
-	VsaList,
-	VsaItem,
-	VsaHeading,
-	VsaContent,
-	VsaIcon,
-} from "vue-simple-accordion";
-import "vue-simple-accordion/dist/vue-simple-accordion.css";
-
 export default {
 	components: {
-		VsaList,
-		VsaItem,
-		VsaHeading,
-		VsaContent,
-		VsaIcon,
 		accordioncard: Accordioncard,
 	},
 	data() {
