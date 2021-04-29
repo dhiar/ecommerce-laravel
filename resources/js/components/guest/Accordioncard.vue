@@ -379,6 +379,19 @@
 							<td>:</td>
 							<td>{{ cardData.items.delivery_number }}</td>
 						</tr>
+						<tr
+							v-if="
+								(!cardData.items.delivery_number ||
+								cardData.items.delivery_status.id == 1) && 
+								formPaymentImage.payment_image
+							"
+						>
+							<td colspan="3">
+								<button class="btn btn-primary" @click="updateStatusKirim(invoice)">
+									Update Status Kirim
+								</button>
+							</td>
+						</tr>
 					</table>
 				</div>
 			</div>
@@ -394,6 +407,9 @@ export default {
 	template: "#accordioncards",
 	props: {
 		order_id: {
+			type: [Number, String],
+		},
+		invoice: {
 			type: [Number, String],
 		},
 		active: {
@@ -495,6 +511,21 @@ export default {
 					this.showErrorMessage(error);
 				});
 		},
+		updateStatusKirim(invoice = "") {
+			let admin = this.admin;
+			let linkWA =
+				"https://api.whatsapp.com/send?phone=" +
+				admin.whatsapp +
+				"&text=Selamat%20pagi%20bpk%2Fibu%20*" +
+				admin.name +
+				"*" +
+				encodeURIComponent(
+					". Pembayaran invoice di bawah sudah selesai. Tolong di-update info pengiriman nya. Invoice : *" +
+						invoice +
+						"*. Terimakasih."
+				);
+			window.open(linkWA, "_blank");
+		},
 		handleImageSuccess(res, file) {
 			this.formPaymentImage.storage_payment_image = res.result;
 			this.formPaymentImage.payment_image = URL.createObjectURL(file.raw);
@@ -555,7 +586,6 @@ export default {
 		async fetchData() {
 			const self = this;
 			self.formAddress = self.address;
-			payment_image;
 			self.formPaymentImage.payment_image = self.payment_image;
 			if (
 				!self.address.province_id &&

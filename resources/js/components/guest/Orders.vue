@@ -46,6 +46,7 @@
 				"
 				:payment_image="form.payment_image"
 				:order_id="form.id"
+				:invoice="form.invoice"
 			></accordioncard>
 		</div>
 	</div>
@@ -173,13 +174,17 @@ export default {
 							},
 						};
 
+						// alert(JSON.stringify(result.relationships.delivery_status.id))
+
 						self.kits[3] = {
 							code: "D",
 							name: "Detail Pembayaran & Pengiriman",
 							status:
 								result.shipping_cost == 0 ||
 								!result.payment_image ||
-								!result.delivery_number
+								!result.delivery_number ||
+								result.relationships.delivery_status.id == 1 || 
+								result.relationships.delivery_status.id == 2
 									? "not complete"
 									: "complete",
 							itemCount: 0,
