@@ -102,24 +102,28 @@ class TransactionController extends Controller
                 $paginator = $modelByAdmin->where('shipping_cost','>', '0')
                 ->whereNotNull('ekspedisi_name')
                 ->whereNull('payment_image')
-                ->orWhere(function($query) use ($adminId) {
-                    $query->whereHas('transaction_details', function($qTransDetails)  use ($adminId) { 
-                        $qTransDetails->whereHas('product', function($qProduct) use ($adminId) {
-                            $qProduct->whereHas('admin', function($qAdmin) use ($adminId) {
-                                $qAdmin->where('id', $adminId);
-                            });
+                ->orWhere(function($query) use ($adminId, $uTypeId) {
+                    $query->whereHas('transaction_details', function($qTransDetails)  use ($adminId, $uTypeId) { 
+                        $qTransDetails->whereHas('product', function($qProduct) use ($adminId, $uTypeId) {
+                            if ($uTypeId == 3) {
+                                $qProduct->whereHas('admin', function($qAdmin) use ($adminId) {
+                                    $qAdmin->where('id', $adminId);
+                                });
+                            }
                         });
                     })
                     ->where('shipping_cost','>', '0')
                     ->whereNotNull('ekspedisi_name')
                     ->whereNull('delivery_number');
                 })
-                ->orWhere(function($query) use ($adminId) {
-                    $query->whereHas('transaction_details', function($qTransDetails)  use ($adminId) { 
-                        $qTransDetails->whereHas('product', function($qProduct) use ($adminId) {
-                            $qProduct->whereHas('admin', function($qAdmin) use ($adminId) {
-                                $qAdmin->where('id', $adminId);
-                            });
+                ->orWhere(function($query) use ($adminId, $uTypeId) {
+                    $query->whereHas('transaction_details', function($qTransDetails)  use ($adminId, $uTypeId) { 
+                        $qTransDetails->whereHas('product', function($qProduct) use ($adminId, $uTypeId) {
+                            if ($uTypeId == 3) {
+                                $qProduct->whereHas('admin', function($qAdmin) use ($adminId) {
+                                    $qAdmin->where('id', $adminId);
+                                });
+                            }
                         });
                     })
                     ->where('shipping_cost','>', '0')
@@ -127,7 +131,8 @@ class TransactionController extends Controller
                     ->whereNotNull('delivery_number')
                     ->whereNotNull('payment_image')
                     ->where('id_delivery_status', '=', '1');
-                })->paginate(10);
+                })
+                ->paginate(10);
             } else if ($number_of_tabs == '4') {
                 $paginator = $modelByAdmin
                 ->where('id_delivery_status', '<=', '3')

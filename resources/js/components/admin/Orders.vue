@@ -775,9 +775,10 @@ export default {
 							"Status kirim harus diubah menjadi DIKEMAS",
 							"error"
 						);
+						return;
 					}
 
-					if (!self.form.storage_payment_image) {
+					if (!self.form.storage_payment_image && !self.form.payment_image) {
 						Swal.fire("Failed !", "Bukti pembayaran harus diisi.", "error");
 						return;
 					}
