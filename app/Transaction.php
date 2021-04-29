@@ -22,6 +22,7 @@ class Transaction extends Model
         'phone_formatted',
         'ekspedisi_name',
         'payment_image',
+        'delivery_number',
         'token',
         'token_created_at'
     ];

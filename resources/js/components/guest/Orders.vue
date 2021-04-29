@@ -39,6 +39,13 @@
 				:card-data="kit"
 				:key="kit.code"
 				:active="expanded"
+				:address="form.relationships.address"
+				:admin="
+					form.relationships.transaction_details[0].relationships.product
+						.relationships.admin
+				"
+				:payment_image="form.payment_image"
+				:order_id="form.id"
 			></accordioncard>
 		</div>
 	</div>
@@ -82,6 +89,7 @@ export default {
 						id: "",
 						name: "",
 						province_id: "",
+						city_id: "",
 						district_id: "",
 						province: "",
 						city: "",
@@ -124,14 +132,14 @@ export default {
 					})
 					.then(({ data }) => {
 						let result = data.data[0];
-						self.form = data.data[0];
+						self.form = result;
+
 						self.kits[0] = {
 							code: "A",
 							name: "Detail Pemesanan",
 							status: "complete",
 							itemCount: 8,
 							items: {
-								invoice: result.invoice,
 								weight_product: result.total_weight,
 								price_product: result.total_price,
 							},
@@ -168,7 +176,12 @@ export default {
 						self.kits[3] = {
 							code: "D",
 							name: "Detail Pembayaran & Pengiriman",
-							status: result.shipping_cost == 0 ? "not complete" : "complete",
+							status:
+								result.shipping_cost == 0 ||
+								!result.payment_image ||
+								!result.delivery_number
+									? "not complete"
+									: "complete",
 							itemCount: 0,
 							items: {
 								ekspedisi_name: result.ekspedisi_name,
@@ -191,36 +204,6 @@ export default {
 			}
 
 			// check address, jika kosong, berikan input untuk update address
-			if (
-				!this.form.relationships.address.province_id &&
-				!this.form.relationships.address.city_id &&
-				!this.form.relationships.address.district_id
-			) {
-				await axios
-					.get("/api/list-province")
-					.then(({ data }) => {
-						if (data.success) {
-							self.data_province = data.data;
-							self.province = _.find(self.data_province, function (obj) {
-								return obj.id == self.form.relationships.address.province_id;
-							});
-
-							if (!self.province) {
-								self.province = { id: null, name: "" };
-							}
-
-							if (self.province) {
-								self.getDataCity();
-								self.getDataDistrict();
-							}
-						} else {
-							Swal.fire("Failed !", data.message, "error");
-						}
-					})
-					.catch((error) => {
-						this.showErrorMessage(error);
-					});
-			}
 		},
 		async getDataCity() {
 			const self = this;

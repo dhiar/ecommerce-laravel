@@ -246,14 +246,14 @@ class TransactionController extends Controller
 
     public function update(CommonRequest $request, $id)
 	{
-        if (request('storage_payment_image')) {
+        if (request('storage_payment_image'))
+        {
             $obj = $this->model->find($id);
             $pathCurrentImage = storage_path('app/'.$obj->payment_image);
 
 			if (file_exists($pathCurrentImage)) {
                 @unlink($pathCurrentImage);
             }
-
             request()->request->add(['payment_image' => request('storage_payment_image')]);
             request()->request->remove('storage_payment_image');
         } else {

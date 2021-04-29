@@ -34,12 +34,7 @@
 				>
 					<table class="table table-hover">
 						<tr>
-							<th style="width: 30% !important;">Invoice</th>
-							<td>:</td>
-							<td>{{ cardData.items.invoice }}</td>
-						</tr>
-						<tr>
-							<th>Berat Produk</th>
+							<th style="width: 30% !important;">Berat Produk</th>
 							<td>:</td>
 							<td>{{ formatWeight(cardData.items.weight_product) }}</td>
 						</tr>
@@ -88,13 +83,7 @@
 						<tr>
 							<th>Alamat</th>
 							<td>:</td>
-							<td
-								v-if="
-									cardData.items.address.district &&
-									cardData.items.address.city &&
-									cardData.items.address.province
-								"
-							>
+							<td>
 								<span>{{
 									cardData.items.address.name
 										? cardData.items.address.name + " , "
@@ -116,13 +105,150 @@
 										: ""
 								}}</span>
 							</td>
-							<td></td>
 							<!-- { "id": "Rd", "name": "Soloraya", "province_id": 12, "city_id": 1202, "district_id": 1202011, "province": "SUMATERA UTARA", "city": "KABUPATEN MANDAILING NATAL", "district": "SINUNUKAN" } -->
+						</tr>
+						<tr
+							v-if="
+								!cardData.items.address.district &&
+								!cardData.items.address.city &&
+								!cardData.items.address.province
+							"
+						>
+							<th>Propinsi</th>
+							<td>:</td>
+							<td>
+								<multiselect
+									v-model="province"
+									:options="data_province"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="150"
+									:max="3"
+									@select="onSelectProvince"
+									:class="{
+										'is-invalid':
+											submitted && $v.formAddress.province_id.$error,
+										'is-valid': !$v.formAddress.province_id.$invalid,
+									}"
+								></multiselect>
+								<div class="valid-feedback">Propinsi is valid.</div>
+								<div
+									v-if="submitted && !$v.formAddress.province_id.required"
+									class="invalid-feedback"
+								>
+									Propinsi harus diisi
+								</div>
+							</td>
+						</tr>
+						<tr
+							v-if="
+								!cardData.items.address.district &&
+								!cardData.items.address.city &&
+								!cardData.items.address.province
+							"
+						>
+							<th>Kab./Kota</th>
+							<td>:</td>
+							<td>
+								<multiselect
+									v-model="city"
+									:options="data_city"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="150"
+									:max="3"
+									@select="onSelectCity"
+									:class="{
+										'is-invalid': submitted && $v.formAddress.city_id.$error,
+										'is-valid': !$v.formAddress.city_id.$invalid,
+									}"
+								></multiselect>
+								<div class="valid-feedback">Kabupaten is valid.</div>
+								<div
+									v-if="submitted && !$v.formAddress.city_id.required"
+									class="invalid-feedback"
+								>
+									Kabupaten harus diisi
+								</div>
+							</td>
+						</tr>
+						<tr
+							v-if="
+								!cardData.items.address.district &&
+								!cardData.items.address.city &&
+								!cardData.items.address.province
+							"
+						>
+							<th>Kecamatan</th>
+							<td>:</td>
+							<td>
+								<multiselect
+									v-model="district"
+									:options="data_district"
+									placeholder="Select one"
+									label="name"
+									track-by="id"
+									:searchable="true"
+									:max-height="150"
+									:max="3"
+									@select="onSelectDistrict"
+									:class="{
+										'is-invalid':
+											submitted && $v.formAddress.district_id.$error,
+										'is-valid': !$v.formAddress.district_id.$invalid,
+									}"
+								></multiselect>
+								<div class="valid-feedback">Kecamatan is valid.</div>
+								<div
+									v-if="submitted && !$v.formAddress.district_id.required"
+									class="invalid-feedback"
+								>
+									Kecamatan harus diisi
+								</div>
+							</td>
+						</tr>
+						<tr
+							v-if="
+								!cardData.items.address.district &&
+								!cardData.items.address.city &&
+								!cardData.items.address.province
+							"
+						>
+							<td></td>
+							<td></td>
+							<td>
+								<button class="btn btn-primary" @click="updateAddress">
+									Update Address
+								</button>
+							</td>
 						</tr>
 						<tr>
 							<th>Ongkir</th>
 							<td>:</td>
 							<td>{{ formatCurrency(cardData.items.shipping_cost) }}</td>
+						</tr>
+						<tr
+							v-if="
+								cardData.items.address.district &&
+								cardData.items.address.city &&
+								cardData.items.address.province &&
+								parseInt(cardData.items.shipping_cost) <= 0
+							"
+						>
+							<td></td>
+							<td></td>
+							<td>
+								<button
+									class="btn btn-primary"
+									@click="checkOngkir(cardData.items.invoice)"
+								>
+									Check Ongkir
+								</button>
+							</td>
 						</tr>
 					</table>
 				</div>
@@ -159,18 +285,84 @@
 								}}
 							</td>
 						</tr>
-						<tr>
+						<tr v-if="cardData.items.payment_image">
 							<th>Bukti Bayar</th>
 							<td>:</td>
 							<td>
 								<img
-									v-if="cardData.items.payment_image"
 									:src="cardData.items.payment_image"
 									class="img-fluid text-center"
 									@error="imgErrorCondition"
 									style="width: 250px; height: 250px;"
 								/>
 							</td>
+						</tr>
+						<tr v-if="!cardData.items.payment_image">
+							<th colspan="3">
+								<div class="row">
+									<div class="col-12 col-md-5 col-sm-5 themed-grid-col">
+										Unggah Bukti Transfer :
+									</div>
+									<div
+										class="col-12 col-md-7 col-sm-7 themed-grid-col"
+										style=""
+									>
+										<span>
+											<el-upload
+												:action="baseURL + '/api/upload-category'"
+												style="
+													border-style: dashed;
+													border-width: 1px;
+													border-color: gray;
+													width: 100%;
+												"
+												class="img-fluid text-center"
+												:show-file-list="false"
+												:on-success="handleImageSuccess"
+												:before-upload="beforeImageUpload"
+											>
+												<img
+													v-if="formPaymentImage.payment_image"
+													:src="formPaymentImage.payment_image"
+													class="img-fluid text-center"
+													@error="imgErrorCondition"
+													:class="{
+														'is-invalid':
+															submitted &&
+															$v.formPaymentImage.payment_image.$error,
+
+														'is-valid': !$v.formPaymentImage.payment_image
+															.$invalid,
+													}"
+												/>
+												<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+											</el-upload>
+											<small class="text-muted"
+												>Pastikan gambar berukuran maksimal 2mb, berformat png,
+												jpg, jpeg. Dan berukuran 1600x400px</small
+											>
+											<div class="valid-feedback">Icon is valid.</div>
+											<div
+												v-if="
+													submitted &&
+													!$v.formPaymentImage.payment_image.required
+												"
+												class="invalid-feedback"
+											>
+												Icon harus diisi
+											</div>
+										</span>
+										<span>
+											<button
+												class="btn btn-primary"
+												@click="updateBuktiTransfer"
+											>
+												Update Bukti Transfer
+											</button>
+										</span>
+									</div>
+								</div>
+							</th>
 						</tr>
 						<tr>
 							<th>Ekspedisi</th>
@@ -195,36 +387,86 @@
 </template>
 
 <script>
-const eventBus = new Vue();
+import { required, numeric } from "vuelidate/lib/validators";
+
 export default {
 	name: "accordioncard",
 	template: "#accordioncards",
 	props: {
+		order_id: {
+			type: [Number, String],
+		},
 		active: {
 			type: Boolean,
 		},
 		cardData: {
 			type: [Array, Object],
 		},
+		address: {
+			type: [Object],
+		},
+		admin: {
+			type: [Object],
+		},
+		payment_image: {
+			type: [String],
+		},
 	},
 	data: function () {
 		return {
+			submitted: false,
 			mutableActive: JSON.parse(this.active),
-			addRemove: 1,
-			itemDest: 1,
-			addStores: true,
-			removeStores: false,
+			endpoint: "/api/transactions",
+			formAddress: new Form({
+				id: "",
+				name: "",
+				province_id: "",
+				city_id: "",
+				district_id: "",
+				province: "",
+				city: "",
+				district: "",
+			}),
+			formPaymentImage: new Form({
+				id: "",
+				payment_image: "",
+				storage_payment_image: "",
+			}),
+			province: { id: null, name: "" },
+			data_province: [],
+			city: { id: null, name: "" },
+			data_city: [],
+			district: { id: null, name: "" },
+			data_district: [],
 		};
 	},
-	computed: {
-		kitItem: function () {
-			return [
-				"item-count",
-				"badge",
-				"badge-pill",
-				this.cardData.itemCount > 0 ? "badge-secondary" : "badge-danger",
-			];
+	validations: {
+		formAddress: {
+			province_id: {
+				required,
+			},
+			city_id: {
+				required,
+			},
+			district_id: {
+				required,
+			},
 		},
+		formPaymentImage: {
+			payment_image: {
+				required,
+			},
+		},
+	},
+	computed: {
+		// kitItem: function () {
+		// 	return [
+		// 		"item-count",
+		// 		"badge",
+		// 		"badge-pill",
+		// 		this.cardData.itemCount > 0 ? "badge-secondary" : "badge-danger",
+		// 	];
+		// },
 		kitStatus: function () {
 			return [
 				"badge",
@@ -233,15 +475,160 @@ export default {
 			];
 		},
 	},
+	mounted() {
+		this.fetchData();
+	},
 	methods: {
-		activeFalse() {
-			console.log("activeFalse");
+		updateBuktiTransfer() {
+			const self = this;
+			axios
+				.put(self.endpoint + "/" + self.order_id, self.formPaymentImage)
+				.then(({ data }) => {
+					if (data.success) {
+						Swal.fire("Success !", data.message, "success");
+						window.location.href = self.baseURL + "/orders";
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
 		},
-		activeTrue() {
-			console.log("activeTrue");
+		handleImageSuccess(res, file) {
+			this.formPaymentImage.storage_payment_image = res.result;
+			this.formPaymentImage.payment_image = URL.createObjectURL(file.raw);
 		},
-		setActiveFalse() {
-			console.log("activeFalse");
+		beforeImageUpload(file) {
+			const isJPG = file.type === "image/jpeg";
+			const isPNG = file.type === "image/png";
+
+			if (!isJPG && !isPNG) {
+				Swal.fire(
+					"Oops...!",
+					"Icon picture must be JPG / PNG format!",
+					"error"
+				);
+			}
+
+			return isJPG || isPNG;
+		},
+		checkOngkir(invoice = "") {
+			let admin = this.admin;
+			let linkWA =
+				"https://api.whatsapp.com/send?phone=" +
+				admin.whatsapp +
+				"&text=Selamat%20pagi%20bpk%2Fibu%20*" +
+				admin.name +
+				"*" +
+				encodeURIComponent(
+					", berapa ongkir & total harga dengan kode pemesanan : *" +
+						invoice +
+						"* ?"
+				);
+			window.open(linkWA, "_blank");
+		},
+		updateAddress() {
+			const self = this;
+			this.submitted = true;
+			this.$v.$touch();
+			if (this.$v.$error) {
+				Swal.fire("Failed !", "Propinsi s/d Kecamatan harus diisi", "error");
+				return;
+			}
+
+			axios
+				.put("/api/address/" + self.formAddress.id, self.formAddress)
+				.then(({ data }) => {
+					if (data.success) {
+						Swal.fire("Success !", data.message, "success");
+						window.location.href = self.baseURL + "/orders";
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		// async fetchData() {
+		async fetchData() {
+			const self = this;
+			self.formAddress = self.address;
+			payment_image;
+			self.formPaymentImage.payment_image = self.payment_image;
+			if (
+				!self.address.province_id &&
+				!self.address.city_id &&
+				!self.address.district_id
+			) {
+				await axios
+					.get("/api/list-province")
+					.then(({ data }) => {
+						if (data.success) {
+							self.data_province = data.data;
+						} else {
+							Swal.fire("Failed !", data.message, "error");
+						}
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+			}
+		},
+		async onSelectProvince(option) {
+			const self = this;
+			self.formAddress.province_id = option.id;
+
+			// clear city & district
+			self.city = { id: "", name: "" };
+			self.data_city = [];
+			self.formAddress.city_id = "";
+
+			self.district = { id: "", name: "" };
+			self.data_district = [];
+			self.formAddress.district_id = "";
+
+			// select city
+			axios
+				.get("/api/list-city/" + option.id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_city = data.data;
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async onSelectCity(option) {
+			const self = this;
+			self.formAddress.city_id = option.id;
+
+			// clear district
+			self.district = { id: "", name: "" };
+			self.data_district = [];
+			self.formAddress.district_id = "";
+
+			// select district
+			axios
+				.get("/api/list-district/" + option.id)
+				.then(({ data }) => {
+					if (data.success) {
+						self.data_district = data.data;
+					} else {
+						Swal.fire("Failed !", data.message, "error");
+					}
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+		},
+		async onSelectDistrict(option) {
+			const self = this;
+			self.formAddress.district_id = option.id;
 		},
 	},
 	watch: {

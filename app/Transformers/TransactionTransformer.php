@@ -37,7 +37,7 @@ class TransactionTransformer extends TransformerAbstract
     {
         $result = $model->toArray();
         $result["id"] = MainHasher::encode($result["id"]);
-        $result["payment_image"] = env('APP_URL').Storage::url($model->payment_image);
+        $result["payment_image"] = $model->payment_image ? env('APP_URL').Storage::url($model->payment_image) : "";
 
         $result["relationships"] = [
             'address' => fractal($model->address, new AddressTransformer())->toArray()['data'],

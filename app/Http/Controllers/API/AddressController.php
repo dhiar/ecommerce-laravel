@@ -19,7 +19,9 @@ class AddressController extends Controller
 	 */
 	public function __construct()
 	{
-        $this->middleware(['auth:admin-api'],['update']);
+        $this->middleware('auth:admin-api', ['only' => [
+            'index'
+        ]]);
         $this->model = new Address();
         $this->transformer = new AddressTransformer();
     }
