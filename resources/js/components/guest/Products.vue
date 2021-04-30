@@ -3,10 +3,25 @@
 		<div class="breacrumb-section">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-12">
+					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
 						<div class="breadcrumb-text product-more">
 							<a :href="baseURL"><i class="fa fa-home"></i> Home</a>
 							<a :href="baseURL + '/products'">Products</a>
+						</div>
+					</div>
+					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
+						<div class="inner-header" style="padding: 0px !important;">
+							<div class="advanced-search" style="padding: 0px !important;">
+								<button type="button" class="category-btn">Search</button>
+								<div class="input-group">
+									<input
+										type="text"
+										class="text-gray-dark"
+										placeholder="Search Product.."
+									/>
+									<button type="button"><i class="ti-search"></i></button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -29,7 +44,7 @@
 									<div class="row">
 										<div
 											class="col-lg-4 col-sm-6"
-											v-for="(item, idx) in results.data"
+											v-for="item in results.data"
 											:key="item.id"
 										>
 											<div class="product-item">
@@ -70,7 +85,7 @@
 													<a href="#">
 														<h5>{{ item.name }}</h5>
 													</a>
-													<div class="product-price">
+													<!-- <div class="product-price">
 														{{ formatCurrency(item.price) }}
 														<span
 															style="
@@ -80,7 +95,7 @@
 															"
 															>/ pcs</span
 														>
-													</div>
+													</div> -->
 												</div>
 											</div>
 										</div>
@@ -148,22 +163,22 @@ export default {
 			addressName: "",
 			addressProvinceId: "",
 			addressCityId: "",
-			addressDistrictId: ""
+			addressDistrictId: "",
 		};
 	},
 	async created() {
 		this.fetchProducts();
 	},
 	methods: {
-		fromParentFilterAddress(formAddress){
-			const self = this
+		fromParentFilterAddress(formAddress) {
+			const self = this;
 
-			self.addressName = formAddress.name
-			self.addressProvinceId = formAddress.province_id
-			self.addressCityId = formAddress.city_id
-			self.addressDistrictId = formAddress.district_id
+			self.addressName = formAddress.name;
+			self.addressProvinceId = formAddress.province_id;
+			self.addressCityId = formAddress.city_id;
+			self.addressDistrictId = formAddress.district_id;
 
-			self.fetchProducts()
+			self.fetchProducts();
 		},
 		fromParentSetModal(val) {
 			const self = this;
@@ -171,7 +186,7 @@ export default {
 			self.brandId = val.brand_id;
 			self.product_tags = val.product_tags;
 
-			self.fetchProducts()
+			self.fetchProducts();
 		},
 		async fetchProducts(page = 1) {
 			const self = this;
