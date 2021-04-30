@@ -75,6 +75,13 @@ class HomeController extends Controller
         ]);
     }
 
+    public function categoryProduct(CommonRequest $request, $slug){
+        $this->middleware('guest');
+        return view('product', [
+            'categories' => $this->categories,
+        ]);
+    }
+
     public function orders(CommonRequest $request, $invoice = null){
         $this->middleware('guest');
         return view('orders', [

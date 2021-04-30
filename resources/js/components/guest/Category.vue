@@ -153,6 +153,7 @@ export default {
 	},
 	data() {
 		return {
+			categorySlug: "",
 			searchName: "",
 			page: "product",
 			endpoint: "/api/products",
@@ -227,7 +228,8 @@ export default {
 		},
 		async fetchProducts(page = 1) {
 			const self = this;
-
+			alert(this.categoryId);
+			self.categorySlug = this.$route.params.slug;
 			if (self.searchName == "" || !self.searchName) {
 				axios
 					.post(self.endpoint_filter + "?page=" + page, {
@@ -238,6 +240,16 @@ export default {
 						province_id: this.addressProvinceId,
 						city_id: this.addressCityId,
 						district_id: this.addressDistrictId,
+						category_slug:
+							this.categoryId ||
+							this.brandId ||
+							this.product_tags ||
+							this.addressName ||
+							this.addressProvinceId ||
+							this.addressCityId ||
+							this.addressDistrictId
+								? null
+								: self.categorySlug,
 						limit: 6,
 					})
 					.then(({ data }) => {

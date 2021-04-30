@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
 use App\Transformers\{ProductTransformer, ProductImageTransformer, GrosirTransformer, ProductTagTransformer};
 use App\Transformers\TagsTransformer;
-use App\{Admin, Product, ProductImage, Grosir, CategoryBrand};
+use App\{Admin, Product, ProductImage, Grosir, CategoryBrand, ProductCategory};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
 use Illuminate\Support\Facades\Schema;
@@ -117,6 +117,17 @@ class ProductController extends Controller
         if (request('product_tags')) {
             $tags = collect(request('product_tags'))->pluck('name')->toArray();
             $model = $model::withAllTags($tags, 'product');
+        }
+
+        if (request('category_slug')) {
+            $category_slug = request('category_slug');
+            $category = ProductCategory::where('slug', $category_slug)->first();
+            if($category->count() > 0) {
+                $categoryId = $category->id;
+                $model = $model::whereHas('category_brand', function($query) use($categoryId) { 
+                    $query->where('id_category', $categoryId); 
+                });
+            }
         }
 
         $fieldOrder = $request->fieldOrder ?? "id";

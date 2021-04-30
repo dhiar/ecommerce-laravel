@@ -98,7 +98,7 @@
                                         <?php
                                             foreach ($categories as $key => $category) {
                                                 ?>
-                                                    <li><a href="<?= '/category-product/'.$category->slug ?>">
+                                                    <li><a href="<?= '/category/'.$category->slug ?>">
                                                         <?=$category->name; ?>    
                                                     </a></li> 
                                                 <?php
