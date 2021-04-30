@@ -18,6 +18,8 @@
 										type="text"
 										class="text-gray-dark"
 										placeholder="Search Product.."
+										v-model="searchName"
+										@keyup.enter="searchProduct"
 									/>
 									<button type="button"><i class="ti-search"></i></button>
 								</div>
@@ -151,6 +153,7 @@ export default {
 	},
 	data() {
 		return {
+			searchName: "",
 			page: "product",
 			endpoint: "/api/products",
 			endpoint_filter: "/api/filter-products",
@@ -170,6 +173,33 @@ export default {
 		this.fetchProducts();
 	},
 	methods: {
+		searchProduct(event, page = 1) {
+			const self = this;
+
+			if (event) {
+				self.searchName = event.target.value;
+			}
+
+			axios
+				.get(self.endpoint + "?page=" + page + "&q=" + self.searchName, {
+					params: {
+						limit: 6,
+					},
+				})
+				.then(({ data }) => {
+					this.currentPage = data.current_page;
+					this.perPage = data.per_page;
+					this.totalItems = data.total;
+					this.results = data;
+				})
+				.catch(() => {
+					this.$Progress.fail();
+					Toast.fire({
+						icon: "error",
+						title: "Product not found.",
+					});
+				});
+		},
 		fromParentFilterAddress(formAddress) {
 			const self = this;
 
@@ -190,32 +220,39 @@ export default {
 		},
 		async fetchProducts(page = 1) {
 			const self = this;
-			axios
-				.post(self.endpoint_filter + "?page=" + page, {
-					id_category: this.categoryId,
-					id_brand: this.brandId,
-					product_tags: this.product_tags,
-					name: this.addressName,
-					province_id: this.addressProvinceId,
-					city_id: this.addressCityId,
-					district_id: this.addressDistrictId,
-					limit: 6,
-				})
-				.then(({ data }) => {
-					this.currentPage = data.current_page;
-					this.perPage = data.per_page;
-					this.totalItems = data.total;
-					this.results = data;
-				})
-				.catch((error) => {
-					this.showErrorMessage(error);
-				});
+
+			if (self.searchName == "" || !self.searchName) {
+				axios
+					.post(self.endpoint_filter + "?page=" + page, {
+						id_category: this.categoryId,
+						id_brand: this.brandId,
+						product_tags: this.product_tags,
+						name: this.addressName,
+						province_id: this.addressProvinceId,
+						city_id: this.addressCityId,
+						district_id: this.addressDistrictId,
+						limit: 6,
+					})
+					.then(({ data }) => {
+						this.currentPage = data.current_page;
+						this.perPage = data.per_page;
+						this.totalItems = data.total;
+						this.results = data;
+					})
+					.catch((error) => {
+						this.showErrorMessage(error);
+					});
+			}
 		},
 	},
 	watch: {
 		currentPage: {
 			handler: function (value) {
-				this.fetchProducts(value);
+				if (this.searchName && this.searchName != "") {
+					this.searchProduct(undefined, value);
+				} else {
+					this.fetchProducts(value);
+				}
 			},
 		},
 	},

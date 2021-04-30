@@ -309,7 +309,7 @@
 									>
 										<span>
 											<el-upload
-												:action="baseURL + '/api/upload-category'"
+												:action="baseURL + '/api/upload-payment'"
 												style="
 													border-style: dashed;
 													border-width: 1px;
