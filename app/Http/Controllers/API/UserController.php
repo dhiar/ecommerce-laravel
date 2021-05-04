@@ -12,6 +12,7 @@ use Intervention\Image\Facades\Image;
 use App\Http\Transformers\IlluminatePaginatorAdapter;
 use App\Helpers\PaginationFormat;
 use App\Hashers\MainHasher;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -130,7 +131,7 @@ class UserController extends Controller
 		$user = Admin::findOrFail($adminId);
 		$currentPhoto = $user->photo;
 
-		if ($request->photo != $currentPhoto) {			
+		if ($request->photo != $currentPhoto) {		
 			$name = time().'.'.explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
 			Image::make($request->photo)->save(public_path('img/profile/').$name);
 			$request->merge(['photo' => $name]);

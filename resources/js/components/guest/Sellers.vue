@@ -6,7 +6,7 @@
 					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
 						<div class="breadcrumb-text product-more">
 							<a :href="baseURL"><i class="fa fa-home"></i> Home</a>
-							<a :href="baseURL + '/products'">Products</a>
+							<a :href="baseURL + '/sellers'">Sellers</a>
 						</div>
 					</div>
 					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
@@ -14,14 +14,23 @@
 							<div class="advanced-search" style="padding: 0px !important;">
 								<button type="button" class="category-btn">Search</button>
 								<div class="input-group">
-									<input
-										type="text"
-										class="text-gray-dark"
-										placeholder="Search Product.."
-										v-model="searchName"
-										@keyup.enter="searchProduct"
-									/>
-									<button type="button"><i class="ti-search"></i></button>
+									<!-- @search-change="asyncSearchCategory" -->
+									<multiselect
+										v-model="seller"
+										:options="sellers"
+										placeholder="Search Seller"
+										label="name"
+										track-by="id"
+										:searchable="true"
+										:max-height="200"
+										:max="10"
+										style="
+											margin-top: 5px !important;
+											font-size: 13px !important;
+										"
+										@select="onSelectSeller"
+									></multiselect>
+									<!-- <button type="button"><i class="ti-search"></i></button> -->
 								</div>
 							</div>
 						</div>
@@ -33,7 +42,6 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-3">
-						<!-- category, brand dari component -->
 						<filter-product
 							@fromChildSetModal="fromParentSetModal"
 							@fromChildFilterAddress="fromParentFilterAddress"
@@ -45,59 +53,43 @@
 								<div class="product-list">
 									<div class="row">
 										<div
-											class="col-lg-4 col-sm-6"
+											class="col-6 col-lg-4 col-sm-6 themed-grid-col"
 											v-for="item in results.data"
 											:key="item.id"
+											style="margin-bottom: 20px !important;"
 										>
 											<div class="product-item">
 												<div class="pi-pic">
-													<img
-														v-if="item.image"
-														:src="item.image"
-														alt=""
-														@error="imgErrorCondition"
-														class="img-fluid img-thumbnail"
-														style="
-															object-fit: cover !important;
-															height: 270px !important;
-														"
-													/>
-													<div class="sale pp-sale">Sale</div>
-													<div class="icon">
-														<i class="icon_heart_alt"></i>
-													</div>
-													<ul>
-														<li class="w-icon active">
-															<a href="#"><i class="icon_bag_alt"></i></a>
-														</li>
-														<li class="quick-view">
-															<a :href="baseURL + '/product/' + item.slug"
-																>Quick View</a
-															>
-														</li>
-														<li class="w-icon">
-															<a href="#"><i class="fa fa-random"></i></a>
-														</li>
-													</ul>
+													<a href="#">
+														<img
+															v-if="item.photo"
+															:src="item.photo"
+															alt=""
+															@error="imgErrorCondition"
+															class="img-fluid"
+															style="
+																width: 100% !important;
+																object-fit: cover !important;
+																height: 250px !important;
+															"
+														/>
+													</a>
 												</div>
 												<div class="pi-text">
 													<div class="catagory-name">
-														{{ item.relationships.category.name }}
+														{{
+															item.relationships.address.name +
+															", " +
+															item.relationships.address.district +
+															", " +
+															item.relationships.address.city +
+															", " +
+															item.relationships.address.province
+														}}
 													</div>
 													<a href="#">
 														<h5>{{ item.name }}</h5>
 													</a>
-													<!-- <div class="product-price">
-														{{ formatCurrency(item.price) }}
-														<span
-															style="
-																color: #252525;
-																text-decoration: none;
-																font-size: 15px;
-															"
-															>/ pcs</span
-														>
-													</div> -->
 												</div>
 											</div>
 										</div>
@@ -153,11 +145,17 @@ export default {
 	},
 	data() {
 		return {
-			categorySlug: "",
+			seller: { id: "0", name: "All Seller" },
+			sellers: [
+				{ id: "0", name: "All Seller" },
+				{ id: "4", name: "Rocky Ahmad" },
+				{ id: "5", name: "Nuruddin Zangky" },
+				{ id: "6", name: "Friza Rahmi Artini" },
+			],
 			searchName: "",
 			page: "product",
-			endpoint: "/api/products",
-			endpoint_filter: "/api/filter-products",
+			endpoint: "/api/sellers",
+			endpoint_filter: "/api/filter-sellers",
 			categoryId: "",
 			brandId: "",
 			currentPage: 1,
@@ -171,10 +169,14 @@ export default {
 		};
 	},
 	async created() {
-		this.fetchProducts();
+		this.fetchSellers();
 	},
 	methods: {
-		searchProduct(event, page = 1) {
+		onSelectSeller(option) {
+			this.seller = option;
+			this.fetchSellers();
+		},
+		searchSeller(event, page = 1) {
 			const self = this;
 
 			if (event) {
@@ -212,7 +214,7 @@ export default {
 			self.addressCityId = formAddress.city_id;
 			self.addressDistrictId = formAddress.district_id;
 
-			self.fetchProducts();
+			self.fetchSellers();
 		},
 		fromParentSetModal(val) {
 			const self = this;
@@ -224,53 +226,75 @@ export default {
 			self.brandId = val.brand_id;
 			self.product_tags = val.product_tags;
 
-			self.fetchProducts();
+			self.fetchSellers();
 		},
-		async fetchProducts(page = 1) {
+		async fetchSellers(page = 1) {
 			const self = this;
-
-			self.categorySlug = this.$route.params.slug;
-			if (self.searchName == "" || !self.searchName) {
-				axios
-					.post(self.endpoint_filter + "?page=" + page, {
-						id_category: this.categoryId,
-						id_brand: this.brandId,
-						product_tags: this.product_tags,
-						name: this.addressName,
-						province_id: this.addressProvinceId,
-						city_id: this.addressCityId,
-						district_id: this.addressDistrictId,
-						category_slug:
-							this.categoryId ||
-							this.brandId ||
-							this.product_tags ||
-							this.addressName ||
-							this.addressProvinceId ||
-							this.addressCityId ||
-							this.addressDistrictId
-								? null
-								: self.categorySlug,
-						limit: 6,
-					})
-					.then(({ data }) => {
-						this.currentPage = data.current_page;
-						this.perPage = data.per_page;
-						this.totalItems = data.total;
-						this.results = data;
-					})
-					.catch((error) => {
-						this.showErrorMessage(error);
-					});
-			}
+			// if (self.searchName == "" || !self.searchName) {
+			axios
+				.post(self.endpoint_filter + "?page=" + page, {
+					id_category: this.categoryId,
+					id_brand: this.brandId,
+					product_tags: this.product_tags,
+					name: this.addressName,
+					province_id: this.addressProvinceId,
+					city_id: this.addressCityId,
+					district_id: this.addressDistrictId,
+					id_seller: this.seller.id,
+					limit: 6,
+				})
+				.then(({ data }) => {
+					this.currentPage = data.current_page;
+					this.perPage = data.per_page;
+					this.totalItems = data.total;
+					this.results = data;
+				})
+				.catch((error) => {
+					this.showErrorMessage(error);
+				});
+			// }
 		},
 	},
 	watch: {
 		currentPage: {
 			handler: function (value) {
-				if (this.searchName && this.searchName != "") {
-					this.searchProduct(undefined, value);
+				if (
+					this.searchName &&
+					this.searchName != "" &&
+					!this.categoryId &&
+					!this.brandId &&
+					!this.brandId &&
+					!this.addressName &&
+					!this.addressProvinceId &&
+					!this.addressCityId &&
+					!this.addressDistrictId
+					// address dll kosong
+				) {
+					console.log("searchName exist");
+					// this.searchSeller(undefined, value);
+					// province_id: this.addressProvinceId,
+					// 	city_id: this.addressCityId,
+					// 	district_id: this.addressDistrictId,
+				}
+
+				if (
+					this.categoryId ||
+					this.brandId ||
+					this.brandId ||
+					this.addressName ||
+					this.addressProvinceId ||
+					this.addressCityId ||
+					this.addressDistrictId
+				) {
+					if (this.searchName && this.searchName != "") {
+						console.log("searchName exist");
+					} else {
+						console.log("searchName NOT");
+						this.fetchSellers(value);
+					}
 				} else {
-					this.fetchProducts(value);
+					console.log("aaa");
+					// jika pertama kali di-load, tampilkan semua seller tanpa filter
 				}
 			},
 		},

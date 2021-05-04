@@ -26,6 +26,9 @@ Route::get('/user/logout', 'Auth\LoginController@userLogout')->name('user.logout
 Route::get('/orders', 'HomeController@orders')->name('user.orders');
 Route::get('/orders/{invoice}', 'HomeController@orders')->name('user.orders');
 
+Route::get('/sellers', 'HomeController@sellers')->name('user.sellers');
+Route::get('/seller/{name}/products', 'HomeController@sellerProducts')->name('user.seller.products');
+
 // middlwware guest:admin
 // or middlwware auth:admin
 Route::prefix('admin')->group(function(){

@@ -3,9 +3,10 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\{Admin};
+use App\Admin;
 use App\Transformers\{AddressTransformer,UserTypeTransformer, RekeningTransformer};
 use App\Hashers\MainHasher;
+use Illuminate\Support\Facades\Storage;
 
 class AdminTransformer extends TransformerAbstract
 {
@@ -34,6 +35,13 @@ class AdminTransformer extends TransformerAbstract
      */
     public function transform(Admin $admin)
     {
+        $userPhoto = env('APP_URL').'/img/profile/'.$admin->photo;
+        $pathPhoto = public_path('img/profile/').$admin->photo;
+
+        if (!file_exists($pathPhoto)) {
+            $userPhoto = $admin->photo;
+        }
+
         return [
             'id' => MainHasher::encode($admin->id),
             'name' => $admin->name,
@@ -41,7 +49,8 @@ class AdminTransformer extends TransformerAbstract
             'whatsapp' => $this->hp($admin->phone),
             'email' => $admin->email,
             'job_title' => $admin->job_title,
-            'photo' => $admin->photo,
+            // 'photo' => public_path('img/profile/').$admin->photo,
+            'photo' => $userPhoto,
             'created_at' => $admin->created_at,
             'relationships' => [
                 'address' => is_object($admin->address) ? fractal($admin->address, new AddressTransformer())->toArray()['data'] : "",

@@ -531,6 +531,11 @@ export default {
 					this.form.fill(data);
 					this.formAddress.fill(data.relationships.address);
 
+					let address = data.relationships.address;
+					this.province = { id: address.province_id, name: address.province };
+					this.city = { id: address.city_id, name: address.city };
+					this.district = { id: address.district_id, name: address.district };
+
 					if (data.relationships.rekenings.length > 0) {
 						this.formAdminRekening.rekenings = data.relationships.rekenings;
 					}
@@ -545,6 +550,7 @@ export default {
 				.then(({ data }) => {
 					if (data.success) {
 						self.data_province = data.data;
+
 						self.province = _.find(self.data_province, function (obj) {
 							return obj.id == self.formAddress.province_id;
 						});
@@ -608,14 +614,7 @@ export default {
 			}
 		},
 		getProfilePhoto() {
-			let photo = "";
-			if (this.form.photo) {
-				photo =
-					this.form.photo.length >= 50
-						? this.form.photo
-						: process.env.MIX_APP_URL + "/img/profile/" + this.form.photo;
-			}
-			return photo;
+			return this.form.photo;
 		},
 		async updateAddress(id) {
 			const self = this;

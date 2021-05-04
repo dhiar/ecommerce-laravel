@@ -88,6 +88,7 @@ Route::put('clone-product/{product}', 'API\ProductController@cloneProduct');
 Route::post('search-tags', 'API\ProductController@searchTags')->name('search.tags');
 Route::get('tags', 'API\ProductController@searchTags')->name('all.tags');
 Route::post('filter-products', 'API\ProductController@filterProducts')->name('filter.products');
+Route::post('filter-sellers', 'API\AdminController@filterSellers')->name('filter.sellers');
 
 Route::apiResource('grosirs', 'API\GrosirController')->names([
 	'store' => 'grosir.store'

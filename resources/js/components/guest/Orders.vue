@@ -174,8 +174,6 @@ export default {
 							},
 						};
 
-						// alert(JSON.stringify(result.relationships.delivery_status.id))
-
 						self.kits[3] = {
 							code: "D",
 							name: "Detail Pembayaran & Pengiriman",

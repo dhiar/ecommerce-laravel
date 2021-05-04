@@ -158,6 +158,8 @@ let routes = [
 
 	{ path: "/admin/orders", component: require(cmpAdmin + "Orders").default },
 	{ path: "/orders", component: require(cmpGuest + "Orders").default },
+
+	{ path: "/sellers", component: require(cmpGuest + "Sellers").default },
 ];
 
 const router = new VueRouter({
