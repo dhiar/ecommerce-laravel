@@ -590,6 +590,7 @@ export default {
 						title: "Success update profile",
 					});
 					this.$Progress.finish();
+					this.fetchData();
 				})
 				.catch(() => {
 					Toast.fire({

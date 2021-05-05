@@ -130,8 +130,14 @@ class UserController extends Controller
 
 		$user = Admin::findOrFail($adminId);
 		$currentPhoto = $user->photo;
+		$requestPhoto = $request->photo;
 
-		if ($request->photo != $currentPhoto) {		
+		$split = \explode(env('APP_URL').'/img/profile/', $requestPhoto);
+		if (count($split) == 2) {
+			$requestPhoto = $split[1];
+		}
+
+		if ($requestPhoto != $currentPhoto) {		
 			$name = time().'.'.explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
 			Image::make($request->photo)->save(public_path('img/profile/').$name);
 			$request->merge(['photo' => $name]);
@@ -141,6 +147,8 @@ class UserController extends Controller
 			if (file_exists($userPhoto)) {
 				@unlink($userPhoto);
 			}
+		} else {
+			$request->merge(['photo' => $requestPhoto]);
 		}
 
 		DB::beginTransaction();
