@@ -84,11 +84,11 @@ class ProductController extends Controller
             $categoryId = is_numeric(request('id_category')) ? request('id_category') : MainHasher::decode(request('id_category'));
 
             if (request('id_category') && request('id_brand')) {
-                $model = $model::whereHas('category_brand', function($query) use($categoryId, $brandId) { 
+                $model = $model->whereHas('category_brand', function($query) use($categoryId, $brandId) { 
                     $query->where('id_category', $categoryId)->where('id_brand', $brandId); 
                 });
             } else {
-                $model = $model::whereHas('category_brand', function($query) use($categoryId) { 
+                $model = $model->whereHas('category_brand', function($query) use($categoryId) { 
                     $query->where('id_category', $categoryId); 
                 });
             }
@@ -96,7 +96,7 @@ class ProductController extends Controller
         else if (
             request('province_id') || request('city_id')  || request('district_id') || request('name')
         ) {
-            $model = $model::whereHas('admin', function($query) { 
+            $model = $model->whereHas('admin', function($query) { 
                 $query->whereHas('address',  function($qAddress) {
                     $name = request('name') ? request('name') : "";
                     $province_id = request('province_id') ? request('province_id') : "";
@@ -124,8 +124,17 @@ class ProductController extends Controller
             $category = ProductCategory::where('slug', $category_slug)->first();
             if($category->count() > 0) {
                 $categoryId = $category->id;
-                $model = $model::whereHas('category_brand', function($query) use($categoryId) { 
+                $model = $model->whereHas('category_brand', function($query) use($categoryId) { 
                     $query->where('id_category', $categoryId); 
+                });
+            }
+        }
+
+        if ($request->store_slug) {
+            $storeSlug = $request->store_slug;
+            if ($model->count() > 0) {
+                $model = $model->whereHas('admin', function($query) use ($storeSlug) { 
+                    $query->where('store_slug', $storeSlug);
                 });
             }
         }

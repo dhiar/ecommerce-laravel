@@ -27,7 +27,7 @@ Route::get('/orders', 'HomeController@orders')->name('user.orders');
 Route::get('/orders/{invoice}', 'HomeController@orders')->name('user.orders');
 
 Route::get('/sellers', 'HomeController@sellers')->name('user.sellers');
-Route::get('/seller/{name}/products', 'HomeController@sellerProducts')->name('user.seller.products');
+Route::get('/store/{slug}', 'HomeController@storeProducts')->name('seller.store')->where('slug', '([A-z\d\-\/_.]+)');
 
 // middlwware guest:admin
 // or middlwware auth:admin

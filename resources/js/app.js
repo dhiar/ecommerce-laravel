@@ -155,6 +155,7 @@ let routes = [
 	{ path: "/product/:slug", component: require(cmpGuest + "Product").default },
 	{ path: "/products", component: require(cmpGuest + "Products").default },
 	{ path: "/category/:slug", component: require(cmpGuest + "Category").default },
+	{ path: "/store/:slug", component: require(cmpGuest + "StoreProducts").default },
 
 	{ path: "/admin/orders", component: require(cmpAdmin + "Orders").default },
 	{ path: "/orders", component: require(cmpGuest + "Orders").default },
