@@ -51,6 +51,8 @@ class AdminTransformer extends TransformerAbstract
             'job_title' => $admin->job_title,
             // 'photo' => public_path('img/profile/').$admin->photo,
             'photo' => $userPhoto,
+            'store_name' => $admin->store_name,
+            'store_slug' => $admin->store_slug,
             'created_at' => $admin->created_at,
             'relationships' => [
                 'address' => is_object($admin->address) ? fractal($admin->address, new AddressTransformer())->toArray()['data'] : "",

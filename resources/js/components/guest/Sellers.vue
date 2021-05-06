@@ -4,10 +4,13 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
-						<div class="breadcrumb-text product-more">
+						<!-- <div class="breadcrumb-text product-more">
 							<a :href="baseURL"><i class="fa fa-home"></i> Home</a>
 							<a :href="baseURL + '/sellers'">Sellers</a>
-						</div>
+						</div> -->
+						<filter-location
+							@fromChildFilterAddress="fromParentFilterAddress"
+						></filter-location>
 					</div>
 					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
 						<div class="inner-header" style="padding: 0px !important;">
@@ -40,14 +43,9 @@
 		</div>
 		<section class="product-shop spad page-details" style="padding-top: 50px;">
 			<div class="container">
+				<div class="row"></div>
 				<div class="row">
-					<div class="col-lg-3">
-						<filter-product
-							@fromChildSetModal="fromParentSetModal"
-							@fromChildFilterAddress="fromParentFilterAddress"
-						></filter-product>
-					</div>
-					<div class="col-lg-9">
+					<div class="col-lg-12">
 						<div class="row" v-if="results.data && results.data.length > 0">
 							<div class="col-lg-12">
 								<div class="product-list">
@@ -56,11 +54,14 @@
 											class="col-6 col-lg-4 col-sm-6 themed-grid-col"
 											v-for="item in results.data"
 											:key="item.id"
-											style="margin-bottom: 20px !important;"
+											style="
+												margin-bottom: 20px !important;
+												border: 1px solid #ebebeb;
+											"
 										>
 											<div class="product-item">
 												<div class="pi-pic">
-													<a href="#">
+													<a :href="'/store/' + item.store_slug">
 														<img
 															v-if="item.photo"
 															:src="item.photo"
@@ -152,7 +153,6 @@ export default {
 				{ id: "5", name: "Nuruddin Zangky" },
 				{ id: "6", name: "Friza Rahmi Artini" },
 			],
-			searchName: "",
 			page: "product",
 			endpoint: "/api/sellers",
 			endpoint_filter: "/api/filter-sellers",
@@ -176,66 +176,21 @@ export default {
 			this.seller = option;
 			this.fetchSellers();
 		},
-		searchSeller(event, page = 1) {
-			const self = this;
-
-			if (event) {
-				self.searchName = event.target.value;
-			}
-
-			axios
-				.get(self.endpoint + "?page=" + page + "&q=" + self.searchName, {
-					params: {
-						limit: 6,
-					},
-				})
-				.then(({ data }) => {
-					this.currentPage = data.current_page;
-					this.perPage = data.per_page;
-					this.totalItems = data.total;
-					this.results = data;
-				})
-				.catch(() => {
-					this.$Progress.fail();
-					Toast.fire({
-						icon: "error",
-						title: "Product not found.",
-					});
-				});
-		},
 		fromParentFilterAddress(formAddress) {
 			const self = this;
-
-			// remove input search product
-			self.searchName = "";
 
 			self.addressName = formAddress.name;
 			self.addressProvinceId = formAddress.province_id;
 			self.addressCityId = formAddress.city_id;
 			self.addressDistrictId = formAddress.district_id;
 
-			self.fetchSellers();
-		},
-		fromParentSetModal(val) {
-			const self = this;
-
-			// remove input search product
-			self.searchName = "";
-
-			self.categoryId = val.category_id;
-			self.brandId = val.brand_id;
-			self.product_tags = val.product_tags;
-
+			self.seller = { id: "0", name: "All Seller" };
 			self.fetchSellers();
 		},
 		async fetchSellers(page = 1) {
 			const self = this;
-			// if (self.searchName == "" || !self.searchName) {
 			axios
 				.post(self.endpoint_filter + "?page=" + page, {
-					id_category: this.categoryId,
-					id_brand: this.brandId,
-					product_tags: this.product_tags,
 					name: this.addressName,
 					province_id: this.addressProvinceId,
 					city_id: this.addressCityId,
@@ -252,50 +207,12 @@ export default {
 				.catch((error) => {
 					this.showErrorMessage(error);
 				});
-			// }
 		},
 	},
 	watch: {
 		currentPage: {
 			handler: function (value) {
-				if (
-					this.searchName &&
-					this.searchName != "" &&
-					!this.categoryId &&
-					!this.brandId &&
-					!this.brandId &&
-					!this.addressName &&
-					!this.addressProvinceId &&
-					!this.addressCityId &&
-					!this.addressDistrictId
-					// address dll kosong
-				) {
-					console.log("searchName exist");
-					// this.searchSeller(undefined, value);
-					// province_id: this.addressProvinceId,
-					// 	city_id: this.addressCityId,
-					// 	district_id: this.addressDistrictId,
-				}
-
-				if (
-					this.categoryId ||
-					this.brandId ||
-					this.brandId ||
-					this.addressName ||
-					this.addressProvinceId ||
-					this.addressCityId ||
-					this.addressDistrictId
-				) {
-					if (this.searchName && this.searchName != "") {
-						console.log("searchName exist");
-					} else {
-						console.log("searchName NOT");
-						this.fetchSellers(value);
-					}
-				} else {
-					console.log("aaa");
-					// jika pertama kali di-load, tampilkan semua seller tanpa filter
-				}
+				this.fetchSellers(value);
 			},
 		},
 	},

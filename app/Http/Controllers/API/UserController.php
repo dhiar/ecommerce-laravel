@@ -13,6 +13,7 @@ use App\Http\Transformers\IlluminatePaginatorAdapter;
 use App\Helpers\PaginationFormat;
 use App\Hashers\MainHasher;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -27,7 +28,11 @@ class UserController extends Controller
 		// $this->middleware('auth', ['only' => 'index']);
 		// $this->middleware('auth', ['except' => ['create', 'store', 'edit', 'update', 'delete']]);
 
-		$this->middleware('auth:admin-api', ['profile', 'updateProfile', 'updateRekening']);
+		$this->middleware('auth:admin-api', ['only' => [
+			'profile',
+			'updateProfile',
+			'updateRekening'
+	]]);
 	}
 
 	/**
@@ -125,7 +130,8 @@ class UserController extends Controller
 			'password' => 'sometimes|string|min:8|confirmed',
 			'job_title' => 'required|string|max:255',
 			'email' => 'required|string|email|max:191|unique:admins,email,'.Auth::id(),
-			'phone' => 'required|numeric|regex:/^\S*$/u'
+			'phone' => 'required|numeric|regex:/^\S*$/u',
+			'store_name' => 'required|string|max:191|unique:admins,store_name,'.Auth::id()
 		]);
 
 		$user = Admin::findOrFail($adminId);
@@ -156,6 +162,9 @@ class UserController extends Controller
 			if(!empty($request->password)) {
 				$request->merge(['password' => bcrypt($request->password)]);
 			}
+
+			// update store slug
+			$request->merge(['store_slug' =>  Str::slug($request->store_name,"-")]);
 
 			$user->update($request->all());
 			DB::commit();

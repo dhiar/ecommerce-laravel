@@ -16,6 +16,8 @@ class CreateAdminsTable extends Migration
 			Schema::create('admins', function (Blueprint $table) {
 				$table->id();
 				$table->string('name');
+				$table->string('store_name')->nullable()->unique();
+				$table->string('store_slug')->nullable()->unique();
 				$table->unsignedBigInteger('id_user_type');
 				$table->foreign('id_user_type')
 						->references('id')

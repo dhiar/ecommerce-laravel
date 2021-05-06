@@ -298,7 +298,7 @@
 
 							<div class="form-group row">
 								<label for="inputName" class="col-sm-2 col-form-label"
-									>Job Title</label
+									>Job Description</label
 								>
 								<div class="col-sm-10">
 									<input
@@ -310,6 +310,23 @@
 										:class="{ 'is-invalid': form.errors.has('job_title') }"
 									/>
 									<has-error :form="form" field="job_title"></has-error>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="inputPhone" class="col-sm-2 col-form-label"
+									>Store Name</label
+								>
+								<div class="col-sm-10">
+									<input
+										v-model="form.store_name"
+										type="text"
+										name="phone"
+										placeholder="Nama Toko"
+										class="form-control"
+										:class="{ 'is-invalid': form.errors.has('store_name') }"
+									/>
+									<has-error :form="form" field="store_name"></has-error>
 								</div>
 							</div>
 
@@ -453,6 +470,7 @@ export default {
 				phone: "",
 				job_title: "",
 				photo: "",
+				store_name: "",
 				// id_user_type: 2
 			}),
 			formAddress: new Form({

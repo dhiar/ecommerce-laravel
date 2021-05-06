@@ -233,6 +233,11 @@ Vue.component(
 	require(cmpGuest + "FilterProduct.vue").default
 );
 
+Vue.component(
+	"filter-location",
+	require(cmpGuest + "FilterLocation.vue").default
+);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
