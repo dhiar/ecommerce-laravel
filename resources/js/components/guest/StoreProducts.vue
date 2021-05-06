@@ -5,8 +5,8 @@
 				<div class="row">
 					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
 						<div class="breadcrumb-text product-more">
-							<a :href="baseURL"><i class="fa fa-home"></i> Home</a>
-							<a :href="baseURL + '/products'">Products</a>
+							<a :href="baseURL"><i class="fa fa-home"></i></a>
+							<a :href="baseURL + '/sellers'">Store - <b>{{ storeSlug }}</b></a>
 						</div>
 					</div>
 					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
