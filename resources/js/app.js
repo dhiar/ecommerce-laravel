@@ -20,6 +20,7 @@ import i18n from "vue-i18n";
 import "element-ui/lib/theme-chalk/index.css";
 import locale from "element-ui/lib/locale/lang/en";
 import Multiselect from "vue-multiselect";
+import VueMobileDetection from 'vue-mobile-detection'
 
 import "codemirror/lib/codemirror.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -62,6 +63,7 @@ Vue.use(VueProgressBar, {
 	height: "3px",
 });
 Vue.use(Vuelidate);
+Vue.use(VueMobileDetection)
 
 let cmpAdmin = "./components/admin/";
 let cmpGuest = "./components/guest/";

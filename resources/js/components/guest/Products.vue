@@ -1,8 +1,27 @@
 <template>
 	<div>
-		<div class="breacrumb-section">
+		<div class="breacrumb-section" style="padding: 0px !important;">
 			<div class="container">
-				<div class="row">
+				<div v-if="$isMobile()" class="row">
+					<div class="col-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="inner-header" style="padding: 0px !important;">
+							<div class="advanced-search" style="padding: 0px !important;">
+								<button type="button" class="category-btn">Search</button>
+								<div class="input-group">
+									<input
+										type="text"
+										class="text-gray-dark"
+										placeholder="Search Product.."
+										v-model="searchName"
+										@keyup.enter="searchProduct"
+									/>
+									<button type="button"><i class="ti-search"></i></button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div v-else class="row">
 					<div class="col-6 col-sm-6 col-md-6 col-lg-6">
 						<div class="breadcrumb-text product-more">
 							<a :href="baseURL"><i class="fa fa-home"></i> Home</a>
@@ -29,17 +48,54 @@
 				</div>
 			</div>
 		</div>
-		<section class="product-shop spad page-details" style="padding-top: 50px;">
+		<section class="product-shop spad page-details" style="padding-top: 20px;">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-3">
-						<!-- category, brand dari component -->
-						<filter-product
-							@fromChildSetModal="fromParentSetModal"
-							@fromChildFilterAddress="fromParentFilterAddress"
-						></filter-product>
+					<div class="col-12 col-lg-3 col-md-3 col-sm-3 themed-grid-col">
+						<div
+							class="card"
+							style="box-shadow: none !important; border: none !important;"
+						>
+							<div class="card-header p-0">
+								<a
+									class="kit-toggle"
+									href="#"
+									@click.prevent="mutableActive = !mutableActive"
+								>
+									<div>
+										Filter Product
+										<span :class="kitStatus">Click Here</span>
+									</div>
+
+									<div>
+										<!-- <span :class="kitItem"> -->
+										<span>
+											<i
+												v-if="mutableActive"
+												class="fa fa-chevron-up"
+												aria-hidden="true"
+											></i>
+											<i
+												v-else
+												class="fa fa-chevron-down"
+												aria-hidden="true"
+											></i>
+										</span>
+									</div>
+								</a>
+							</div>
+
+							<transition name="collapse">
+								<div v-show="mutableActive" style="margin-top: 25px;">
+									<filter-product
+										@fromChildSetModal="fromParentSetModal"
+										@fromChildFilterAddress="fromParentFilterAddress"
+									></filter-product>
+								</div>
+							</transition>
+						</div>
 					</div>
-					<div class="col-lg-9">
+					<div class="col-12 col-lg-9 col-md-9 col-sm-9 themed-grid-col">
 						<div class="row" v-if="results.data && results.data.length > 0">
 							<div class="col-lg-12">
 								<div class="product-list">
@@ -153,6 +209,8 @@ export default {
 	},
 	data() {
 		return {
+			kitStatus: ["badge", "ml-2", "badge-success"],
+			mutableActive: true,
 			searchName: "",
 			page: "product",
 			endpoint: "/api/products",
@@ -265,3 +323,55 @@ export default {
 	},
 };
 </script>
+<style lang="scss" scoped>
+.collapse-enter-active,
+.collapse-leave-active {
+	// transition: max-height 200ms;
+	// max-height: 26rem;
+	overflow: hidden;
+}
+.collapse-enter,
+.collapse-leave-to {
+	max-height: 0px;
+	overflow: hidden;
+}
+
+.kit-toggle {
+	color: #000;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem 1rem;
+	&:hover {
+		background-color: #ddd;
+		text-decoration: none;
+		color: #000;
+	}
+
+	.kit-code {
+		width: 2.5rem;
+		// height: 2.5rem;
+		border: 2px solid #555;
+		display: inline-block;
+		color: #555;
+		border-radius: 1.25rem;
+		text-align: center;
+		line-height: 2.25rem;
+		margin-right: 0.5rem;
+	}
+	.item-count {
+		font-size: 0.9rem;
+	}
+}
+// .kit-contents {
+// 	// min-height: 26rem;
+// }
+.items-list {
+	// max-height: 14.8rem;
+	// min-height: 5rem;
+	overflow: auto;
+	& li:nth-child(odd) {
+		background: #eee;
+	}
+}
+</style>
