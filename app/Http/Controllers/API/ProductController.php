@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CommonRequest;
 use App\Transformers\{ProductTransformer, ProductImageTransformer, GrosirTransformer, ProductTagTransformer};
-use App\Transformers\TagsTransformer;
+use App\Transformers\{AdminTransformer, TagsTransformer};
 use App\{Admin, Product, ProductImage, Grosir, CategoryBrand, ProductCategory};
 use Illuminate\Support\Facades\DB;
 use App\Hashers\MainHasher;
@@ -27,7 +27,8 @@ class ProductController extends Controller
         $this->middleware('auth:admin-api', ['only' => [
             'store',
             'update',
-            'destroy'
+            'destroy',
+            'indexAdmin'
         ]]);
         $this->middleware('guest', ['only' => [
             'index',
@@ -68,6 +69,48 @@ class ProductController extends Controller
         }
         else {
             $model = $this->model;
+        }
+
+        $fieldOrder = $request->fieldOrder ?? "id";
+        $sort = $request->sort ?? "ASC";
+        $limit = request('limit') ?? 10;
+
+        return $request->index($model, $this->transformer, $fieldOrder, $sort, $limit, $this->table);
+    }
+
+    public function indexAdmin(CommonRequest $request){
+
+        $admin = fractal(Auth::user(), AdminTransformer::class)->toArray()['data'];
+        $adminId = Auth::id();
+        $uTypeId = $admin["relationships"]["user_type"]["id"];
+        $uTypeId = is_numeric($uTypeId) ? $uTypeId : MainHasher::decode($uTypeId);
+
+        if (request('is_promo') == "0" || request('is_promo') == "1") {
+            $model = $this->model::whereIsPromo(request('is_promo'));
+        } else if (request('slug')) {
+            $model = $this->model::whereSlug(request('slug'));
+        } else if (request('id_brand') || request('id_category')  )  {
+            $brandId = is_numeric(request('id_brand')) ? request('id_brand') : MainHasher::decode(request('id_brand'));
+            $categoryId = is_numeric(request('id_category')) ? request('id_category') : MainHasher::decode(request('id_category'));
+
+            if (request('id_category') && request('id_brand')) {
+                $model = Product::whereHas('category_brand', function($query) use($categoryId, $brandId) { 
+                    $query->where('id_category', $categoryId)->where('id_brand', $brandId); 
+                });
+            } else {
+                $model = Product::whereHas('category_brand', function($query) use($categoryId) { 
+                    $query->where('id_category', $categoryId); 
+                });
+            }
+        }
+        else {
+            $model = $this->model;
+        }
+
+        if($uTypeId == 3) {
+            $model = $model->whereHas('admin', function($qAdmin) use ($adminId) {
+                $qAdmin->where('id', $adminId);
+            });
         }
 
         $fieldOrder = $request->fieldOrder ?? "id";

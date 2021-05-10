@@ -194,7 +194,7 @@ class ProductBrandController extends Controller
         ]);
     }
     
-    public function listBrandsCategory(CommonRequest $request, $id){
+    public function listProductByCategory(CommonRequest $request, $id){
         if ((int)$id > 0) {
             $paginator = ProductBrand::whereHas('category', function($query) use($id) { 
                 $query->where('id_category', $id); 

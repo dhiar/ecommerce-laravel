@@ -119,6 +119,7 @@
 							:max="10"
 							style="width: 100%;"
 							@search-change="asyncFindBrand"
+							@select="onSelectBrand"
 						></multiselect>
 					</div>
 					<div class="col-sm-auto float-right text-right">
@@ -248,7 +249,7 @@ export default {
 			totalItems: 50,
 			results: {},
 			page: "product",
-			endpoint: "/api/products",
+			endpoint: "/api/admin-products",
 			endpoint_clone: "/api/clone-product",
 			endpoint_category: "/api/product_category",
 			endpoint_brand: "/api/product_brand",
@@ -395,6 +396,10 @@ export default {
 					this.showErrorMessage(error);
 				});
 
+			this.fetchData(1);
+		},
+		onSelectBrand(option) {
+			this.brand = option;
 			this.fetchData(1);
 		},
 		async asyncFindBrand(query) {
